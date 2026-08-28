@@ -2,7 +2,6 @@
 <html lang="ko">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,424 +11,248 @@
 
   <title>SGBAC 예약현황</title>
 
-
   <style>
-
     * {
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
-
-      font-family:
-        Arial,
-        "Noto Sans KR",
-        sans-serif;
-
-      background:
-        #f5f7fa;
-
-      color:
-        #222;
-
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f5f7fa;
+      color: #222;
     }
-
 
     .container {
-
-      max-width:
-        1600px;
-
-      margin:
-        0 auto;
-
-      padding:
-        20px;
-
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px;
     }
-
 
     h1 {
-
-      margin:
-        0 0 18px;
-
-      font-size:
-        24px;
-
+      margin: 0 0 18px;
+      font-size: 24px;
     }
-
 
     .search-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
 
-      display:
-        flex;
+      background: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
 
-      gap:
-        10px;
-
-      align-items:
-        center;
-
-      flex-wrap:
-        wrap;
-
-      background:
-        #fff;
-
-      padding:
-        16px;
-
-      border-radius:
-        10px;
-
-      margin-bottom:
-        12px;
-
-      border:
-        1px solid #ddd;
-
+      border: 1px solid #ddd;
     }
-
 
     .search-box label {
-
-      font-weight:
-        700;
-
+      font-weight: 700;
     }
-
 
     input[type="date"] {
+      height: 42px;
+      padding: 0 12px;
 
-      height:
-        42px;
+      font-size: 16px;
 
-      padding:
-        0 12px;
-
-      font-size:
-        16px;
-
-      border:
-        1px solid #bbb;
-
-      border-radius:
-        6px;
-
+      border: 1px solid #bbb;
+      border-radius: 6px;
     }
-
 
     button {
+      height: 42px;
+      padding: 0 20px;
 
-      height:
-        42px;
+      font-size: 15px;
+      font-weight: 700;
 
-      padding:
-        0 20px;
+      border: 0;
+      border-radius: 6px;
 
-      font-size:
-        15px;
+      cursor: pointer;
 
-      font-weight:
-        700;
-
-      border:
-        0;
-
-      border-radius:
-        6px;
-
-      cursor:
-        pointer;
-
-      background:
-        #2563eb;
-
-      color:
-        #fff;
-
+      background: #2563eb;
+      color: #fff;
     }
-
 
     button:disabled {
-
-      opacity:
-        0.6;
-
-      cursor:
-        not-allowed;
-
+      opacity: 0.6;
+      cursor: not-allowed;
     }
-
 
     .info-box {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
 
-      background:
-        #fff;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
 
-      border:
-        1px solid #ddd;
+      padding: 12px 14px;
+      margin-bottom: 12px;
 
-      border-radius:
-        8px;
-
-      padding:
-        12px 14px;
-
-      margin-bottom:
-        12px;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      gap:
-        20px;
-
-      flex-wrap:
-        wrap;
-
-      font-size:
-        14px;
-
+      font-size: 14px;
     }
-
 
     .update-time {
-
-      font-weight:
-        700;
-
+      font-weight: 700;
     }
-
 
     .status {
-
-      color:
-        #555;
-
+      color: #555;
     }
-
 
     .table-wrap {
+      overflow-x: auto;
 
-      overflow-x:
-        auto;
-
-      background:
-        #fff;
-
-      border:
-        1px solid #ddd;
-
-      border-radius:
-        8px;
-
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
     }
-
 
     table {
+      width: 100%;
+      min-width: 1800px;
 
-      width:
-        100%;
+      border-collapse: collapse;
 
-      min-width:
-        1800px;
-
-      border-collapse:
-        collapse;
-
-      font-size:
-        13px;
-
+      font-size: 13px;
     }
-
 
     th,
     td {
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #eee;
 
-      border-bottom:
-        1px solid #e5e7eb;
+      padding: 9px 8px;
 
-      border-right:
-        1px solid #eee;
+      text-align: center;
+      vertical-align: middle;
 
-      padding:
-        9px 8px;
-
-      text-align:
-        center;
-
-      vertical-align:
-        middle;
-
-      white-space:
-        nowrap;
-
+      white-space: nowrap;
     }
-
 
     th {
+      position: sticky;
+      top: 0;
 
-      position:
-        sticky;
+      background: #dce6f1;
 
-      top:
-        0;
+      font-weight: 700;
 
-      background:
-        #dce6f1;
-
-      font-weight:
-        700;
-
-      z-index:
-        2;
-
+      z-index: 2;
     }
-
 
     td.remark {
+      min-width: 350px;
+      max-width: 600px;
 
-      min-width:
-        350px;
+      white-space: normal;
 
-      max-width:
-        600px;
-
-      white-space:
-        normal;
-
-      text-align:
-        left;
-
-      line-height:
-        1.4;
-
+      text-align: left;
+      line-height: 1.4;
     }
-
 
     .badge {
+      display: inline-flex;
 
-      display:
-        inline-flex;
+      min-width: 30px;
+      height: 26px;
 
-      min-width:
-        30px;
+      align-items: center;
+      justify-content: center;
 
-      height:
-        26px;
+      border-radius: 6px;
 
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      border-radius:
-        6px;
-
-      font-weight:
-        700;
-
+      font-weight: 700;
     }
-
 
     .badge-o {
-
-      background:
-        #dcfce7;
-
-      color:
-        #166534;
-
+      background: #dcfce7;
+      color: #166534;
     }
-
 
     .badge-x {
-
-      background:
-        #fee2e2;
-
-      color:
-        #991b1b;
-
+      background: #fee2e2;
+      color: #991b1b;
     }
-
 
     .empty {
-
-      padding:
-        35px;
-
-      text-align:
-        center;
-
-      color:
-        #666;
-
+      padding: 35px;
+      text-align: center;
+      color: #666;
     }
 
+    /*======================================================
+      Excel 조건부서식 반영
+    ======================================================*/
 
-    @media (
-      max-width: 700px
-    ) {
+    /* 신청여부 X → 회색 배경 */
+    .flight-row-x {
+      background: #d9d9d9;
+    }
 
+    /* 국내/국제 I → 파란 글씨 */
+    .flight-row-i {
+      color: #0066cc;
+    }
+
+    /* SK 자가용 → 빨간 글씨 */
+    /* 국제선 파란색보다 우선 */
+    .flight-row-skt {
+      color: #ff0000 !important;
+      font-weight: 600;
+    }
+
+    .flight-row-skt td {
+      color: #ff0000 !important;
+    }
+
+    .flight-row-skt .badge {
+      color: #ff0000 !important;
+    }
+
+    /* 국제선 행 글씨 */
+    .flight-row-i td {
+      color: #0066cc;
+    }
+
+    /* SK가 동시에 해당되면 다시 빨간색 우선 */
+    .flight-row-i.flight-row-skt td {
+      color: #ff0000 !important;
+    }
+
+    @media (max-width: 700px) {
       .container {
-
-        padding:
-          12px;
-
+        padding: 12px;
       }
-
 
       h1 {
-
-        font-size:
-          20px;
-
+        font-size: 20px;
       }
-
 
       .search-box {
-
-        align-items:
-          stretch;
-
+        align-items: stretch;
       }
-
 
       input[type="date"],
       button {
-
-        width:
-          100%;
-
+        width: 100%;
       }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
 <div class="container">
 
-
-  <h1>
-    SGBAC 예약현황
-  </h1>
-
+  <h1>SGBAC 예약현황</h1>
 
   <div class="search-box">
 
@@ -437,19 +260,16 @@
       조회일
     </label>
 
-
     <input
       id="dateInput"
       type="date"
     >
-
 
     <button id="searchBtn">
       조회
     </button>
 
   </div>
-
 
   <div class="info-box">
 
@@ -460,7 +280,6 @@
       최종 갱신: -
     </div>
 
-
     <div
       id="status"
       class="status"
@@ -470,7 +289,6 @@
 
   </div>
 
-
   <div class="table-wrap">
 
     <table>
@@ -478,61 +296,37 @@
       <thead>
 
         <tr>
-
           <th>신청여부</th>
-
           <th>계획시간</th>
-
           <th>예정시간</th>
-
           <th>등록기호</th>
-
           <th>기종</th>
-
           <th>국가</th>
-
           <th>구간</th>
-
           <th>출도착</th>
-
           <th>국내/국제</th>
-
           <th>운항목적</th>
-
           <th>운항사</th>
-
           <th>승무원</th>
-
           <th>승객</th>
-
           <th>수하물</th>
-
           <th>비고</th>
-
           <th>취소여부</th>
-
           <th>주기장</th>
-
           <th>실제시간</th>
-
         </tr>
 
       </thead>
 
-
       <tbody id="resultBody">
 
         <tr>
-
           <td
             colspan="18"
             class="empty"
           >
-
             조회 결과가 없습니다.
-
           </td>
-
         </tr>
 
       </tbody>
@@ -541,80 +335,51 @@
 
   </div>
 
-
 </div>
-
 
 
 <script>
 
-
   //========================================================
-  // ★ Apps Script /exec URL
+  // Apps Script Backend
   //========================================================
   const BACKEND_URL =
     "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
 
 
-
   const dateInput =
-    document.getElementById(
-      "dateInput"
-    );
-
+    document.getElementById("dateInput");
 
   const searchBtn =
-    document.getElementById(
-      "searchBtn"
-    );
-
+    document.getElementById("searchBtn");
 
   const statusBox =
-    document.getElementById(
-      "status"
-    );
-
+    document.getElementById("status");
 
   const updateTimeBox =
-    document.getElementById(
-      "updateTime"
-    );
-
+    document.getElementById("updateTime");
 
   const resultBody =
-    document.getElementById(
-      "resultBody"
-    );
-
+    document.getElementById("resultBody");
 
 
   //========================================================
-  // YYYY-MM-DD
+  // Date → YYYY-MM-DD
   //========================================================
   function dateText(date) {
-
 
     const yyyy =
       date.getFullYear();
 
-
     const mm =
       String(
         date.getMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      );
-
+      ).padStart(2, "0");
 
     const dd =
       String(
         date.getDate()
-      ).padStart(
-        2,
-        "0"
-      );
-
+      ).padStart(2, "0");
 
     return (
       yyyy +
@@ -627,33 +392,26 @@
   }
 
 
-
   //========================================================
-  // TODAY ~ TODAY+6만 선택
+  // TODAY ~ TODAY+6
   //========================================================
   function setDateRange() {
-
 
     const today =
       new Date();
 
-
     const maxDate =
       new Date(today);
-
 
     maxDate.setDate(
       today.getDate() + 6
     );
 
-
     dateInput.min =
       dateText(today);
 
-
     dateInput.max =
       dateText(maxDate);
-
 
     dateInput.value =
       dateText(today);
@@ -661,12 +419,10 @@
   }
 
 
-
   //========================================================
   // HTML Escape
   //========================================================
   function esc(value) {
-
 
     return String(
       value ?? ""
@@ -695,12 +451,10 @@
   }
 
 
-
   //========================================================
-  // CACHE 조회
+  // Cache 조회
   //========================================================
   async function getCache(date) {
-
 
     const url =
       BACKEND_URL +
@@ -710,16 +464,13 @@
       "&t=" +
       Date.now();
 
-
     const response =
       await fetch(
         url,
         {
-          cache:
-            "no-store"
+          cache: "no-store"
         }
       );
-
 
     if (!response.ok) {
 
@@ -730,11 +481,115 @@
 
     }
 
-
     return await response.json();
 
   }
 
+
+  //========================================================
+  // 정렬
+  //
+  // 1. O 먼저
+  // 2. X 나중
+  //
+  // O → 예정시간 ETT
+  // X → 계획시간 STT
+  //========================================================
+  function sortFlights(flights) {
+
+    flights.sort((a, b) => {
+
+      const aApplied =
+        String(
+          a.applied || ""
+        ).trim();
+
+      const bApplied =
+        String(
+          b.applied || ""
+        ).trim();
+
+
+      //====================================================
+      // O → X
+      //====================================================
+      if (
+        aApplied !==
+        bApplied
+      ) {
+
+        if (
+          aApplied === "O"
+        ) {
+          return -1;
+        }
+
+        if (
+          bApplied === "O"
+        ) {
+          return 1;
+        }
+
+        if (
+          aApplied === "X"
+        ) {
+          return -1;
+        }
+
+        if (
+          bApplied === "X"
+        ) {
+          return 1;
+        }
+
+        return aApplied.localeCompare(
+          bApplied
+        );
+
+      }
+
+
+      //====================================================
+      // O 그룹 → 예정시간
+      //====================================================
+      if (
+        aApplied === "O"
+      ) {
+
+        return String(
+          a.ett || ""
+        ).localeCompare(
+          String(
+            b.ett || ""
+          )
+        );
+
+      }
+
+
+      //====================================================
+      // X 그룹 → 계획시간
+      //====================================================
+      if (
+        aApplied === "X"
+      ) {
+
+        return String(
+          a.stt || ""
+        ).localeCompare(
+          String(
+            b.stt || ""
+          )
+        );
+
+      }
+
+
+      return 0;
+
+    });
+
+  }
 
 
   //========================================================
@@ -742,15 +597,23 @@
   //========================================================
   function renderFlights(data) {
 
-
     const flights =
       Array.isArray(
         data.flights
       )
-        ? data.flights
+        ? [...data.flights]
         : [];
 
 
+    //======================================================
+    // Excel과 동일한 정렬
+    //======================================================
+    sortFlights(flights);
+
+
+    //======================================================
+    // 날짜별 갱신시간
+    //======================================================
     updateTimeBox.textContent =
       data.updatedAt
         ? "최종 갱신: " +
@@ -759,7 +622,7 @@
 
 
     statusBox.textContent =
-      data.date +
+      (data.date || "") +
       " / " +
       flights.length +
       "건";
@@ -768,7 +631,6 @@
     if (
       flights.length === 0
     ) {
-
 
       resultBody.innerHTML = `
         <tr>
@@ -781,22 +643,72 @@
         </tr>
       `;
 
-
       return;
 
     }
-
 
 
     resultBody.innerHTML =
       flights
         .map(f => {
 
-
           const applied =
             String(
               f.applied || ""
+            ).trim();
+
+          const tof =
+            String(
+              f.tof || ""
+            ).trim();
+
+          const company =
+            String(
+              f.company || ""
+            ).trim();
+
+
+          //==================================================
+          // 조건부서식
+          //==================================================
+          const rowClasses = [];
+
+
+          // X → 회색 배경
+          if (
+            applied === "X"
+          ) {
+
+            rowClasses.push(
+              "flight-row-x"
             );
+
+          }
+
+
+          // I → 파란 글씨
+          if (
+            tof === "I"
+          ) {
+
+            rowClasses.push(
+              "flight-row-i"
+            );
+
+          }
+
+
+          // SK 자가용 → 빨간 글씨
+          if (
+            company ===
+            "에스케이텔레콤(주)-자가용"
+          ) {
+
+            rowClasses.push(
+              "flight-row-skt"
+            );
+
+          }
 
 
           const badgeClass =
@@ -807,106 +719,83 @@
 
           return `
 
-            <tr>
-
+            <tr class="${rowClasses.join(" ")}">
 
               <td>
-
                 <span
                   class="badge ${badgeClass}"
                 >
-
                   ${esc(applied)}
-
                 </span>
-
               </td>
-
 
               <td>
                 ${esc(f.stt)}
               </td>
 
-
               <td>
                 ${esc(f.ett)}
               </td>
-
 
               <td>
                 ${esc(f.reg)}
               </td>
 
-
               <td>
                 ${esc(f.type)}
               </td>
-
 
               <td>
                 ${esc(f.nation)}
               </td>
 
-
               <td>
                 ${esc(f.route)}
               </td>
-
 
               <td>
                 ${esc(f.aod)}
               </td>
 
-
               <td>
                 ${esc(f.tof)}
               </td>
-
 
               <td>
                 ${esc(f.purpose)}
               </td>
 
-
               <td>
                 ${esc(f.company)}
               </td>
-
 
               <td>
                 ${esc(f.crew)}
               </td>
 
-
               <td>
                 ${esc(f.pax)}
               </td>
-
 
               <td>
                 ${esc(f.baggage)}
               </td>
 
-
               <td class="remark">
                 ${esc(f.remark)}
               </td>
-
 
               <td>
                 ${esc(f.cancel)}
               </td>
 
-
               <td>
                 ${esc(f.stand)}
               </td>
 
-
               <td>
                 ${esc(f.att)}
               </td>
-
 
             </tr>
 
@@ -918,12 +807,10 @@
   }
 
 
-
   //========================================================
   // 조회
   //========================================================
   async function search() {
-
 
     const date =
       dateInput.value;
@@ -950,7 +837,6 @@
 
     try {
 
-
       const data =
         await getCache(date);
 
@@ -965,11 +851,13 @@
       }
 
 
+      //====================================================
+      // 캐시 없음
+      //====================================================
       if (
         data.status ===
         "NO_CACHE"
       ) {
-
 
         updateTimeBox.textContent =
           "최종 갱신: -";
@@ -980,20 +868,14 @@
 
 
         resultBody.innerHTML = `
-
           <tr>
-
             <td
               colspan="18"
               class="empty"
             >
-
               Mini PC의 다음 캐시 갱신을 기다려주세요.
-
             </td>
-
           </tr>
-
         `;
 
 
@@ -1007,8 +889,11 @@
 
     } catch (err) {
 
-
       console.error(err);
+
+
+      updateTimeBox.textContent =
+        "최종 갱신: -";
 
 
       statusBox.textContent =
@@ -1017,34 +902,25 @@
 
 
       resultBody.innerHTML = `
-
         <tr>
-
           <td
             colspan="18"
             class="empty"
           >
-
             캐시 데이터를 가져오지 못했습니다.
-
           </td>
-
         </tr>
-
       `;
 
 
     } finally {
 
-
       searchBtn.disabled =
         false;
-
 
     }
 
   }
-
 
 
   //========================================================
@@ -1056,11 +932,11 @@
   );
 
 
+  // 날짜 변경하면 바로 조회
   dateInput.addEventListener(
     "change",
     search
   );
-
 
 
   //========================================================
@@ -1068,9 +944,7 @@
   //========================================================
   setDateRange();
 
-
 </script>
-
 
 </body>
 
