@@ -433,23 +433,23 @@
       border: 1px solid transparent;
     }
 
-    /* Ferry */
+    /* Ferry → 회색 라벨 */
     .route-purpose.purpose-ferry {
-      background: #eeeafe;
-      border-color: #d8d0fb;
-      color: #5b4bb7 !important;
+      background: #eef1f4;
+      border-color: #d8dee6;
+      color: #475569 !important;
     }
 
-    /* 인원수송 */
+    /* 인원수송 → 구간 칼럼에서 잘 구분되는 차분한 파란 라벨 */
     .route-purpose.purpose-passenger {
-      background: #e4f5f1;
-      border-color: #c9e9e1;
-      color: #237467 !important;
+      background: #e8f1fb;
+      border-color: #cfdeee;
+      color: #1769aa !important;
     }
 
-    /* 그 외 운항목적 */
+    /* 그 외 운항목적 → 기본 중립 라벨 */
     .route-purpose.purpose-other {
-      background: #f1f5f9;
+      background: #f8fafc;
       border-color: #e2e8f0;
       color: #475569 !important;
     }
@@ -718,19 +718,19 @@
     }
 
     .detail-route-purpose.purpose-ferry {
-      background: #eeeafe;
-      border-color: #d8d0fb;
-      color: #5b4bb7;
+      background: #eef1f4;
+      border-color: #d8dee6;
+      color: #475569;
     }
 
     .detail-route-purpose.purpose-passenger {
-      background: #e4f5f1;
-      border-color: #c9e9e1;
-      color: #237467;
+      background: #e8f1fb;
+      border-color: #cfdeee;
+      color: #1769aa;
     }
 
     .detail-route-purpose.purpose-other {
-      background: #f1f5f9;
+      background: #f8fafc;
       border-color: #e2e8f0;
       color: #475569;
     }
@@ -1534,7 +1534,7 @@
             purpose
               ? `
                 <span class="route-purpose ${purposeBadgeClass(purpose)}">
-                  *${escapeHtml(purpose)}
+                  ${escapeHtml(purpose)}
                 </span>
               `
               : ''
@@ -1733,7 +1733,7 @@
             purpose
               ? `
                 <div class="detail-route-purpose ${purposeBadgeClass(purpose)}">
-                  *${escapeHtml(purpose)}
+                  ${escapeHtml(purpose)}
                 </div>
               `
               : ''
