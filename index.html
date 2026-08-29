@@ -916,6 +916,20 @@
 </head>
 
 <body>
+  <div id="authScreen" style="
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:#f3f6fb;
+    color:#475569;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',Arial,sans-serif;
+  ">
+    Gmail 계정 승인 확인 중...
+  </div>
+
+  <div id="appRoot" style="display:none;">
   <div class="app">
 
     <!-- =====================================================
@@ -1078,10 +1092,30 @@
        시작
        ========================================================= */
 
+    let SGBAC_APP_STARTED = false;
+    let SGBAC_REFRESH_TIMER = null;
+
     document.addEventListener('DOMContentLoaded', () => {
       initializeDateSelector();
-      loadFlights();
     });
+
+    function startSgbacAppAfterAuth() {
+      if (SGBAC_APP_STARTED) return;
+
+      SGBAC_APP_STARTED = true;
+
+      initializeDateSelector();
+      loadFlights();
+
+      /*
+        인증된 사용자에게만 30분 자동 새로고침 시작
+      */
+      if (!SGBAC_REFRESH_TIMER) {
+        SGBAC_REFRESH_TIMER = setInterval(() => {
+          loadFlights();
+        }, 30 * 60 * 1000);
+      }
+    }
 
     /* =========================================================
        오늘 날짜 KST
@@ -2139,9 +2173,24 @@
        페이지를 열어둔 상태에서도 최신 CACHE를 자동 반영.
        ========================================================= */
 
-    setInterval(() => {
-      loadFlights();
-    }, 30 * 60 * 1000);
+
+    /*
+      common-auth.js가 현재 SGBAC 앱 권한을 승인한 경우에만 시작.
+    */
+    (function waitForPortalAuth() {
+      if (window.CURRENT_PORTAL_USER) {
+        startSgbacAppAfterAuth();
+        return;
+      }
+
+      setTimeout(waitForPortalAuth, 200);
+    })();
+
   </script>
+
+  </div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://bomi87.github.io/SK-Aviation-portal/common-auth.js"></script>
 </body>
 </html>
