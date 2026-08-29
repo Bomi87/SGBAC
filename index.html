@@ -156,30 +156,30 @@
       font-size: 13px;
     }
 
-    .update-info {
+    .data-summary {
+      color: #111827;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .update-right {
+      margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
     }
 
-    .update-title {
-      font-weight: 700;
-      color: #111827;
-    }
-
-    .update-data {
+    .update-time-text {
       color: #475569;
+      font-weight: 400;
+      white-space: nowrap;
     }
 
     /* =========================================================
        상태
        ========================================================= */
-    .status-area {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
 
     .status-dot {
       width: 8px;
@@ -419,9 +419,39 @@
     }
 
     .route-purpose {
-      color: inherit;
-      font-weight: 500;
-      margin-top: 0;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 22px;
+      margin-top: 2px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    /* Ferry */
+    .route-purpose.purpose-ferry {
+      background: #eeeafe;
+      border-color: #d8d0fb;
+      color: #5b4bb7 !important;
+    }
+
+    /* 인원수송 */
+    .route-purpose.purpose-passenger {
+      background: #e4f5f1;
+      border-color: #c9e9e1;
+      color: #237467 !important;
+    }
+
+    /* 그 외 운항목적 */
+    .route-purpose.purpose-other {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569 !important;
     }
 
     /* =========================================================
@@ -674,8 +704,35 @@
     }
 
     .detail-route-purpose {
-      color: #1e293b;
-      font-weight: 400;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 22px;
+      margin-top: 2px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .detail-route-purpose.purpose-ferry {
+      background: #eeeafe;
+      border-color: #d8d0fb;
+      color: #5b4bb7;
+    }
+
+    .detail-route-purpose.purpose-passenger {
+      background: #e4f5f1;
+      border-color: #c9e9e1;
+      color: #237467;
+    }
+
+    .detail-route-purpose.purpose-other {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
     }
 
     /* =========================================================
@@ -757,8 +814,16 @@
         min-height: 40px;
       }
 
-      .update-info {
-        gap: 5px;
+      .topbar {
+        gap: 10px;
+      }
+
+      .data-summary {
+        font-size: 11px;
+      }
+
+      .update-time-text {
+        font-size: 11px;
       }
 
       .table-wrap {
@@ -824,15 +889,18 @@
       }
 
       .topbar {
-        align-items: flex-start;
+        align-items: center;
       }
 
-      .update-info {
-        flex-direction: column;
-        align-items: flex-start;
+      .data-summary {
+        min-width: 0;
       }
 
-      .status-area {
+      .update-right {
+        margin-left: auto;
+      }
+
+      .status-dot {
         display: none;
       }
     }
@@ -886,17 +954,15 @@
          갱신 정보
          ====================================================== -->
     <div class="topbar">
-      <div class="update-info">
-        <span class="update-title" id="updateText">
+      <div class="data-summary" id="dataText">
+        DATA 확인 중...
+      </div>
+
+      <div class="update-right">
+        <span class="update-time-text" id="updateText">
           최종 갱신: 확인 중...
         </span>
 
-        <span class="update-data" id="dataText">
-          DATA : -
-        </span>
-      </div>
-
-      <div class="status-area">
         <span class="status-dot loading" id="statusDot"></span>
       </div>
     </div>
@@ -1392,62 +1458,91 @@
     /* =========================================================
        구간 만들기
        ========================================================= */
-function buildRoute(f) {
-  const route = safe(f.route);
-  const purpose = safe(f.purpose);
-  const relativeAirport = safe(f.nation);
 
-  const tofRaw = String(f.tof || '').trim().toUpperCase();
-  const aodRaw = String(f.aod || '').trim();
+    function buildRoute(f) {
+      /*
+       * 백엔드에서 route가 BSL-GMP로 내려오는 경우.
+       */
+      const route = safe(f.route);
 
-  let tofText = '';
-  if (tofRaw === 'I') {
-    tofText = '국제선';
-  } else if (tofRaw === 'D') {
-    tofText = '국내선';
-  } else {
-    tofText = safe(f.tof);
-  }
+      /*
+       * 이미 백엔드에서 전체 문장을 내려주는 경우도 대응.
+       */
+      const purpose = cleanPurpose(f.purpose);
 
-  let aodText = '';
-  if (aodRaw === 'D' || aodRaw === '출발') {
-    aodText = '출발';
-  } else if (aodRaw === 'A' || aodRaw === '도착') {
-    aodText = '도착';
-  } else {
-    aodText = aodRaw;
-  }
+      /*
+       * 상대공항 기존 데이터의 route가 상대공항 정보를
+       * 이미 포함하면 그대로 사용.
+       *
+       * 예:
+       * BSL-GMP / 국제선 도착 (상대공항: 스위스)
+       */
+      let mainRoute = route;
 
-  const mainRoute = `${route} / ${tofText} ${aodText}`;
+      /*
+       * 혹시 route가 단순히 BSL-GMP만 오는 경우에는
+       * aod / tof를 이용해서 보완.
+       */
+      if (mainRoute && !mainRoute.includes('/')) {
+        const aod = String(f.aod || '')
+          .trim()
+          .toUpperCase();
 
-  return `
-    <div class="route-box">
-      <span class="route-main">
-        ${mainRoute}
-      </span>
+        const tof = String(f.tof || '').trim();
 
-      ${
-        relativeAirport
-          ? `
-            <span class="route-relative">
-              (상대공항: ${escapeHtml(relativeAirport)})
-            </span>
-          `
-          : ''
+        let arrivalDeparture = '';
+
+        if (aod === 'A' || aod === '도착') {
+          arrivalDeparture = '국제선 도착';
+        } else if (aod === 'D' || aod === '출발') {
+          arrivalDeparture = '국제선 출발';
+        }
+
+        if (arrivalDeparture) {
+          mainRoute =
+            route +
+            ' / ' +
+            arrivalDeparture;
+        }
       }
 
-      ${
-        purpose
-          ? `
-            <span class="route-purpose">
-              *${escapeHtml(purpose)}
-            </span>
-          `
-          : ''
-      }
-    </div>
-  `;
-}
+      /*
+       * route에 줄바꿈이 들어있는 경우 안전하게 처리.
+       */
+      mainRoute = escapeHtml(mainRoute)
+        .replace(/\n/g, '<br>');
+
+      const relativeAirport = safe(f.nation);
+
+      return `
+        <div class="route-box">
+          <span class="route-main">
+            ${mainRoute}
+          </span>
+
+          ${
+            relativeAirport
+              ? `
+                <span class="route-relative">
+                  (상대공항: ${escapeHtml(relativeAirport)})
+                </span>
+              `
+              : ''
+          }
+
+          ${
+            purpose
+              ? `
+                <span class="route-purpose ${purposeBadgeClass(purpose)}">
+                  *${escapeHtml(purpose)}
+                </span>
+              `
+              : ''
+          }
+        </div>
+      `;
+    }
+
     /* =========================================================
        팝업
        ========================================================= */
@@ -1589,62 +1684,64 @@ function buildRoute(f) {
        팝업 구간
        ========================================================= */
 
-function buildRouteForModal(f) {
-  const route = safe(f.route);
-  const purpose = safe(f.purpose);
-  const relativeAirport = safe(f.nation);
+    function buildRouteForModal(f) {
+      const route = safe(f.route);
+      const purpose = cleanPurpose(f.purpose);
 
-  const tofRaw = String(f.tof || '').trim().toUpperCase();
-  const aodRaw = String(f.aod || '').trim();
+      let mainRoute = route;
 
-  let tofText = '';
-  if (tofRaw === 'I') {
-    tofText = '국제선';
-  } else if (tofRaw === 'D') {
-    tofText = '국내선';
-  } else {
-    tofText = safe(f.tof);
-  }
+      if (mainRoute && !mainRoute.includes('/')) {
+        const aod = String(f.aod || '')
+          .trim()
+          .toUpperCase();
 
-  let aodText = '';
-  if (aodRaw === 'D' || aodRaw === '출발') {
-    aodText = '출발';
-  } else if (aodRaw === 'A' || aodRaw === '도착') {
-    aodText = '도착';
-  } else {
-    aodText = aodRaw;
-  }
+        let text = '';
 
-  const mainRoute = `${route} / ${tofText} ${aodText}`;
+        if (aod === 'A' || aod === '도착') {
+          text = '국제선 도착';
+        } else if (aod === 'D' || aod === '출발') {
+          text = '국제선 출발';
+        }
 
-  return `
-    <div class="detail-route">
-      <div class="detail-route-main">
-        ${escapeHtml(mainRoute)}
-      </div>
-
-      ${
-        relativeAirport
-          ? `
-            <div class="detail-route-relative">
-              (상대공항: ${escapeHtml(relativeAirport)})
-            </div>
-          `
-          : ''
+        if (text) {
+          mainRoute =
+            route +
+            ' / ' +
+            text;
+        }
       }
 
-      ${
-        purpose
-          ? `
-            <div class="detail-route-purpose">
-              *${escapeHtml(purpose)}
-            </div>
-          `
-          : ''
-      }
-    </div>
-  `;
-}
+      const relativeAirport = safe(f.nation);
+
+      return `
+        <div class="detail-route">
+          <div class="detail-route-main">
+            ${escapeHtml(mainRoute)}
+          </div>
+
+          ${
+            relativeAirport
+              ? `
+                <div class="detail-route-relative">
+                  (상대공항: ${escapeHtml(relativeAirport)})
+                </div>
+              `
+              : ''
+          }
+
+          ${
+            purpose
+              ? `
+                <div class="detail-route-purpose ${purposeBadgeClass(purpose)}">
+                  *${escapeHtml(purpose)}
+                </div>
+              `
+              : ''
+          }
+        </div>
+      `;
+    }
+
     /* =========================================================
        팝업 닫기
        ========================================================= */
@@ -1693,17 +1790,14 @@ function buildRouteForModal(f) {
         formatted = '-';
       }
 
-      const dayCode = formatDayCode(targetDate);
-
       updateText.textContent =
         '최종 갱신: ' + formatted;
 
       dataText.textContent =
-        'DATA : ' +
+        targetDate +
+        ' DATA ' +
         count +
-        '건 추출(' +
-        dayCode +
-        ')';
+        '건 추출';
     }
 
     /* =========================================================
@@ -1896,6 +1990,30 @@ function buildRouteForModal(f) {
       }
 
       return String(value);
+    }
+
+
+    /* =========================================================
+       운항목적 Badge
+       ========================================================= */
+
+    function purposeBadgeClass(value) {
+      const text = String(value || '')
+        .trim()
+        .toLowerCase();
+
+      if (text.includes('ferry')) {
+        return 'purpose-ferry';
+      }
+
+      if (
+        text.includes('인원수송') ||
+        text.includes('인원 수송')
+      ) {
+        return 'purpose-passenger';
+      }
+
+      return 'purpose-other';
     }
 
     /* =========================================================
