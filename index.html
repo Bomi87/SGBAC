@@ -87,14 +87,17 @@
     }
 
     .search-row {
-      display: grid;
-      grid-template-columns: minmax(220px, 1fr) 88px;
-      gap: 9px;
+      display: flex;
       align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      width: fit-content;
+      max-width: 100%;
     }
 
     .date-input {
-      width: 100%;
+      width: 220px;
+      flex: 0 0 220px;
       height: 40px;
       padding: 0 12px;
       border: 1px solid #cbd5e1;
@@ -112,6 +115,8 @@
     }
 
     .search-button {
+      width: 76px;
+      flex: 0 0 76px;
       height: 40px;
       border: 0;
       border-radius: 7px;
@@ -215,7 +220,7 @@
     }
 
     .col-time {
-      width: 125px;
+      width: 118px;
     }
 
     .col-aircraft {
@@ -223,11 +228,11 @@
     }
 
     .col-route {
-      width: 245px;
+      width: 205px;
     }
 
     .col-company {
-      width: 180px;
+      width: 165px;
     }
 
     .col-person {
@@ -235,7 +240,7 @@
     }
 
     .col-remark {
-      width: auto;
+      width: 430px;
     }
 
     .col-cancel {
@@ -275,11 +280,11 @@
     .data-table tbody td {
       border-right: 1px solid #e1e6eb;
       border-bottom: 1px solid #e1e6eb;
-      padding: 6px 8px;
+      padding: 5px 8px;
       vertical-align: top;
       color: #253247;
       font-weight: 500;
-      line-height: 1.35;
+      line-height: 1.32;
       word-break: keep-all;
       overflow-wrap: break-word;
     }
@@ -359,6 +364,11 @@
 
     .time-line {
       display: block;
+      font-weight: 500;
+    }
+
+    .time-line.expected-line {
+      font-weight: 800;
     }
 
     .time-label {
@@ -391,7 +401,8 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      line-height: 1.4;
+      gap: 2px;
+      line-height: 1.32;
     }
 
     .route-main {
@@ -405,8 +416,8 @@
 
     .route-purpose {
       color: inherit;
-      font-weight: 600;
-      margin-top: 2px;
+      font-weight: 500;
+      margin-top: 0;
     }
 
     /* =========================================================
@@ -437,12 +448,17 @@
     .remark-cell {
       text-align: left;
       white-space: pre-line;
-      line-height: 1.32;
+      line-height: 1.28;
       font-size: 12px;
       word-break: break-word;
+      padding-top: 3px !important;
+      padding-bottom: 4px !important;
     }
 
     .remark-text {
+      display: block;
+      margin: 0;
+      padding: 0;
       white-space: pre-line;
     }
 
@@ -709,8 +725,19 @@
       }
 
       .search-row {
-        grid-template-columns: minmax(0, 1fr) 76px;
+        display: flex;
+        width: 100%;
         gap: 7px;
+      }
+
+      .date-input {
+        width: auto;
+        flex: 1 1 auto;
+      }
+
+      .search-button {
+        width: 72px;
+        flex: 0 0 72px;
       }
 
       .date-input,
@@ -786,7 +813,7 @@
        ========================================================= */
     @media (max-width: 430px) {
       .search-row {
-        grid-template-columns: minmax(0, 1fr) 72px;
+        width: 100%;
       }
 
       .topbar {
@@ -1276,11 +1303,11 @@
           <!-- 시간 -->
           <td>
             <div class="time-box">
-              <span class="time-line">
+              <span class="time-line planned-line">
                 -계획: ${planned}
               </span>
 
-              <span class="time-line">
+              <span class="time-line expected-line">
                 -예정: ${expected}
               </span>
             </div>
