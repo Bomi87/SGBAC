@@ -21,6 +21,9 @@
       color: #111827;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Noto Sans KR", Arial, sans-serif;
+
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
@@ -461,6 +464,10 @@
       margin: 0;
       padding: 0;
       white-space: pre-line;
+      font-size: inherit;
+      line-height: inherit;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
 
@@ -770,7 +777,8 @@
       }
 
       .remark-cell {
-        font-size: 11px;
+        font-size: 12px;
+        line-height: 1.32;
       }
 
       .modal-backdrop {
