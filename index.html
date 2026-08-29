@@ -36,6 +36,10 @@
     }
 
 
+    /*======================================================
+      전체
+    ======================================================*/
+
     .container {
 
       max-width: 1800px;
@@ -57,7 +61,7 @@
 
 
     /*======================================================
-      검색
+      검색 영역
     ======================================================*/
 
     .search-box {
@@ -145,7 +149,7 @@
 
 
     /*======================================================
-      정보
+      정보 영역
     ======================================================*/
 
     .info-box {
@@ -188,7 +192,7 @@
 
 
     /*======================================================
-      테이블 영역
+      테이블
     ======================================================*/
 
     .table-wrap {
@@ -204,15 +208,14 @@
     }
 
 
-    /*
-     * 핵심
-     *
-     * 테이블을 무조건 1500px 이상으로 늘리지 않고
-     * 실제 내용에 맞게 폭을 잡는다.
-     *
-     * 화면보다 넓으면 가로 스크롤.
-     */
     table {
+
+      /*
+       * 기존처럼 min-width를 크게 잡지 않음.
+       *
+       * 데이터가 차지하는 만큼만 사용하고
+       * 화면보다 넓어질 경우에만 가로 스크롤.
+       */
 
       width: max-content;
 
@@ -299,9 +302,9 @@
     th.col-time,
     td.col-time {
 
-      width: 118px;
+      width: 125px;
 
-      min-width: 118px;
+      min-width: 125px;
 
     }
 
@@ -310,7 +313,9 @@
 
       white-space: pre-line;
 
-      line-height: 1.4;
+      line-height: 1.45;
+
+      text-align: center;
 
     }
 
@@ -322,9 +327,9 @@
     th.col-aircraft,
     td.col-aircraft {
 
-      width: 92px;
+      width: 90px;
 
-      min-width: 92px;
+      min-width: 90px;
 
     }
 
@@ -333,9 +338,11 @@
 
       white-space: pre-line;
 
-      line-height: 1.35;
+      line-height: 1.4;
 
-      font-weight: 700;
+      text-align: center;
+
+      font-weight: 600;
 
     }
 
@@ -347,9 +354,9 @@
     th.col-route,
     td.col-route {
 
-      width: 215px;
+      width: 220px;
 
-      min-width: 215px;
+      min-width: 190px;
 
     }
 
@@ -358,7 +365,7 @@
 
       white-space: pre-line;
 
-      line-height: 1.4;
+      line-height: 1.45;
 
       text-align: left;
 
@@ -372,9 +379,9 @@
     th.col-purpose,
     td.col-purpose {
 
-      width: 85px;
+      width: 82px;
 
-      min-width: 85px;
+      min-width: 70px;
 
     }
 
@@ -386,9 +393,18 @@
     th.col-company,
     td.col-company {
 
-      width: 155px;
+      width: 150px;
 
-      min-width: 120px;
+      min-width: 110px;
+
+    }
+
+
+    td.company {
+
+      white-space: normal;
+
+      line-height: 1.35;
 
     }
 
@@ -400,9 +416,9 @@
     th.col-people,
     td.col-people {
 
-      width: 112px;
+      width: 115px;
 
-      min-width: 112px;
+      min-width: 115px;
 
     }
 
@@ -411,7 +427,7 @@
 
       white-space: pre-line;
 
-      line-height: 1.4;
+      line-height: 1.45;
 
       text-align: left;
 
@@ -537,7 +553,7 @@
 
 
     /*======================================================
-      빈 결과
+      데이터 없음
     ======================================================*/
 
     .empty {
@@ -558,7 +574,7 @@
 
     /*
      * 신청여부 X
-     * → 행 전체 회색 배경
+     * → 행 전체 회색
      */
 
     .flight-row-x {
@@ -577,7 +593,7 @@
 
     /*
      * 국제선 I
-     * → 파란 글씨
+     * → 파란색 글씨
      */
 
     .flight-row-i {
@@ -609,6 +625,13 @@
 
 
     .flight-row-skt td {
+
+      color: #c62828 !important;
+
+    }
+
+
+    .flight-row-skt .badge {
 
       color: #c62828 !important;
 
@@ -694,6 +717,10 @@
 <div class="container">
 
 
+  <!--====================================================
+      제목
+  =====================================================-->
+
   <h1>
     SGBAC 예약현황
   </h1>
@@ -726,7 +753,7 @@
 
 
   <!--====================================================
-      정보
+      상태
   =====================================================-->
 
   <div class="info-box">
@@ -769,41 +796,51 @@
             신청여부
           </th>
 
+
           <th class="col-time">
             시간
           </th>
+
 
           <th class="col-aircraft">
             항공기
           </th>
 
+
           <th class="col-route">
             구간
           </th>
+
 
           <th class="col-purpose">
             운항목적
           </th>
 
+
           <th class="col-company">
             운항사
           </th>
+
 
           <th class="col-people">
             인원
           </th>
 
+
           <th class="col-remark">
             비고
           </th>
+
 
           <th class="col-cancel">
             취소여부
           </th>
 
+
           <th class="col-stand">
             주기장
           </th>
+
 
           <th class="col-actual">
             실제시간
@@ -832,7 +869,6 @@
 
     </table>
 
-
   </div>
 
 
@@ -849,7 +885,6 @@
 
   const BACKEND_URL =
     "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
-
 
 
   //========================================================
@@ -1004,6 +1039,20 @@
 
 
   //========================================================
+  // 문자열 정리
+  //========================================================
+
+  function cleanText(value) {
+
+    return String(
+      value ?? ""
+    ).trim();
+
+  }
+
+
+
+  //========================================================
   // 비고 정리
   //========================================================
 
@@ -1025,6 +1074,489 @@
         "\n\n"
       )
       .trim();
+
+  }
+
+
+
+  //========================================================
+  // 시간 정리
+  //
+  // 0710
+  // 07:10
+  // 07:10 KST
+  //
+  // 어떤 형태가 들어와도
+  //
+  // 07:10 KST
+  //
+  // 로 통일
+  //========================================================
+
+  function timeKST(value) {
+
+    let text =
+      cleanText(
+        value
+      );
+
+
+    if (!text) {
+
+      return "";
+
+    }
+
+
+    /*
+     * 이미 KST가 있는 경우
+     */
+
+    text =
+      text.replace(
+        /\s*KST\s*$/i,
+        ""
+      ).trim();
+
+
+    /*
+     * HH:MM 형태
+     */
+
+    if (
+      /^\d{1,2}:\d{2}$/.test(
+        text
+      )
+    ) {
+
+      const parts =
+        text.split(":");
+
+
+      return (
+        String(
+          parts[0]
+        ).padStart(
+          2,
+          "0"
+        ) +
+        ":" +
+        parts[1] +
+        " KST"
+      );
+
+    }
+
+
+    /*
+     * HHMM 형태
+     */
+
+    const digits =
+      text.replace(
+        /\D/g,
+        ""
+      );
+
+
+    if (
+      digits.length === 3
+    ) {
+
+      text =
+        "0" +
+        digits;
+
+    }
+
+    else if (
+      digits.length >= 4
+    ) {
+
+      text =
+        digits.substring(
+          0,
+          4
+        );
+
+    }
+
+
+    if (
+      /^\d{4}$/.test(
+        text
+      )
+    ) {
+
+      return (
+        text.substring(
+          0,
+          2
+        ) +
+        ":" +
+        text.substring(
+          2,
+          4
+        ) +
+        " KST"
+      );
+
+    }
+
+
+    /*
+     * 변환이 안 되는 경우
+     * 원래 값 뒤에 KST
+     */
+
+    return (
+      text +
+      " KST"
+    );
+
+  }
+
+
+
+  //========================================================
+  // 시간 표시
+  //
+  // -계획: 07:10 KST
+  // -예정: 07:30 KST
+  //========================================================
+
+  function makeTimeText(f) {
+
+    const stt =
+      timeKST(
+        f.stt
+      );
+
+
+    const ett =
+      timeKST(
+        f.ett
+      );
+
+
+    const lines = [];
+
+
+    if (stt) {
+
+      lines.push(
+        "-계획: " +
+        stt
+      );
+
+    }
+
+
+    if (ett) {
+
+      lines.push(
+        "-예정: " +
+        ett
+      );
+
+    }
+
+
+    return lines.join(
+      "\n"
+    );
+
+  }
+
+
+
+  //========================================================
+  // 항공기 표시
+  //
+  // HL8372
+  // (GLF6)
+  //========================================================
+
+  function makeAircraftText(f) {
+
+    const reg =
+      cleanText(
+        f.reg
+      );
+
+
+    const type =
+      cleanText(
+        f.type
+      );
+
+
+    const lines = [];
+
+
+    if (reg) {
+
+      lines.push(
+        reg
+      );
+
+    }
+
+
+    if (type) {
+
+      lines.push(
+        "(" +
+        type +
+        ")"
+      );
+
+    }
+
+
+    return lines.join(
+      "\n"
+    );
+
+  }
+
+
+
+  //========================================================
+  // 구간 표시
+  //
+  // BSL-GMP / 국제선 도착
+  // (상대공항: 스위스)
+  //
+  // 국내선이면
+  //
+  // GMP-JJU / 국내선 출발
+  // (상대공항: 대한민국)
+  //========================================================
+
+  function makeRouteText(f) {
+
+    const route =
+      cleanText(
+        f.route
+      );
+
+
+    const nation =
+      cleanText(
+        f.nation
+      );
+
+
+    const aod =
+      cleanText(
+        f.aod
+      );
+
+
+    const tof =
+      cleanText(
+        f.tof
+      ).toUpperCase();
+
+
+    let flightType =
+      "";
+
+
+    /*
+     * 국제선 I
+     * 그 외 국내선
+     */
+
+    if (
+      tof === "I"
+    ) {
+
+      flightType =
+        "국제선";
+
+    }
+
+    else {
+
+      flightType =
+        "국내선";
+
+    }
+
+
+    /*
+     * 출발 / 도착
+     */
+
+    let direction =
+      aod;
+
+
+    if (
+      aod === "D" ||
+      aod === "출발"
+    ) {
+
+      direction =
+        "출발";
+
+    }
+
+    else if (
+      aod === "A" ||
+      aod === "도착"
+    ) {
+
+      direction =
+        "도착";
+
+    }
+
+
+    /*
+     * 첫 번째 줄
+     */
+
+    let firstLine =
+      route;
+
+
+    if (
+      flightType ||
+      direction
+    ) {
+
+      const typeDirection =
+        [
+          flightType,
+          direction
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+
+      if (typeDirection) {
+
+        firstLine +=
+          " / " +
+          typeDirection;
+
+      }
+
+    }
+
+
+    /*
+     * 두 번째 줄
+     */
+
+    let secondLine =
+      "";
+
+
+    if (nation) {
+
+      secondLine =
+        "(상대공항: " +
+        nation +
+        ")";
+
+    }
+
+
+    if (
+      secondLine
+    ) {
+
+      return (
+        firstLine +
+        "\n" +
+        secondLine
+      );
+
+    }
+
+
+    return firstLine;
+
+  }
+
+
+
+  //========================================================
+  // 인원 표시
+  //
+  // -승무원 : 4
+  // -승객: 0
+  // -수화물: 10
+  //========================================================
+
+  function makePeopleText(f) {
+
+    const crew =
+      Number.isFinite(
+        Number(
+          f.crew
+        )
+      )
+        ? Number(
+            f.crew
+          )
+        : 0;
+
+
+    const pax =
+      Number.isFinite(
+        Number(
+          f.pax
+        )
+      )
+        ? Number(
+            f.pax
+          )
+        : 0;
+
+
+    const baggage =
+      Number.isFinite(
+        Number(
+          f.baggage
+        )
+      )
+        ? Number(
+            f.baggage
+          )
+        : 0;
+
+
+    return (
+      "-승무원 : " +
+      crew +
+      "\n" +
+      "-승객: " +
+      pax +
+      "\n" +
+      "-수화물: " +
+      baggage
+    );
+
+  }
+
+
+
+  //========================================================
+  // 실제시간
+  //
+  // 08:15 KST
+  //========================================================
+
+  function makeActualTime(f) {
+
+    return timeKST(
+      f.att
+    );
 
   }
 
@@ -1076,8 +1608,8 @@
   //========================================================
   // 정렬
   //
-  // O 먼저
-  // X 나중
+  // 1. O 먼저
+  // 2. X 나중
   //
   // O → 예정시간 ETT
   // X → 계획시간 STT
@@ -1089,15 +1621,15 @@
       (a, b) => {
 
         const aApplied =
-          String(
-            a.applied || ""
-          ).trim();
+          cleanText(
+            a.applied
+          ).toUpperCase();
 
 
         const bApplied =
-          String(
-            b.applied || ""
-          ).trim();
+          cleanText(
+            b.applied
+          ).toUpperCase();
 
 
         //==================================================
@@ -1160,12 +1692,9 @@
           aApplied === "O"
         ) {
 
-          return String(
-            a.ett || ""
-          ).localeCompare(
-            String(
-              b.ett || ""
-            )
+          return compareTime(
+            a.ett,
+            b.ett
           );
 
         }
@@ -1179,12 +1708,9 @@
           aApplied === "X"
         ) {
 
-          return String(
-            a.stt || ""
-          ).localeCompare(
-            String(
-              b.stt || ""
-            )
+          return compareTime(
+            a.stt,
+            b.stt
           );
 
         }
@@ -1193,6 +1719,32 @@
         return 0;
 
       }
+    );
+
+  }
+
+
+
+  //========================================================
+  // 시간 비교
+  //========================================================
+
+  function compareTime(a, b) {
+
+    const aText =
+      cleanText(
+        a
+      );
+
+
+    const bText =
+      cleanText(
+        b
+      );
+
+
+    return aText.localeCompare(
+      bText
     );
 
   }
@@ -1277,23 +1829,22 @@
         .map(
           f => {
 
-
             const applied =
-              String(
-                f.applied || ""
-              ).trim().toUpperCase();
+              cleanText(
+                f.applied
+              ).toUpperCase();
 
 
             const tof =
-              String(
-                f.tof || ""
-              ).trim().toUpperCase();
+              cleanText(
+                f.tof
+              ).toUpperCase();
 
 
             const company =
-              String(
-                f.company || ""
-              ).trim();
+              cleanText(
+                f.company
+              );
 
 
             const remark =
@@ -1303,7 +1854,7 @@
 
 
             //================================================
-            // 조건부서식
+            // 조건부서식 클래스
             //================================================
 
             const rowClasses = [];
@@ -1356,13 +1907,47 @@
 
 
             //================================================
-            // 신청여부 Badge
+            // 신청여부 배지
             //================================================
 
             const badgeClass =
               applied === "O"
                 ? "badge-o"
                 : "badge-x";
+
+
+            //================================================
+            // 표시용 데이터 생성
+            //================================================
+
+            const timeText =
+              makeTimeText(
+                f
+              );
+
+
+            const aircraftText =
+              makeAircraftText(
+                f
+              );
+
+
+            const routeText =
+              makeRouteText(
+                f
+              );
+
+
+            const peopleText =
+              makePeopleText(
+                f
+              );
+
+
+            const actualText =
+              makeActualTime(
+                f
+              );
 
 
             //================================================
@@ -1376,7 +1961,9 @@
               >
 
 
-                <!-- 신청여부 -->
+                <!--========================================
+                    신청여부
+                =========================================-->
 
                 <td class="col-applied">
 
@@ -1389,92 +1976,132 @@
                 </td>
 
 
-                <!-- 시간 -->
+                <!--========================================
+                    시간
+                =========================================-->
 
-                <td class="col-time time">
+                <td
+                  class="col-time time"
+                >
 
-                  ${esc(f.time)}
-
-                </td>
-
-
-                <!-- 항공기 -->
-
-                <td class="col-aircraft aircraft">
-
-                  ${esc(f.aircraft)}
+                  ${esc(timeText)}
 
                 </td>
 
 
-                <!-- 구간 -->
+                <!--========================================
+                    항공기
+                =========================================-->
 
-                <td class="col-route route">
+                <td
+                  class="col-aircraft aircraft"
+                >
 
-                  ${esc(f.route)}
+                  ${esc(aircraftText)}
 
                 </td>
 
 
-                <!-- 운항목적 -->
+                <!--========================================
+                    구간
+                =========================================-->
 
-                <td class="col-purpose">
+                <td
+                  class="col-route route"
+                >
+
+                  ${esc(routeText)}
+
+                </td>
+
+
+                <!--========================================
+                    운항목적
+                =========================================-->
+
+                <td
+                  class="col-purpose"
+                >
 
                   ${esc(f.purpose)}
 
                 </td>
 
 
-                <!-- 운항사 -->
+                <!--========================================
+                    운항사
+                =========================================-->
 
-                <td class="col-company">
+                <td
+                  class="col-company company"
+                >
 
                   ${esc(f.company)}
 
                 </td>
 
 
-                <!-- 인원 -->
+                <!--========================================
+                    인원
+                =========================================-->
 
-                <td class="col-people people">
+                <td
+                  class="col-people people"
+                >
 
-                  ${esc(f.people)}
+                  ${esc(peopleText)}
 
                 </td>
 
 
-                <!-- 비고 -->
+                <!--========================================
+                    비고
+                =========================================-->
 
-                <td class="col-remark remark">
+                <td
+                  class="col-remark remark"
+                >
 
                   ${esc(remark)}
 
                 </td>
 
 
-                <!-- 취소여부 -->
+                <!--========================================
+                    취소여부
+                =========================================-->
 
-                <td class="col-cancel">
+                <td
+                  class="col-cancel"
+                >
 
                   ${esc(f.cancel)}
 
                 </td>
 
 
-                <!-- 주기장 -->
+                <!--========================================
+                    주기장
+                =========================================-->
 
-                <td class="col-stand">
+                <td
+                  class="col-stand"
+                >
 
                   ${esc(f.stand)}
 
                 </td>
 
 
-                <!-- 실제시간 -->
+                <!--========================================
+                    실제시간
+                =========================================-->
 
-                <td class="col-actual actual-time">
+                <td
+                  class="col-actual actual-time"
+                >
 
-                  ${esc(f.att)}
+                  ${esc(actualText)}
 
                 </td>
 
@@ -1576,6 +2203,10 @@
       }
 
 
+      //====================================================
+      // 정상 표시
+      //====================================================
+
       renderFlights(
         data
       );
@@ -1634,13 +2265,11 @@
   );
 
 
-
   //========================================================
   // 최초 실행
   //========================================================
 
   setDateRange();
-
 
 </script>
 
