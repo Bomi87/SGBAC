@@ -411,7 +411,8 @@
 
     .route-relative {
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 400;
+      color: #64748b;
     }
 
     .route-purpose {
@@ -660,9 +661,14 @@
       font-weight: 700;
     }
 
+    .detail-route-relative {
+      color: #64748b;
+      font-weight: 400;
+    }
+
     .detail-route-purpose {
       color: #1e293b;
-      font-weight: 600;
+      font-weight: 400;
     }
 
     /* =========================================================
@@ -683,13 +689,6 @@
       border-radius: 10px;
       padding: 10px 12px;
       margin-top: 2px;
-    }
-
-    .detail-remark-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #475569;
-      margin-bottom: 6px;
     }
 
     .detail-remark {
@@ -1439,11 +1438,23 @@
       mainRoute = escapeHtml(mainRoute)
         .replace(/\n/g, '<br>');
 
+      const relativeAirport = safe(f.nation);
+
       return `
         <div class="route-box">
           <span class="route-main">
             ${mainRoute}
           </span>
+
+          ${
+            relativeAirport
+              ? `
+                <span class="route-relative">
+                  (상대공항: ${escapeHtml(relativeAirport)})
+                </span>
+              `
+              : ''
+          }
 
           ${
             purpose
@@ -1583,11 +1594,7 @@
 
           <div class="detail-value">
             <div class="detail-remark-wrap">
-              <div class="detail-remark-title">
-                예약 참고사항
-              </div>
-
-              <div class="detail-remark">
+<div class="detail-remark">
                 ${escapeHtml(remark || '비고 없음')}
               </div>
             </div>
@@ -1630,11 +1637,23 @@
         }
       }
 
+      const relativeAirport = safe(f.nation);
+
       return `
         <div class="detail-route">
           <div class="detail-route-main">
             ${escapeHtml(mainRoute)}
           </div>
+
+          ${
+            relativeAirport
+              ? `
+                <div class="detail-route-relative">
+                  (상대공항: ${escapeHtml(relativeAirport)})
+                </div>
+              `
+              : ''
+          }
 
           ${
             purpose
