@@ -1,994 +1,408 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-/>
-
-<title>SGBAC 예약 현황</title>
-
-<style>
-
-/* =========================================================
-   기본
-========================================================= */
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: #f4f6f8;
-  color: #111827;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Noto Sans KR",
-    Arial,
-    sans-serif;
-}
-
-body {
-  min-height: 100vh;
-}
-
-button {
-  font-family: inherit;
-}
-
-
-/* =========================================================
-   전체 컨테이너
-========================================================= */
-
-.app {
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 12px 14px 30px;
-}
-
-
-/* =========================================================
-   상단 영역
-========================================================= */
-
-.topbar {
-  background: #ffffff;
-  border: 1px solid #dfe3e8;
-  border-radius: 8px;
-  min-height: 42px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 7px 13px;
-  margin-bottom: 10px;
-
-  font-size: 13px;
-}
-
-.update-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.update-title {
-  font-weight: 700;
-  color: #111827;
-}
-
-.update-data {
-  color: #475569;
-}
-
-
-/* =========================================================
-   상태
-========================================================= */
-
-.status-area {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>SGBAC 예약현황</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f5f7fa;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-}
+    h1 {
+      margin: 0 0 18px;
+      font-size: 24px;
+    }
 
-.status-dot.loading {
-  background: #f59e0b;
-}
+    .search-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
 
-.status-dot.error {
-  background: #ef4444;
-}
+      background: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
 
+      border: 1px solid #ddd;
+    }
 
-/* =========================================================
-   테이블
-========================================================= */
+    .search-box label {
+      font-weight: 700;
+    }
 
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
+    input[type="date"] {
+      height: 42px;
+      padding: 0 12px;
 
-  background: #ffffff;
+      font-size: 16px;
 
-  border: 1px solid #d8dee6;
-  border-radius: 8px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+    }
 
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.03);
-}
+    button {
+      height: 42px;
+      padding: 0 20px;
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+      font-size: 15px;
+      font-weight: 700;
 
-  font-size: 13px;
-}
+      border: 0;
+      border-radius: 6px;
 
+      cursor: pointer;
 
-/* =========================================================
-   칼럼 너비
-========================================================= */
+      background: #2563eb;
+      color: #fff;
+    }
 
-.col-apply {
-  width: 62px;
-}
+    button:hover {
+      opacity: 0.92;
+    }
 
-.col-time {
-  width: 125px;
-}
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-.col-aircraft {
-  width: 100px;
-}
+    .info-box {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
 
-.col-route {
-  width: 245px;
-}
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
 
-.col-company {
-  width: 180px;
-}
+      padding: 10px 14px;
+      margin-bottom: 12px;
 
-.col-person {
-  width: 120px;
-}
+      font-size: 14px;
+    }
 
-.col-remark {
-  width: auto;
-}
+    .update-time {
+      font-weight: 700;
+    }
 
-.col-cancel {
-  width: 58px;
-}
+    .status {
+      color: #555;
+    }
 
-.col-stand {
-  width: 62px;
-}
+    .table-wrap {
+      overflow-x: auto;
 
-.col-actual {
-  width: 95px;
-}
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
 
+    table {
+      width: 100%;
+      min-width: 2100px;
 
-/* =========================================================
-   헤더
-========================================================= */
+      border-collapse: collapse;
 
-.data-table thead th {
-  background: #dfeaf4;
+      font-size: 13px;
+    }
 
-  color: #111827;
+    th,
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #eee;
 
-  font-weight: 700;
+      padding: 7px 8px;
 
-  text-align: center;
+      text-align: center;
 
-  height: 34px;
+      white-space: nowrap;
+    }
 
-  padding: 7px 5px;
+    thead th {
+      position: sticky;
+      top: 0;
 
-  border-right: 1px solid #cfd8e3;
-  border-bottom: 1px solid #cfd8e3;
+      background: #dce6f1;
 
-  white-space: nowrap;
-}
+      font-weight: 700;
 
-.data-table thead th:last-child {
-  border-right: 0;
-}
+      z-index: 2;
 
+      vertical-align: middle;
+    }
 
-/* =========================================================
-   데이터 셀
-========================================================= */
+    /*======================================================
+      데이터 영역
+    ======================================================*/
 
-.data-table tbody td {
-  border-right: 1px solid #e1e6eb;
-  border-bottom: 1px solid #e1e6eb;
+    tbody td {
+      padding-top: 6px;
+      padding-bottom: 6px;
 
-  padding: 10px 8px;
+      /*
+        비고가 길어서 행 높이가 커져도
+        다른 셀들이 가운데 붕 뜨지 않도록
+      */
+      vertical-align: top;
+    }
 
-  vertical-align: middle;
+    tbody tr {
+      height: auto;
+    }
 
-  color: #0066cc;
+    /*======================================================
+      비고
+    ======================================================*/
 
-  font-weight: 500;
+    td.remark {
+      min-width: 560px;
+      width: 560px;
+      max-width: 760px;
 
-  line-height: 1.45;
+      /*
+        원래 줄바꿈은 살리고
+        불필요한 연속 공백은 그대로 늘리지 않음
+      */
+      white-space: pre-line;
 
-  word-break: keep-all;
+      word-break: break-word;
+      overflow-wrap: anywhere;
 
-  overflow-wrap: break-word;
-}
+      text-align: left;
+      vertical-align: top;
 
-.data-table tbody tr:last-child td {
-  border-bottom: 0;
-}
+      line-height: 1.3;
 
-.data-table tbody td:last-child {
-  border-right: 0;
-}
+      padding: 6px 9px;
+    }
 
+    /*======================================================
+      신청 여부 Badge
+    ======================================================*/
 
-/* =========================================================
-   가운데 정렬 칼럼
-========================================================= */
+    .badge {
+      display: inline-flex;
 
-.apply-cell,
-.aircraft-cell,
-.company-cell,
-.person-cell,
-.cancel-cell,
-.stand-cell,
-.actual-cell {
-  text-align: center;
-}
+      min-width: 32px;
+      height: 26px;
 
+      align-items: center;
+      justify-content: center;
 
-/* =========================================================
-   신청여부 버튼
-========================================================= */
+      border-radius: 6px;
 
-.apply-button {
-  border: 0;
+      font-weight: 700;
+    }
 
-  min-width: 29px;
-  height: 25px;
+    .badge-o {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-  border-radius: 7px;
+    .badge-x {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-  font-size: 13px;
-  font-weight: 800;
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: #666;
+    }
 
-  cursor: pointer;
+    /*======================================================
+      Excel 조건부서식 반영
+    ======================================================*/
 
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease;
-}
+    /* 신청여부 X → 회색 배경 */
+    .flight-row-x {
+      background: #d9d9d9;
+    }
 
-.apply-button:hover {
-  transform: translateY(-1px);
-}
+    .flight-row-x td {
+      background: transparent;
+    }
 
-.apply-button:active {
-  transform: translateY(0);
-}
+    /* 국제선 I → 파란 글씨 */
+    .flight-row-i {
+      color: #0066cc;
+    }
 
+    .flight-row-i td {
+      color: #0066cc;
+    }
 
-/* O */
+    /* SK 자가용 → 부드러운 딥레드 */
+    .flight-row-skt {
+      color: #c62828 !important;
+      font-weight: 600;
+    }
 
-.apply-button.apply-o {
-  background: #dcfce7;
-  color: #15803d;
-}
+    .flight-row-skt td {
+      color: #c62828 !important;
+    }
 
-.apply-button.apply-o:hover {
-  box-shadow: 0 2px 7px rgba(21, 128, 61, 0.18);
-}
+    .flight-row-skt .badge {
+      color: #c62828 !important;
+    }
 
+    /* SK + 국제선이면 빨간색 우선 */
+    .flight-row-i.flight-row-skt td {
+      color: #c62828 !important;
+    }
 
-/* X */
+    /*======================================================
+      모바일
+    ======================================================*/
 
-.apply-button.apply-x {
-  background: #fee2e2;
-  color: #dc2626;
-}
+    @media (max-width: 700px) {
 
-.apply-button.apply-x:hover {
-  box-shadow: 0 2px 7px rgba(220, 38, 38, 0.18);
-}
+      .container {
+        padding: 12px;
+      }
 
+      h1 {
+        font-size: 20px;
+      }
 
-/* =========================================================
-   시간
-========================================================= */
+      .search-box {
+        align-items: stretch;
+      }
 
-.time-box {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+      input[type="date"],
+      button {
+        width: 100%;
+      }
 
-  white-space: nowrap;
-}
+      /*
+        모바일도 PC와 동일하게 상단 정렬
+      */
+      tbody td {
+        vertical-align: top;
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
 
-.time-line {
-  display: block;
-}
+      td.remark {
+        min-width: 420px;
+        width: 420px;
 
-.time-label {
-  font-weight: 700;
-}
+        vertical-align: top;
 
+        line-height: 1.3;
+        padding: 6px 8px;
+      }
 
-/* =========================================================
-   항공기
-========================================================= */
+    }
 
-.aircraft-box {
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-
-  line-height: 1.35;
-
-  white-space: nowrap;
-}
-
-.aircraft-reg {
-  font-weight: 700;
-}
-
-.aircraft-type {
-  font-weight: 500;
-}
-
-
-/* =========================================================
-   구간
-========================================================= */
-
-.route-box {
-  display: flex;
-  flex-direction: column;
-
-  align-items: flex-start;
-
-  line-height: 1.4;
-}
-
-.route-main {
-  font-weight: 700;
-}
-
-.route-relative {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.route-purpose {
-  /*
-    중요:
-    운항목적도 다른 데이터와 동일한 색상.
-    보라색 사용하지 않음.
-  */
-
-  color: inherit;
-
-  font-weight: 600;
-
-  margin-top: 2px;
-}
-
-
-/* =========================================================
-   운항사
-========================================================= */
-
-.company-box {
-  line-height: 1.4;
-}
-
-
-/* =========================================================
-   인원
-========================================================= */
-
-.person-box {
-  display: flex;
-  flex-direction: column;
-
-  align-items: flex-start;
-
-  line-height: 1.45;
-
-  white-space: nowrap;
-}
-
-.person-line {
-  display: block;
-}
-
-
-/* =========================================================
-   비고
-========================================================= */
-
-.remark-cell {
-  text-align: left;
-
-  white-space: pre-line;
-
-  line-height: 1.45;
-
-  font-size: 12px;
-
-  word-break: break-word;
-}
-
-.remark-text {
-  white-space: pre-line;
-}
-
-
-/* =========================================================
-   취소
-========================================================= */
-
-.cancel-y {
-  color: #dc2626 !important;
-  font-weight: 800 !important;
-}
-
-.cancel-n {
-  color: #0066cc;
-}
-
-
-/* =========================================================
-   실제시간
-========================================================= */
-
-.actual-cell {
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   빈 데이터
-========================================================= */
-
-.empty-row {
-  padding: 45px 20px !important;
-
-  text-align: center !important;
-
-  color: #64748b !important;
-
-  font-weight: 500 !important;
-}
-
-
-/* =========================================================
-   로딩
-========================================================= */
-
-.loading-box {
-  padding: 50px 20px;
-
-  text-align: center;
-
-  color: #64748b;
-
-  font-size: 14px;
-}
-
-
-/* =========================================================
-   팝업 배경
-========================================================= */
-
-.modal-backdrop {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(15, 23, 42, 0.48);
-
-  display: none;
-
-  align-items: center;
-  justify-content: center;
-
-  z-index: 9999;
-
-  padding: 18px;
-}
-
-.modal-backdrop.show {
-  display: flex;
-}
-
-
-/* =========================================================
-   팝업
-========================================================= */
-
-.modal {
-  width: min(620px, 100%);
-
-  max-height: calc(100vh - 36px);
-
-  overflow: hidden;
-
-  background: #ffffff;
-
-  border-radius: 14px;
-
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.25);
-
-  display: flex;
-  flex-direction: column;
-}
-
-
-/* =========================================================
-   팝업 헤더
-========================================================= */
-
-.modal-header {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 16px 18px;
-
-  border-bottom: 1px solid #e5e7eb;
-
-  background: #ffffff;
-}
-
-.modal-title {
-  font-size: 18px;
-
-  font-weight: 800;
-
-  color: #111827;
-}
-
-.modal-close {
-  width: 34px;
-  height: 34px;
-
-  border: 0;
-
-  border-radius: 8px;
-
-  background: #f1f5f9;
-
-  color: #334155;
-
-  font-size: 19px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-.modal-close:hover {
-  background: #e2e8f0;
-}
-
-
-/* =========================================================
-   팝업 내용
-========================================================= */
-
-.modal-body {
-  overflow-y: auto;
-
-  padding: 4px 18px 18px;
-}
-
-
-/* =========================================================
-   팝업 정보
-========================================================= */
-
-.detail-row {
-  display: grid;
-
-  grid-template-columns: 72px minmax(0, 1fr);
-
-  gap: 14px;
-
-  padding: 14px 0;
-
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.detail-row:last-child {
-  border-bottom: 0;
-}
-
-.detail-label {
-  color: #64748b;
-
-  font-size: 13px;
-
-  font-weight: 700;
-}
-
-.detail-value {
-  color: #1e293b;
-
-  font-size: 14px;
-
-  line-height: 1.55;
-
-  min-width: 0;
-
-  word-break: keep-all;
-
-  overflow-wrap: anywhere;
-}
-
-
-/* =========================================================
-   팝업 시간
-========================================================= */
-
-.detail-time {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-
-/* =========================================================
-   팝업 항공기
-========================================================= */
-
-.detail-aircraft {
-  display: flex;
-  flex-direction: column;
-
-  gap: 1px;
-}
-
-
-/* =========================================================
-   팝업 구간
-========================================================= */
-
-.detail-route {
-  display: flex;
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.detail-route-main {
-  font-weight: 700;
-}
-
-
-/*
-  운항목적 역시 일반 텍스트.
-  별도의 보라색 없음.
-*/
-
-.detail-route-purpose {
-  color: #1e293b;
-  font-weight: 600;
-}
-
-
-/* =========================================================
-   팝업 인원
-========================================================= */
-
-.detail-person {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-
-/* =========================================================
-   팝업 비고
-========================================================= */
-
-.detail-remark-wrap {
-  background: #f8fafc;
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 10px;
-
-  padding: 14px;
-
-  margin-top: 2px;
-}
-
-.detail-remark-title {
-  font-size: 13px;
-
-  font-weight: 800;
-
-  color: #475569;
-
-  margin-bottom: 9px;
-}
-
-.detail-remark {
-  white-space: pre-line;
-
-  color: #334155;
-
-  font-size: 13px;
-
-  line-height: 1.6;
-
-  word-break: break-word;
-}
-
-
-/* =========================================================
-   모바일
-========================================================= */
-
-@media (max-width: 800px) {
-
-  .app {
-    padding: 8px 6px 20px;
-  }
-
-  .topbar {
-    font-size: 11px;
-
-    padding: 8px 9px;
-
-    min-height: 40px;
-  }
-
-  .update-info {
-    gap: 5px;
-  }
-
-  /*
-    모바일에서는 테이블을 억지로 화면에 맞추지 않고
-    필요한 최소 너비를 유지.
-  */
-
-  .table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .data-table {
-    min-width: 1280px;
-
-    font-size: 12px;
-  }
-
-  .data-table tbody td {
-    padding: 9px 7px;
-  }
-
-  .remark-cell {
-    font-size: 11px;
-  }
-
-  .modal-backdrop {
-    padding: 0;
-  }
-
-  .modal {
-    width: 100%;
-
-    height: 100%;
-
-    max-height: 100vh;
-
-    border-radius: 0;
-  }
-
-  .modal-header {
-    padding:
-      14px 16px;
-  }
-
-  .modal-body {
-    padding:
-      3px 16px 18px;
-  }
-
-  .detail-row {
-    grid-template-columns:
-      64px minmax(0, 1fr);
-
-    gap: 10px;
-
-    padding: 13px 0;
-  }
-
-  .detail-label {
-    font-size: 12px;
-  }
-
-  .detail-value {
-    font-size: 13px;
-  }
-
-}
-
-
-/* =========================================================
-   아주 작은 모바일
-========================================================= */
-
-@media (max-width: 430px) {
-
-  .topbar {
-    align-items: flex-start;
-  }
-
-  .update-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .status-area {
-    display: none;
-  }
-
-}
-
-
-/* =========================================================
-   선택 방지
-========================================================= */
-
-.apply-button,
-.modal-close {
-  -webkit-tap-highlight-color: transparent;
-}
-
-</style>
+  </style>
 </head>
 
 
 <body>
 
-<div class="app">
+<div class="container">
+
+  <h1>SGBAC 예약현황</h1>
+
+  <div class="search-box">
+
+    <label for="dateInput">
+      조회일
+    </label>
+
+    <input
+      id="dateInput"
+      type="date"
+    >
+
+    <button id="searchBtn">
+      조회
+    </button>
+
+  </div>
 
 
-  <!-- =====================================================
-       상단
-  ====================================================== -->
+  <div class="info-box">
 
-  <div class="topbar">
-
-    <div class="update-info">
-
-      <span
-        class="update-title"
-        id="updateText"
-      >
-        최종 갱신: 확인 중...
-      </span>
-
-      <span
-        class="update-data"
-        id="dataText"
-      >
-        DATA : -
-      </span>
-
+    <div
+      id="updateTime"
+      class="update-time"
+    >
+      최종 갱신: -
     </div>
 
-
-    <div class="status-area">
-
-      <span
-        class="status-dot loading"
-        id="statusDot"
-      ></span>
-
+    <div
+      id="status"
+      class="status"
+    >
+      날짜를 선택한 후 조회 버튼을 눌러주세요.
     </div>
 
   </div>
 
 
-
-  <!-- =====================================================
-       테이블
-  ====================================================== -->
-
   <div class="table-wrap">
 
-    <table class="data-table">
-
-      <colgroup>
-
-        <col class="col-apply">
-        <col class="col-time">
-        <col class="col-aircraft">
-        <col class="col-route">
-        <col class="col-company">
-        <col class="col-person">
-        <col class="col-remark">
-        <col class="col-cancel">
-        <col class="col-stand">
-        <col class="col-actual">
-
-      </colgroup>
-
+    <table>
 
       <thead>
 
         <tr>
-
           <th>신청여부</th>
-
-          <th>시간</th>
-
-          <th>항공기</th>
-
+          <th>계획시간</th>
+          <th>예정시간</th>
+          <th>등록기호</th>
+          <th>기종</th>
+          <th>국가</th>
           <th>구간</th>
-
+          <th>출도착</th>
+          <th>국내/국제</th>
+          <th>운항목적</th>
           <th>운항사</th>
-
-          <th>인원</th>
-
+          <th>승무원</th>
+          <th>승객</th>
+          <th>수하물</th>
           <th>비고</th>
-
           <th>취소여부</th>
-
           <th>주기장</th>
-
           <th>실제시간</th>
-
         </tr>
 
       </thead>
 
 
-      <tbody id="flightBody">
+      <tbody id="resultBody">
 
         <tr>
 
           <td
-            colspan="10"
-            class="loading-box"
+            colspan="18"
+            class="empty"
           >
-            데이터 조회 중...
+            조회 결과가 없습니다.
           </td>
 
         </tr>
@@ -1002,1971 +416,684 @@ button {
 </div>
 
 
-
-<!-- =======================================================
-     상세 팝업
-======================================================== -->
-
-<div
-  class="modal-backdrop"
-  id="detailModal"
->
-
-  <div
-    class="modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalTitle"
-  >
-
-
-    <div class="modal-header">
-
-      <div
-        class="modal-title"
-        id="modalTitle"
-      >
-        예약 상세
-      </div>
-
-
-      <button
-        type="button"
-        class="modal-close"
-        id="modalClose"
-        aria-label="닫기"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div
-      class="modal-body"
-      id="modalBody"
-    >
-
-    </div>
-
-  </div>
-
-</div>
-
-
-
 <script>
 
-/* =========================================================
-   설정
-========================================================= */
+  //========================================================
+  // Apps Script Backend
+  //========================================================
+
+  const BACKEND_URL =
+    "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
 
 
-/*
-  ★★★ 중요 ★★★
+  const dateInput =
+    document.getElementById("dateInput");
 
-  Apps Script 웹앱 배포 URL을 넣어주세요.
+  const searchBtn =
+    document.getElementById("searchBtn");
 
-  예:
-  https://script.google.com/macros/s/XXXXXXXXXXXX/exec
-*/
+  const statusBox =
+    document.getElementById("status");
 
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec';
+  const updateTimeBox =
+    document.getElementById("updateTime");
 
-
-/*
-  조회 날짜.
-
-  기본값:
-  오늘 날짜
-
-  URL에서 ?date=2026-08-29
-  형식으로 들어오면 해당 날짜 사용.
-*/
-
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-let targetDate =
-  params.get('date') || getTodayKST();
+  const resultBody =
+    document.getElementById("resultBody");
 
 
-/* =========================================================
-   DOM
-========================================================= */
+  //========================================================
+  // Date → YYYY-MM-DD
+  //========================================================
 
-const flightBody =
-  document.getElementById(
-    'flightBody'
-  );
+  function dateText(date) {
 
-const updateText =
-  document.getElementById(
-    'updateText'
-  );
+    const yyyy =
+      date.getFullYear();
 
-const dataText =
-  document.getElementById(
-    'dataText'
-  );
+    const mm =
+      String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
 
-const statusDot =
-  document.getElementById(
-    'statusDot'
-  );
+    const dd =
+      String(
+        date.getDate()
+      ).padStart(2, "0");
 
-const detailModal =
-  document.getElementById(
-    'detailModal'
-  );
-
-const modalBody =
-  document.getElementById(
-    'modalBody'
-  );
-
-const modalClose =
-  document.getElementById(
-    'modalClose'
-  );
-
-
-/* =========================================================
-   시작
-========================================================= */
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-
-    loadFlights();
+    return (
+      yyyy +
+      "-" +
+      mm +
+      "-" +
+      dd
+    );
 
   }
-);
 
 
-/* =========================================================
-   오늘 날짜 KST
-========================================================= */
+  //========================================================
+  // TODAY ~ TODAY+6
+  //========================================================
 
-function getTodayKST() {
+  function setDateRange() {
 
-  const now =
-    new Date();
+    const today =
+      new Date();
 
-  return new Intl.DateTimeFormat(
-    'en-CA',
-    {
-      timeZone: 'Asia/Seoul',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }
-  ).format(now);
+    const maxDate =
+      new Date(today);
 
-}
+    maxDate.setDate(
+      today.getDate() + 6
+    );
 
+    dateInput.min =
+      dateText(today);
 
-/* =========================================================
-   데이터 조회
-========================================================= */
+    dateInput.max =
+      dateText(maxDate);
 
-async function loadFlights() {
+    dateInput.value =
+      dateText(today);
 
-  setStatus('loading');
+  }
 
 
-  flightBody.innerHTML = `
+  //========================================================
+  // HTML Escape
+  //========================================================
 
-    <tr>
+  function esc(value) {
 
-      <td
-        colspan="10"
-        class="loading-box"
-      >
-        데이터 조회 중...
-      </td>
-
-    </tr>
-
-  `;
-
-
-  try {
-
-    const url =
-      API_URL +
-      '?action=cache&date=' +
-      encodeURIComponent(
-        targetDate
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
       );
 
+  }
+
+
+  //========================================================
+  // 비고 정리
+  //
+  // 줄바꿈 유지
+  // 연속 빈 줄 압축
+  // 앞뒤 불필요한 공백 제거
+  //========================================================
+
+  function cleanRemark(value) {
+
+    return String(
+      value || ""
+    )
+      .replace(
+        /\r\n/g,
+        "\n"
+      )
+      .replace(
+        /\r/g,
+        "\n"
+      )
+      .replace(
+        /\n[ \t]*\n(?:[ \t]*\n)+/g,
+        "\n\n"
+      )
+      .trim();
+
+  }
+
+
+  //========================================================
+  // Cache 조회
+  //========================================================
+
+  async function getCache(date) {
+
+    const url =
+      BACKEND_URL +
+      "?action=cache" +
+      "&date=" +
+      encodeURIComponent(date) +
+      "&t=" +
+      Date.now();
 
     const response =
       await fetch(
         url,
         {
-          method: 'GET',
-          cache: 'no-store'
+          cache: "no-store"
         }
       );
-
 
     if (!response.ok) {
 
       throw new Error(
-        'HTTP ' +
+        "HTTP " +
         response.status
       );
 
     }
 
-
-    const data =
-      await response.json();
-
-
-    if (!data.ok) {
-
-      throw new Error(
-        data.error ||
-        'cache_error'
-      );
-
-    }
-
-
-    if (
-      data.status ===
-      'NO_CACHE'
-    ) {
-
-      renderEmpty();
-
-      updateHeader(
-        '',
-        0
-      );
-
-      setStatus('error');
-
-      return;
-
-    }
-
-
-    let flights =
-      Array.isArray(
-        data.flights
-      )
-        ? data.flights
-        : [];
-
-
-    /*
-      프론트에서도 한 번 더 정렬.
-    */
-
-    flights =
-      sortFlights(
-        flights
-      );
-
-
-    renderFlights(
-      flights
-    );
-
-
-    updateHeader(
-      data.updatedAt || '',
-      flights.length
-    );
-
-
-    setStatus('ready');
-
-
-  } catch (error) {
-
-    console.error(
-      error
-    );
-
-
-    flightBody.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="10"
-          class="empty-row"
-        >
-          데이터를 불러오지 못했습니다.
-        </td>
-
-      </tr>
-
-    `;
-
-
-    updateHeader(
-      '',
-      0
-    );
-
-
-    setStatus('error');
+    return await response.json();
 
   }
 
-}
 
+  //========================================================
+  // 정렬
+  //
+  // O 먼저
+  //   → 예정시간 ETT
+  //
+  // X 나중
+  //   → 계획시간 STT
+  //========================================================
 
-/* =========================================================
-   정렬
-========================================================= */
+  function sortFlights(flights) {
 
-function sortFlights(
-  flights
-) {
-
-  return [...flights].sort(
-    (a, b) => {
+    flights.sort((a, b) => {
 
       const aApplied =
         String(
-          a.applied || ''
-        ).toUpperCase();
+          a.applied || ""
+        ).trim();
 
       const bApplied =
         String(
-          b.applied || ''
-        ).toUpperCase();
+          b.applied || ""
+        ).trim();
 
 
-      /*
-        O 먼저
-      */
+      //====================================================
+      // O → X 순서
+      //====================================================
 
       if (
         aApplied !==
         bApplied
       ) {
 
-        return (
-          aApplied === 'O'
-            ? -1
-            : 1
+        if (
+          aApplied === "O"
+        ) {
+          return -1;
+        }
+
+        if (
+          bApplied === "O"
+        ) {
+          return 1;
+        }
+
+        if (
+          aApplied === "X"
+        ) {
+          return -1;
+        }
+
+        if (
+          bApplied === "X"
+        ) {
+          return 1;
+        }
+
+        return aApplied.localeCompare(
+          bApplied
         );
 
       }
 
 
-      /*
-        예정시간 기준
-      */
+      //====================================================
+      // O → 예정시간
+      //====================================================
 
       if (
-        aApplied === 'O'
+        aApplied === "O"
       ) {
 
-        return compareTime(
-          a.ett,
-          b.ett
+        return String(
+          a.ett || ""
+        ).localeCompare(
+          String(
+            b.ett || ""
+          )
         );
 
       }
 
 
-      /*
-        계획시간 기준
-      */
+      //====================================================
+      // X → 계획시간
+      //====================================================
 
-      return compareTime(
-        a.stt,
-        b.stt
-      );
+      if (
+        aApplied === "X"
+      ) {
+
+        return String(
+          a.stt || ""
+        ).localeCompare(
+          String(
+            b.stt || ""
+          )
+        );
+
+      }
+
+
+      return 0;
+
+    });
+
+  }
+
+
+  //========================================================
+  // 결과 표시
+  //========================================================
+
+  function renderFlights(data) {
+
+    const flights =
+      Array.isArray(
+        data.flights
+      )
+        ? [...data.flights]
+        : [];
+
+
+    //======================================================
+    // 정렬
+    //======================================================
+
+    sortFlights(flights);
+
+
+    //======================================================
+    // 날짜별 갱신시간
+    //======================================================
+
+    updateTimeBox.textContent =
+      data.updatedAt
+        ? "최종 갱신: " +
+          data.updatedAt
+        : "최종 갱신: -";
+
+
+    statusBox.textContent =
+      (data.date || "") +
+      " / " +
+      flights.length +
+      "건";
+
+
+    //======================================================
+    // 데이터 없음
+    //======================================================
+
+    if (
+      flights.length === 0
+    ) {
+
+      resultBody.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="18"
+            class="empty"
+          >
+            해당 날짜 예약현황이 없습니다.
+          </td>
+
+        </tr>
+
+      `;
+
+      return;
 
     }
-  );
-
-}
 
 
-/* =========================================================
-   시간 비교
-========================================================= */
+    //======================================================
+    // 데이터 생성
+    //======================================================
 
-function compareTime(
-  a,
-  b
-) {
+    resultBody.innerHTML =
+      flights
+        .map(f => {
 
-  const aa =
-    normalizeTimeForSort(
-      a
-    );
+          const applied =
+            String(
+              f.applied || ""
+            ).trim();
 
-  const bb =
-    normalizeTimeForSort(
-      b
-    );
+          const tof =
+            String(
+              f.tof || ""
+            ).trim();
 
+          const company =
+            String(
+              f.company || ""
+            ).trim();
 
-  return aa.localeCompare(
-    bb
-  );
-
-}
-
-
-function normalizeTimeForSort(
-  value
-) {
-
-  const text =
-    String(
-      value || ''
-    );
+          const remark =
+            cleanRemark(
+              f.remark
+            );
 
 
-  const match =
-    text.match(
-      /(\d{1,2}):(\d{2})/
-    );
+          //==================================================
+          // 조건부서식
+          //==================================================
+
+          const rowClasses = [];
 
 
-  if (!match) {
+          // X → 회색 배경
+          if (
+            applied === "X"
+          ) {
 
-    return '99:99';
-
-  }
-
-
-  return (
-    match[1].padStart(2, '0') +
-    ':' +
-    match[2]
-  );
-
-}
-
-
-/* =========================================================
-   테이블 출력
-========================================================= */
-
-function renderFlights(
-  flights
-) {
-
-  if (
-    flights.length === 0
-  ) {
-
-    renderEmpty();
-
-    return;
-
-  }
-
-
-  flightBody.innerHTML =
-    flights
-      .map(
-        (flight, index) =>
-          createFlightRow(
-            flight,
-            index
-          )
-      )
-      .join('');
-
-
-  /*
-    팝업 버튼 이벤트
-  */
-
-  document
-    .querySelectorAll(
-      '.apply-button'
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          'click',
-          () => {
-
-            const index =
-              Number(
-                button.dataset.index
-              );
-
-
-            openDetail(
-              flights[index]
+            rowClasses.push(
+              "flight-row-x"
             );
 
           }
-        );
 
-      }
-    );
 
-}
+          // 국제선 I → 파란 글씨
+          if (
+            tof === "I"
+          ) {
 
+            rowClasses.push(
+              "flight-row-i"
+            );
 
-/* =========================================================
-   행 생성
-========================================================= */
+          }
 
-function createFlightRow(
-  f,
-  index
-) {
 
-  const applied =
-    String(
-      f.applied || ''
-    )
-      .trim()
-      .toUpperCase();
+          // SK 자가용 → 딥레드
+          if (
+            company ===
+            "에스케이텔레콤(주)-자가용"
+          ) {
 
+            rowClasses.push(
+              "flight-row-skt"
+            );
 
-  const applyClass =
-    applied === 'X'
-      ? 'apply-x'
-      : 'apply-o';
+          }
 
 
-  const applyText =
-    applied === 'X'
-      ? 'X'
-      : 'O';
+          const badgeClass =
+            applied === "O"
+              ? "badge-o"
+              : "badge-x";
 
 
-  /*
-    시간
-  */
+          return `
 
-  const planned =
-    formatKST(
-      f.stt
-    );
+            <tr class="${rowClasses.join(" ")}">
 
-
-  const expected =
-    formatKST(
-      f.ett
-    );
-
-
-  /*
-    항공기
-  */
-
-  const aircraftReg =
-    safe(
-      f.reg
-    );
-
-
-  const aircraftType =
-    safe(
-      f.type
-    );
-
-
-  /*
-    구간
-  */
-
-  const route =
-    buildRoute(
-      f
-    );
-
-
-  /*
-    운항사
-  */
-
-  const company =
-    safe(
-      f.company
-    );
-
-
-  /*
-    인원
-
-    백엔드에서 crew / pax / baggage를
-    내려주는 경우 그대로 사용.
-  */
-
-  const crew =
-    displayNumber(
-      f.crew
-    );
-
-
-  const pax =
-    displayNumber(
-      f.pax
-    );
-
-
-  const baggage =
-    displayNumber(
-      f.baggage
-    );
-
-
-  /*
-    비고
-  */
-
-  const remark =
-    safe(
-      f.remark
-    );
-
-
-  /*
-    취소
-  */
-
-  const cancel =
-    safe(
-      f.cancel
-    )
-      .toUpperCase();
-
-
-  const cancelClass =
-    cancel === 'Y'
-      ? 'cancel-y'
-      : 'cancel-n';
-
-
-  /*
-    주기장
-  */
-
-  const stand =
-    safe(
-      f.stand
-    );
-
-
-  /*
-    실제시간
-  */
-
-  const actual =
-    formatKST(
-      f.att
-    );
-
-
-  return `
-
-    <tr>
-
-      <!-- 신청여부 -->
-
-      <td class="apply-cell">
-
-        <button
-          type="button"
-          class="apply-button ${applyClass}"
-          data-index="${index}"
-        >
-          ${applyText}
-        </button>
-
-      </td>
-
-
-      <!-- 시간 -->
-
-      <td>
-
-        <div class="time-box">
-
-          <span class="time-line">
-            -계획: ${planned}
-          </span>
-
-          <span class="time-line">
-            -예정: ${expected}
-          </span>
-
-        </div>
-
-      </td>
-
-
-      <!-- 항공기 -->
-
-      <td class="aircraft-cell">
-
-        <div class="aircraft-box">
-
-          <span class="aircraft-reg">
-            ${aircraftReg}
-          </span>
-
-          ${
-            aircraftType
-              ? `
-                <span class="aircraft-type">
-                  (${aircraftType})
+              <td>
+                <span
+                  class="badge ${badgeClass}"
+                >
+                  ${esc(applied)}
                 </span>
-              `
-              : ''
-          }
+              </td>
 
-        </div>
+              <td>
+                ${esc(f.stt)}
+              </td>
 
-      </td>
+              <td>
+                ${esc(f.ett)}
+              </td>
 
+              <td>
+                ${esc(f.reg)}
+              </td>
 
-      <!-- 구간 -->
+              <td>
+                ${esc(f.type)}
+              </td>
 
-      <td>
+              <td>
+                ${esc(f.nation)}
+              </td>
 
-        ${route}
+              <td>
+                ${esc(f.route)}
+              </td>
 
-      </td>
+              <td>
+                ${esc(f.aod)}
+              </td>
 
+              <td>
+                ${esc(f.tof)}
+              </td>
 
-      <!-- 운항사 -->
+              <td>
+                ${esc(f.purpose)}
+              </td>
 
-      <td class="company-cell">
+              <td>
+                ${esc(f.company)}
+              </td>
 
-        <div class="company-box">
+              <td>
+                ${esc(f.crew)}
+              </td>
 
-          ${company}
+              <td>
+                ${esc(f.pax)}
+              </td>
 
-        </div>
+              <td>
+                ${esc(f.baggage)}
+              </td>
 
-      </td>
+              <td class="remark">
+                ${esc(remark)}
+              </td>
 
+              <td>
+                ${esc(f.cancel)}
+              </td>
 
-      <!-- 인원 -->
+              <td>
+                ${esc(f.stand)}
+              </td>
 
-      <td class="person-cell">
+              <td>
+                ${esc(f.att)}
+              </td>
 
-        <div class="person-box">
+            </tr>
 
-          <span class="person-line">
-            -승무원 : ${crew}
-          </span>
+          `;
 
-          <span class="person-line">
-            -승객 : ${pax}
-          </span>
-
-          <span class="person-line">
-            -수화물 : ${baggage}
-          </span>
-
-        </div>
-
-      </td>
-
-
-      <!-- 비고 -->
-
-      <td class="remark-cell">
-
-        <div class="remark-text">
-          ${remark}
-        </div>
-
-      </td>
-
-
-      <!-- 취소 -->
-
-      <td
-        class="cancel-cell ${cancelClass}"
-      >
-
-        ${cancel}
-
-      </td>
-
-
-      <!-- 주기장 -->
-
-      <td class="stand-cell">
-
-        ${stand}
-
-      </td>
-
-
-      <!-- 실제시간 -->
-
-      <td class="actual-cell">
-
-        ${actual}
-
-      </td>
-
-    </tr>
-
-  `;
-
-}
-
-
-/* =========================================================
-   구간 만들기
-========================================================= */
-
-function buildRoute(
-  f
-) {
-
-  /*
-    백엔드에서 route가
-
-    BSL-GMP
-
-    로 내려오는 경우.
-  */
-
-  const route =
-    safe(
-      f.route
-    );
-
-
-  /*
-    이미 백엔드에서
-    전체 문장을 내려주는 경우도 대응.
-  */
-
-  const purpose =
-    cleanPurpose(
-      f.purpose
-    );
-
-
-  /*
-    상대공항
-
-    기존 데이터의 route가
-    상대공항 정보를 이미 포함하면
-    그대로 사용.
-
-    예:
-    BSL-GMP / 국제선 도착
-    (상대공항: 스위스)
-  */
-
-  let mainRoute =
-    route;
-
-
-  /*
-    혹시 route가 단순히
-    BSL-GMP만 오는 경우에는
-    aod / tof를 이용해서 보완.
-  */
-
-  if (
-    mainRoute &&
-    !mainRoute.includes('/')
-  ) {
-
-    const aod =
-      String(
-        f.aod || ''
-      )
-        .trim()
-        .toUpperCase();
-
-
-    const tof =
-      String(
-        f.tof || ''
-      )
-        .trim();
-
-
-    let arrivalDeparture =
-      '';
-
-
-    if (
-      aod === 'A' ||
-      aod === '도착'
-    ) {
-
-      arrivalDeparture =
-        '국제선 도착';
-
-    }
-
-    else if (
-      aod === 'D' ||
-      aod === '출발'
-    ) {
-
-      arrivalDeparture =
-        '국제선 출발';
-
-    }
-
-
-    if (
-      arrivalDeparture
-    ) {
-
-      mainRoute =
-        route +
-        ' / ' +
-        arrivalDeparture;
-
-    }
+        })
+        .join("");
 
   }
 
 
-  /*
-    route에 줄바꿈이 들어있는 경우
-    안전하게 처리
-  */
+  //========================================================
+  // 조회
+  //========================================================
 
-  mainRoute =
-    escapeHtml(
-      mainRoute
-    )
-      .replace(
-        /\n/g,
-        '<br>'
+  async function search() {
+
+    const date =
+      dateInput.value;
+
+
+    if (!date) {
+
+      alert(
+        "조회할 날짜를 선택하세요."
       );
 
-
-  return `
-
-    <div class="route-box">
-
-      <span class="route-main">
-        ${mainRoute}
-      </span>
-
-      ${
-        purpose
-          ? `
-            <span class="route-purpose">
-              *${escapeHtml(purpose)}
-            </span>
-          `
-          : ''
-      }
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   팝업
-========================================================= */
-
-function openDetail(
-  f
-) {
-
-  const planned =
-    formatKST(
-      f.stt
-    );
-
-
-  const expected =
-    formatKST(
-      f.ett
-    );
-
-
-  const actual =
-    formatKST(
-      f.att
-    );
-
-
-  const route =
-    buildRouteForModal(
-      f
-    );
-
-
-  const crew =
-    displayNumber(
-      f.crew
-    );
-
-
-  const pax =
-    displayNumber(
-      f.pax
-    );
-
-
-  const baggage =
-    displayNumber(
-      f.baggage
-    );
-
-
-  const remark =
-    safe(
-      f.remark
-    );
-
-
-  modalBody.innerHTML = `
-
-    <!-- 시간 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        시간
-      </div>
-
-      <div class="detail-value">
-
-        <div class="detail-time">
-
-          <div>
-            -계획: ${escapeHtml(planned)}
-          </div>
-
-          <div>
-            -예정: ${escapeHtml(expected)}
-          </div>
-
-          ${
-            actual
-              ? `
-                <div>
-                  -실제: ${escapeHtml(actual)}
-                </div>
-              `
-              : ''
-          }
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- 항공기 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        항공기
-      </div>
-
-      <div class="detail-value">
-
-        <div class="detail-aircraft">
-
-          <div>
-            ${escapeHtml(
-              f.reg || ''
-            )}
-          </div>
-
-          ${
-            f.type
-              ? `
-                <div>
-                  (${escapeHtml(
-                    f.type
-                  )})
-                </div>
-              `
-              : ''
-          }
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- 구간 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        구간
-      </div>
-
-      <div class="detail-value">
-
-        ${route}
-
-      </div>
-
-    </div>
-
-
-    <!-- 운항사 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        운항사
-      </div>
-
-      <div class="detail-value">
-
-        ${escapeHtml(
-          f.company || ''
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- 인원 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        인원
-      </div>
-
-      <div class="detail-value">
-
-        <div class="detail-person">
-
-          <div>
-            -승무원 : ${escapeHtml(
-              crew
-            )}
-          </div>
-
-          <div>
-            -승객 : ${escapeHtml(
-              pax
-            )}
-          </div>
-
-          <div>
-            -수화물 : ${escapeHtml(
-              baggage
-            )}
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- 비고 -->
-
-    <div class="detail-row">
-
-      <div class="detail-label">
-        비고
-      </div>
-
-      <div class="detail-value">
-
-        <div class="detail-remark-wrap">
-
-          <div class="detail-remark-title">
-            예약 참고사항
-          </div>
-
-          <div class="detail-remark">
-            ${
-              escapeHtml(
-                remark || '비고 없음'
-              )
-            }
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-
-  detailModal.classList.add(
-    'show'
-  );
-
-
-  document.body.style.overflow =
-    'hidden';
-
-}
-
-
-/* =========================================================
-   팝업 구간
-========================================================= */
-
-function buildRouteForModal(
-  f
-) {
-
-  const route =
-    safe(
-      f.route
-    );
-
-
-  const purpose =
-    cleanPurpose(
-      f.purpose
-    );
-
-
-  let mainRoute =
-    route;
-
-
-  if (
-    mainRoute &&
-    !mainRoute.includes('/')
-  ) {
-
-    const aod =
-      String(
-        f.aod || ''
-      )
-        .trim()
-        .toUpperCase();
-
-
-    let text =
-      '';
-
-
-    if (
-      aod === 'A' ||
-      aod === '도착'
-    ) {
-
-      text =
-        '국제선 도착';
-
-    }
-
-    else if (
-      aod === 'D' ||
-      aod === '출발'
-    ) {
-
-      text =
-        '국제선 출발';
+      return;
 
     }
 
 
-    if (text) {
+    searchBtn.disabled =
+      true;
 
-      mainRoute =
-        route +
-        ' / ' +
-        text;
 
-    }
+    statusBox.textContent =
+      "캐시 데이터를 불러오는 중...";
 
-  }
 
+    try {
 
-  return `
+      const data =
+        await getCache(date);
 
-    <div class="detail-route">
 
-      <div class="detail-route-main">
+      if (!data.ok) {
 
-        ${escapeHtml(
-          mainRoute
-        )}
-
-      </div>
-
-
-      ${
-        purpose
-          ? `
-            <div class="detail-route-purpose">
-              *${escapeHtml(
-                purpose
-              )}
-            </div>
-          `
-          : ''
-      }
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   팝업 닫기
-========================================================= */
-
-function closeModal() {
-
-  detailModal.classList.remove(
-    'show'
-  );
-
-  document.body.style.overflow =
-    '';
-
-}
-
-
-modalClose.addEventListener(
-  'click',
-  closeModal
-);
-
-
-detailModal.addEventListener(
-  'click',
-  event => {
-
-    if (
-      event.target ===
-      detailModal
-    ) {
-
-      closeModal();
-
-    }
-
-  }
-);
-
-
-document.addEventListener(
-  'keydown',
-  event => {
-
-    if (
-      event.key === 'Escape'
-    ) {
-
-      closeModal();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   빈 데이터
-========================================================= */
-
-function renderEmpty() {
-
-  flightBody.innerHTML = `
-
-    <tr>
-
-      <td
-        colspan="10"
-        class="empty-row"
-      >
-        조회된 예약 데이터가 없습니다.
-      </td>
-
-    </tr>
-
-  `;
-
-}
-
-
-/* =========================================================
-   상단 갱신시간
-========================================================= */
-
-function updateHeader(
-  updatedAt,
-  count
-) {
-
-  let formatted =
-    formatUpdatedAt(
-      updatedAt
-    );
-
-
-  if (!formatted) {
-
-    formatted =
-      '-';
-
-  }
-
-
-  const dayCode =
-    formatDayCode(
-      targetDate
-    );
-
-
-  updateText.textContent =
-    '최종 갱신: ' +
-    formatted;
-
-
-  dataText.textContent =
-    'DATA : ' +
-    count +
-    '건 추출(' +
-    dayCode +
-    ')';
-
-}
-
-
-/* =========================================================
-   갱신시간 포맷
-========================================================= */
-
-function formatUpdatedAt(
-  value
-) {
-
-  if (!value) {
-
-    return '';
-
-  }
-
-
-  const text =
-    String(
-      value
-    ).trim();
-
-
-  /*
-    Apps Script의
-    yyyy-MM-dd HH:mm:ss
-    형태 대응
-  */
-
-  let match =
-    text.match(
-      /^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/
-    );
-
-
-  if (match) {
-
-    return (
-      match[1] +
-      '-' +
-      match[2] +
-      '-' +
-      match[3] +
-      ' ' +
-      match[4] +
-      ':' +
-      match[5] +
-      ' KST'
-    );
-
-  }
-
-
-  /*
-    ISO 형태 대응
-  */
-
-  const date =
-    new Date(
-      text
-    );
-
-
-  if (
-    !isNaN(
-      date.getTime()
-    )
-  ) {
-
-    const parts =
-      new Intl.DateTimeFormat(
-        'en-CA',
-        {
-          timeZone:
-            'Asia/Seoul',
-
-          year:
-            'numeric',
-
-          month:
-            '2-digit',
-
-          day:
-            '2-digit',
-
-          hour:
-            '2-digit',
-
-          minute:
-            '2-digit',
-
-          hour12:
-            false
-        }
-      ).formatToParts(
-        date
-      );
-
-
-    const get =
-      type => {
-
-        const item =
-          parts.find(
-            p =>
-              p.type ===
-              type
-          );
-
-        return item
-          ? item.value
-          : '';
-
-      };
-
-
-    return (
-      get('year') +
-      '-' +
-      get('month') +
-      '-' +
-      get('day') +
-      ' ' +
-      get('hour') +
-      ':' +
-      get('minute') +
-      ' KST'
-    );
-
-  }
-
-
-  return text;
-
-}
-
-
-/* =========================================================
-   29AUG
-========================================================= */
-
-function formatDayCode(
-  dateText
-) {
-
-  const match =
-    String(
-      dateText || ''
-    ).match(
-      /^\d{4}-(\d{2})-(\d{2})$/
-    );
-
-
-  if (!match) {
-
-    return '';
-
-  }
-
-
-  const month =
-    Number(
-      match[1]
-    );
-
-
-  const day =
-    match[2];
-
-
-  const names = [
-    'JAN',
-    'FEB',
-    'MAR',
-    'APR',
-    'MAY',
-    'JUN',
-    'JUL',
-    'AUG',
-    'SEP',
-    'OCT',
-    'NOV',
-    'DEC'
-  ];
-
-
-  return (
-    day +
-    names[month - 1]
-  );
-
-}
-
-
-/* =========================================================
-   시간 KST
-========================================================= */
-
-function formatKST(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
-    return '';
-
-  }
-
-
-  const text =
-    String(
-      value
-    ).trim();
-
-
-  if (!text) {
-
-    return '';
-
-  }
-
-
-  /*
-    이미 KST가 붙어있으면 유지.
-  */
-
-  if (
-    /KST$/i.test(
-      text
-    )
-  ) {
-
-    return text;
-
-  }
-
-
-  /*
-    HH:MM
-  */
-
-  const match =
-    text.match(
-      /^(\d{1,2}):(\d{2})$/
-    );
-
-
-  if (match) {
-
-    return (
-      match[1].padStart(
-        2,
-        '0'
-      ) +
-      ':' +
-      match[2] +
-      ' KST'
-    );
-
-  }
-
-
-  /*
-    HHMM
-  */
-
-  const compact =
-    text.match(
-      /^(\d{3,4})$/
-    );
-
-
-  if (compact) {
-
-    const raw =
-      compact[1]
-        .padStart(
-          4,
-          '0'
+        throw new Error(
+          data.error ||
+          "CACHE 조회 실패"
         );
 
+      }
 
-    return (
-      raw.substring(
-        0,
-        2
-      ) +
-      ':' +
-      raw.substring(
-        2,
-        4
-      ) +
-      ' KST'
-    );
+
+      //====================================================
+      // 캐시 없음
+      //====================================================
+
+      if (
+        data.status ===
+        "NO_CACHE"
+      ) {
+
+        updateTimeBox.textContent =
+          "최종 갱신: -";
+
+
+        statusBox.textContent =
+          "아직 이 날짜의 캐시가 없습니다.";
+
+
+        resultBody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="18"
+              class="empty"
+            >
+              Mini PC의 다음 캐시 갱신을 기다려주세요.
+            </td>
+
+          </tr>
+
+        `;
+
+
+        return;
+
+      }
+
+
+      renderFlights(data);
+
+
+    } catch (err) {
+
+      console.error(err);
+
+
+      updateTimeBox.textContent =
+        "최종 갱신: -";
+
+
+      statusBox.textContent =
+        "조회 오류: " +
+        err.message;
+
+
+      resultBody.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="18"
+            class="empty"
+          >
+            캐시 데이터를 가져오지 못했습니다.
+          </td>
+
+        </tr>
+
+      `;
+
+
+    } finally {
+
+      searchBtn.disabled =
+        false;
+
+    }
 
   }
 
 
-  return text;
-
-}
-
-
-/* =========================================================
-   숫자 표시
-========================================================= */
-
-function displayNumber(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined ||
-    value === ''
-  ) {
-
-    return '0';
-
-  }
-
-
-  const n =
-    Number(
-      value
-    );
-
-
-  if (
-    Number.isFinite(n)
-  ) {
-
-    return String(n);
-
-  }
-
-
-  return String(
-    value
-  );
-
-}
-
-
-/* =========================================================
-   목적 정리
-========================================================= */
-
-function cleanPurpose(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
-    return '';
-
-  }
-
-
-  let text =
-    String(
-      value
-    ).trim();
-
+  //========================================================
+  // 이벤트
+  //========================================================
 
   /*
-    이미 *가 붙어서 들어오는 경우
-    중복 방지
+    날짜 변경만으로는 조회 안 함.
+    조회 버튼 눌렀을 때만 실행.
   */
 
-  text =
-    text.replace(
-      /^\*+\s*/,
-      ''
-    );
+  searchBtn.addEventListener(
+    "click",
+    search
+  );
 
 
-  return text;
+  //========================================================
+  // 최초 실행
+  //========================================================
 
-}
-
-
-/* =========================================================
-   안전 문자열
-========================================================= */
-
-function safe(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-
-    return '';
-
-  }
-
-
-  return String(
-    value
-  ).trim();
-
-}
-
-
-/* =========================================================
-   HTML escape
-========================================================= */
-
-function escapeHtml(
-  value
-) {
-
-  return String(
-    value === null ||
-    value === undefined
-      ? ''
-      : value
-  )
-    .replace(
-      /&/g,
-      '&amp;'
-    )
-    .replace(
-      /</g,
-      '&lt;'
-    )
-    .replace(
-      />/g,
-      '&gt;'
-    )
-    .replace(
-      /"/g,
-      '&quot;'
-    )
-    .replace(
-      /'/g,
-      '&#039;'
-    );
-
-}
-
-
-/* =========================================================
-   상태 표시
-========================================================= */
-
-function setStatus(
-  status
-) {
-
-  statusDot.className =
-    'status-dot';
-
-
-  if (
-    status === 'loading'
-  ) {
-
-    statusDot.classList.add(
-      'loading'
-    );
-
-  }
-
-  else if (
-    status === 'error'
-  ) {
-
-    statusDot.classList.add(
-      'error'
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   자동 갱신
-========================================================= */
-
-
-/*
-  캐시는 백엔드에서 갱신되고,
-  프론트는 30분마다 다시 읽습니다.
-
-  페이지를 열어둔 상태에서도
-  최신 CACHE를 자동 반영.
-*/
-
-setInterval(
-  () => {
-
-    loadFlights();
-
-  },
-  30 * 60 * 1000
-);
+  setDateRange();
 
 </script>
 
 </body>
+
 </html>
