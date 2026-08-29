@@ -33,6 +33,8 @@
 
       color: #222;
 
+      font-size: 13px;
+
     }
 
 
@@ -44,16 +46,16 @@
 
       margin: 0 auto;
 
-      padding: 12px 18px 20px;
+      padding: 20px;
 
     }
 
 
     h1 {
 
-      margin: 0 0 12px;
+      margin: 0 0 18px;
 
-      font-size: 22px;
+      font-size: 24px;
 
     }
 
@@ -66,7 +68,7 @@
 
       display: flex;
 
-      gap: 8px;
+      gap: 10px;
 
       align-items: center;
 
@@ -74,11 +76,11 @@
 
       background: #fff;
 
-      padding: 10px 12px;
+      padding: 14px 16px;
 
-      border-radius: 8px;
+      border-radius: 10px;
 
-      margin-bottom: 8px;
+      margin-bottom: 12px;
 
       border: 1px solid #ddd;
 
@@ -89,18 +91,16 @@
 
       font-weight: 700;
 
-      font-size: 14px;
-
     }
 
 
     input[type="date"] {
 
-      height: 38px;
+      height: 42px;
 
-      padding: 0 10px;
+      padding: 0 12px;
 
-      font-size: 14px;
+      font-size: 16px;
 
       border: 1px solid #bbb;
 
@@ -111,11 +111,11 @@
 
     button {
 
-      height: 38px;
+      height: 42px;
 
-      padding: 0 18px;
+      padding: 0 20px;
 
-      font-size: 14px;
+      font-size: 15px;
 
       font-weight: 700;
 
@@ -133,7 +133,9 @@
 
 
     button:hover {
+
       opacity: 0.92;
+
     }
 
 
@@ -154,7 +156,7 @@
 
       display: flex;
 
-      gap: 16px;
+      gap: 20px;
 
       align-items: center;
 
@@ -166,11 +168,11 @@
 
       border-radius: 8px;
 
-      padding: 8px 12px;
+      padding: 10px 14px;
 
-      margin-bottom: 8px;
+      margin-bottom: 12px;
 
-      font-size: 13px;
+      font-size: 14px;
 
     }
 
@@ -195,8 +197,6 @@
 
     .table-wrap {
 
-      width: 100%;
-
       overflow-x: auto;
 
       background: #fff;
@@ -204,6 +204,8 @@
       border: 1px solid #ddd;
 
       border-radius: 8px;
+
+      -webkit-overflow-scrolling: touch;
 
     }
 
@@ -214,9 +216,9 @@
 
       min-width: 1250px;
 
-      table-layout: fixed;
-
       border-collapse: collapse;
+
+      table-layout: fixed;
 
       font-size: 13px;
 
@@ -230,21 +232,13 @@
 
       border-right: 1px solid #eee;
 
-      padding: 6px 7px;
+      padding: 7px 8px;
 
       text-align: center;
 
       vertical-align: middle;
 
       white-space: nowrap;
-
-    }
-
-
-    th:last-child,
-    td:last-child {
-
-      border-right: 0;
 
     }
 
@@ -261,7 +255,7 @@
 
       z-index: 2;
 
-      height: 32px;
+      height: 34px;
 
     }
 
@@ -271,6 +265,8 @@
       padding-top: 5px;
 
       padding-bottom: 5px;
+
+      vertical-align: middle;
 
     }
 
@@ -283,93 +279,85 @@
 
 
     /*======================================================
-      각 칼럼 너비
+      칼럼 너비
     ======================================================*/
 
-    th:nth-child(1),
-    td:nth-child(1) {
+    th.col-applied,
+    td.col-applied {
 
       width: 58px;
 
     }
 
 
-    th:nth-child(2),
-    td:nth-child(2) {
+    th.col-time,
+    td.col-time {
 
-      width: 132px;
-
-    }
-
-
-    th:nth-child(3),
-    td:nth-child(3) {
-
-      width: 105px;
+      width: 130px;
 
     }
 
 
-    th:nth-child(4),
-    td:nth-child(4) {
+    th.col-aircraft,
+    td.col-aircraft {
+
+      width: 95px;
+
+    }
+
+
+    th.col-route,
+    td.col-route {
 
       width: 245px;
 
     }
 
 
-    th:nth-child(5),
-    td:nth-child(5) {
+    th.col-company,
+    td.col-company {
+
+      width: 180px;
+
+    }
+
+
+    th.col-person,
+    td.col-person {
 
       width: 105px;
 
     }
 
 
-    th:nth-child(6),
-    td:nth-child(6) {
+    th.col-remark,
+    td.col-remark {
 
-      width: 175px;
-
-    }
-
-
-    th:nth-child(7),
-    td:nth-child(7) {
-
-      width: 125px;
+      width: auto;
 
     }
 
 
-    th:nth-child(8),
-    td:nth-child(8) {
+    th.col-cancel,
+    td.col-cancel {
 
-      width: 480px;
-
-    }
-
-
-    th:nth-child(9),
-    td:nth-child(9) {
-
-      width: 62px;
+      width: 60px;
 
     }
 
 
-    th:nth-child(10),
-    td:nth-child(10) {
+    th.col-stand,
+    td.col-stand {
 
       width: 65px;
 
     }
 
 
-    th:nth-child(11),
-    td:nth-child(11) {
+    th.col-att,
+    td.col-att {
 
-      width: 95px;
+      width: 100px;
 
     }
 
@@ -380,11 +368,11 @@
 
     td.time-cell {
 
-      white-space: pre-line;
-
       line-height: 1.45;
 
-      font-weight: 600;
+      text-align: center;
+
+      white-space: nowrap;
 
     }
 
@@ -395,11 +383,27 @@
 
     td.aircraft-cell {
 
-      white-space: pre-line;
-
       line-height: 1.35;
 
-      font-weight: 600;
+      white-space: nowrap;
+
+    }
+
+
+    .aircraft-reg {
+
+      display: block;
+
+      font-weight: 700;
+
+    }
+
+
+    .aircraft-type {
+
+      display: block;
+
+      font-weight: 700;
 
     }
 
@@ -410,13 +414,40 @@
 
     td.route-cell {
 
-      white-space: pre-line;
+      text-align: left;
+
+      white-space: normal;
+
+      line-height: 1.45;
+
+      padding-left: 8px;
+
+      padding-right: 8px;
 
       word-break: keep-all;
 
-      line-height: 1.4;
+    }
 
-      text-align: left;
+
+    .route-main {
+
+      font-weight: 700;
+
+    }
+
+
+    .route-sub {
+
+      display: block;
+
+    }
+
+
+    .route-purpose {
+
+      display: block;
+
+      font-weight: 700;
 
     }
 
@@ -425,13 +456,13 @@
       인원
     ======================================================*/
 
-    td.people-cell {
-
-      white-space: pre-line;
-
-      line-height: 1.4;
+    td.person-cell {
 
       text-align: left;
+
+      white-space: nowrap;
+
+      line-height: 1.45;
 
     }
 
@@ -452,48 +483,58 @@
 
       vertical-align: middle;
 
-      line-height: 1.35;
+      line-height: 1.4;
 
-      padding: 5px 8px;
+      padding: 5px 9px;
 
-    }
-
-
-    /*======================================================
-      실제시간
-    ======================================================*/
-
-    td.actual-time-cell {
-
-      white-space: nowrap;
+      font-size: 13px;
 
     }
 
 
     /*======================================================
-      신청여부 Badge
+      신청여부 버튼
     ======================================================*/
 
-    .badge {
+    .apply-btn {
 
-      display: inline-flex;
+      width: 30px;
+
+      height: 26px;
 
       min-width: 30px;
 
-      height: 24px;
+      padding: 0;
+
+      border-radius: 6px;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      display: inline-flex;
 
       align-items: center;
 
       justify-content: center;
 
-      border-radius: 6px;
+      border: 0;
 
-      font-weight: 700;
+      cursor: pointer;
+
+      transition: transform 0.08s ease;
 
     }
 
 
-    .badge-o {
+    .apply-btn:active {
+
+      transform: scale(0.94);
+
+    }
+
+
+    .apply-btn-o {
 
       background: #dcfce7;
 
@@ -502,7 +543,7 @@
     }
 
 
-    .badge-x {
+    .apply-btn-x {
 
       background: #fee2e2;
 
@@ -530,10 +571,7 @@
       Excel 조건부서식 반영
     ======================================================*/
 
-    /*
-     * 신청여부 X
-     * → 회색 배경
-     */
+    /* 신청여부 X → 회색 배경 */
 
     .flight-row-x {
 
@@ -549,10 +587,7 @@
     }
 
 
-    /*
-     * 국제선 I
-     * → 파란 글씨
-     */
+    /* 국제선 I → 파란 글씨 */
 
     .flight-row-i {
 
@@ -568,10 +603,7 @@
     }
 
 
-    /*
-     * SK 자가용
-     * → 딥레드
-     */
+    /* SK 자가용 → 딥레드 */
 
     .flight-row-skt {
 
@@ -589,14 +621,240 @@
     }
 
 
-    /*
-     * SK + 국제선
-     * → 빨간색 우선
-     */
+    .flight-row-skt .apply-btn {
+
+      color: #c62828 !important;
+
+    }
+
+
+    /* SK + 국제선이면 빨간색 우선 */
 
     .flight-row-i.flight-row-skt td {
 
       color: #c62828 !important;
+
+    }
+
+
+    /*======================================================
+      팝업 배경
+    ======================================================*/
+
+    .modal {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 9999;
+
+      background: rgba(0, 0, 0, 0.48);
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 20px;
+
+    }
+
+
+    .modal.show {
+
+      display: flex;
+
+    }
+
+
+    /*======================================================
+      팝업
+    ======================================================*/
+
+    .modal-box {
+
+      width: 100%;
+
+      max-width: 650px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      background: #fff;
+
+      border-radius: 12px;
+
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25);
+
+      animation: modalIn 0.15s ease-out;
+
+    }
+
+
+    @keyframes modalIn {
+
+      from {
+
+        opacity: 0;
+
+        transform: translateY(8px) scale(0.98);
+
+      }
+
+      to {
+
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+
+      }
+
+    }
+
+
+    /*======================================================
+      팝업 헤더
+    ======================================================*/
+
+    .modal-header {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      padding: 15px 18px;
+
+      border-bottom: 1px solid #e5e7eb;
+
+    }
+
+
+    .modal-title {
+
+      margin: 0;
+
+      font-size: 17px;
+
+      font-weight: 700;
+
+    }
+
+
+    .modal-close {
+
+      width: 34px;
+
+      height: 34px;
+
+      padding: 0;
+
+      background: #f3f4f6;
+
+      color: #333;
+
+      border-radius: 6px;
+
+      font-size: 20px;
+
+      line-height: 34px;
+
+    }
+
+
+    .modal-close:hover {
+
+      background: #e5e7eb;
+
+      opacity: 1;
+
+    }
+
+
+    /*======================================================
+      팝업 내용
+    ======================================================*/
+
+    .modal-content {
+
+      padding: 16px 18px 20px;
+
+    }
+
+
+    .detail-row {
+
+      display: grid;
+
+      grid-template-columns: 78px minmax(0, 1fr);
+
+      gap: 12px;
+
+      padding: 10px 0;
+
+      border-bottom: 1px solid #f0f0f0;
+
+    }
+
+
+    .detail-row:last-child {
+
+      border-bottom: 0;
+
+    }
+
+
+    .detail-label {
+
+      font-weight: 700;
+
+      color: #555;
+
+    }
+
+
+    .detail-value {
+
+      min-width: 0;
+
+      color: #222;
+
+      line-height: 1.5;
+
+      white-space: pre-line;
+
+      word-break: break-word;
+
+    }
+
+
+    .detail-value.route-detail {
+
+      font-weight: 600;
+
+    }
+
+
+    .detail-value.remark-detail {
+
+      white-space: pre-line;
+
+      word-break: break-word;
+
+      overflow-wrap: anywhere;
+
+      background: #fafafa;
+
+      border-radius: 6px;
+
+      padding: 10px;
+
+      margin-top: -3px;
 
     }
 
@@ -607,6 +865,13 @@
 
     @media (max-width: 700px) {
 
+      body {
+
+        font-size: 13px;
+
+      }
+
+
       .container {
 
         padding: 10px;
@@ -616,36 +881,144 @@
 
       h1 {
 
-        font-size: 19px;
+        font-size: 20px;
+
+        margin-bottom: 12px;
 
       }
 
 
       .search-box {
 
-        align-items: stretch;
+        padding: 12px;
 
       }
 
 
       input[type="date"],
-      button {
+      .search-box > button {
 
         width: 100%;
 
       }
 
 
+      .info-box {
+
+        gap: 8px;
+
+        font-size: 12px;
+
+        padding: 9px 11px;
+
+      }
+
+
       table {
 
-        min-width: 1100px;
+        min-width: 1050px;
+
+        font-size: 13px;
+
+      }
+
+
+      th,
+      td {
+
+        padding-left: 6px;
+
+        padding-right: 6px;
+
+      }
+
+
+      th.col-time,
+      td.col-time {
+
+        width: 125px;
+
+      }
+
+
+      th.col-route,
+      td.col-route {
+
+        width: 225px;
+
+      }
+
+
+      th.col-company,
+      td.col-company {
+
+        width: 165px;
+
+      }
+
+
+      th.col-remark,
+      td.col-remark {
+
+        width: 380px;
 
       }
 
 
       td.remark {
 
-        min-width: 350px;
+        font-size: 13px;
+
+        line-height: 1.4;
+
+      }
+
+
+      .modal {
+
+        padding: 12px;
+
+      }
+
+
+      .modal-box {
+
+        max-height: 88vh;
+
+        border-radius: 10px;
+
+      }
+
+
+      .modal-header {
+
+        padding: 13px 15px;
+
+      }
+
+
+      .modal-content {
+
+        padding: 12px 15px 16px;
+
+      }
+
+
+      .detail-row {
+
+        grid-template-columns: 65px minmax(0, 1fr);
+
+        gap: 9px;
+
+        padding: 9px 0;
+
+      }
+
+
+      .detail-label,
+      .detail-value {
+
+        font-size: 13px;
 
       }
 
@@ -665,8 +1038,11 @@
   <h1>SGBAC 예약현황</h1>
 
 
-  <div class="search-box">
+  <!--====================================================
+       검색
+  =====================================================-->
 
+  <div class="search-box">
 
     <label for="dateInput">
       조회일
@@ -683,12 +1059,14 @@
       조회
     </button>
 
-
   </div>
 
 
-  <div class="info-box">
+  <!--====================================================
+       정보
+  =====================================================-->
 
+  <div class="info-box">
 
     <div
       id="updateTime"
@@ -705,12 +1083,14 @@
       날짜를 선택한 후 조회 버튼을 눌러주세요.
     </div>
 
-
   </div>
 
 
-  <div class="table-wrap">
+  <!--====================================================
+       테이블
+  =====================================================-->
 
+  <div class="table-wrap">
 
     <table>
 
@@ -719,27 +1099,45 @@
 
         <tr>
 
-          <th>신청여부</th>
+          <th class="col-applied">
+            신청여부
+          </th>
 
-          <th>시간</th>
+          <th class="col-time">
+            시간
+          </th>
 
-          <th>항공기</th>
+          <th class="col-aircraft">
+            항공기
+          </th>
 
-          <th>구간</th>
+          <th class="col-route">
+            구간
+          </th>
 
-          <th>운항목적</th>
+          <th class="col-company">
+            운항사
+          </th>
 
-          <th>운항사</th>
+          <th class="col-person">
+            인원
+          </th>
 
-          <th>인원</th>
+          <th class="col-remark">
+            비고
+          </th>
 
-          <th>비고</th>
+          <th class="col-cancel">
+            취소여부
+          </th>
 
-          <th>취소여부</th>
+          <th class="col-stand">
+            주기장
+          </th>
 
-          <th>주기장</th>
-
-          <th>실제시간</th>
+          <th class="col-att">
+            실제시간
+          </th>
 
         </tr>
 
@@ -751,7 +1149,7 @@
         <tr>
 
           <td
-            colspan="11"
+            colspan="10"
             class="empty"
           >
             조회 결과가 없습니다.
@@ -770,639 +1168,1400 @@
 </div>
 
 
+<!--======================================================
+     상세 팝업
+=======================================================-->
+
+<div
+  id="detailModal"
+  class="modal"
+>
+
+
+  <div class="modal-box">
+
+
+    <div class="modal-header">
+
+      <h2
+        id="modalTitle"
+        class="modal-title"
+      >
+        예약 상세
+      </h2>
+
+
+      <button
+        id="modalClose"
+        class="modal-close"
+        type="button"
+        aria-label="닫기"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-content">
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          시간
+        </div>
+
+        <div
+          id="modalTime"
+          class="detail-value"
+        ></div>
+
+      </div>
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          항공기
+        </div>
+
+        <div
+          id="modalAircraft"
+          class="detail-value"
+        ></div>
+
+      </div>
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          구간
+        </div>
+
+        <div
+          id="modalRoute"
+          class="detail-value route-detail"
+        ></div>
+
+      </div>
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          운항사
+        </div>
+
+        <div
+          id="modalCompany"
+          class="detail-value"
+        ></div>
+
+      </div>
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          인원
+        </div>
+
+        <div
+          id="modalPerson"
+          class="detail-value"
+        ></div>
+
+      </div>
+
+
+      <div class="detail-row">
+
+        <div class="detail-label">
+          비고
+        </div>
+
+        <div
+          id="modalRemark"
+          class="detail-value remark-detail"
+        ></div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</div>
+
 
 <script>
 
 
-//==========================================================
-// Apps Script Backend
-//==========================================================
+  //========================================================
+  // Apps Script Backend
+  //========================================================
 
-const BACKEND_URL =
-  "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
-
-
-
-const dateInput =
-  document.getElementById(
-    "dateInput"
-  );
+  const BACKEND_URL =
+    "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
 
 
-const searchBtn =
-  document.getElementById(
-    "searchBtn"
-  );
+  //========================================================
+  // DOM
+  //========================================================
 
-
-const statusBox =
-  document.getElementById(
-    "status"
-  );
-
-
-const updateTimeBox =
-  document.getElementById(
-    "updateTime"
-  );
-
-
-const resultBody =
-  document.getElementById(
-    "resultBody"
-  );
-
-
-
-/************************************************************
- * Date → YYYY-MM-DD
- ************************************************************/
-function dateText(date) {
-
-  const yyyy =
-    date.getFullYear();
-
-
-  const mm =
-    String(
-      date.getMonth() + 1
-    ).padStart(2, "0");
-
-
-  const dd =
-    String(
-      date.getDate()
-    ).padStart(2, "0");
-
-
-  return (
-    yyyy +
-    "-" +
-    mm +
-    "-" +
-    dd
-  );
-
-}
-
-
-
-/************************************************************
- * TODAY ~ TODAY+6
- ************************************************************/
-function setDateRange() {
-
-  const today =
-    new Date();
-
-
-  const maxDate =
-    new Date(
-      today
+  const dateInput =
+    document.getElementById(
+      "dateInput"
     );
 
 
-  maxDate.setDate(
-    today.getDate() + 6
-  );
-
-
-  dateInput.min =
-    dateText(
-      today
+  const searchBtn =
+    document.getElementById(
+      "searchBtn"
     );
 
 
-  dateInput.max =
-    dateText(
-      maxDate
+  const statusBox =
+    document.getElementById(
+      "status"
     );
 
 
-  dateInput.value =
-    dateText(
-      today
-    );
-
-}
-
-
-
-/************************************************************
- * HTML Escape
- ************************************************************/
-function esc(value) {
-
-  return String(
-    value ?? ""
-  )
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-
-/************************************************************
- * Cache 조회
- ************************************************************/
-async function getCache(date) {
-
-  const url =
-    BACKEND_URL +
-    "?action=cache" +
-    "&date=" +
-    encodeURIComponent(
-      date
-    ) +
-    "&t=" +
-    Date.now();
-
-
-  const response =
-    await fetch(
-      url,
-      {
-        cache: "no-store"
-      }
+  const updateTimeBox =
+    document.getElementById(
+      "updateTime"
     );
 
 
-  if (!response.ok) {
+  const resultBody =
+    document.getElementById(
+      "resultBody"
+    );
 
-    throw new Error(
-      "HTTP " +
-      response.status
+
+  const detailModal =
+    document.getElementById(
+      "detailModal"
+    );
+
+
+  const modalClose =
+    document.getElementById(
+      "modalClose"
+    );
+
+
+  const modalTime =
+    document.getElementById(
+      "modalTime"
+    );
+
+
+  const modalAircraft =
+    document.getElementById(
+      "modalAircraft"
+    );
+
+
+  const modalRoute =
+    document.getElementById(
+      "modalRoute"
+    );
+
+
+  const modalCompany =
+    document.getElementById(
+      "modalCompany"
+    );
+
+
+  const modalPerson =
+    document.getElementById(
+      "modalPerson"
+    );
+
+
+  const modalRemark =
+    document.getElementById(
+      "modalRemark"
+    );
+
+
+  //========================================================
+  // Date → YYYY-MM-DD
+  //========================================================
+
+  function dateText(date) {
+
+    const yyyy =
+      date.getFullYear();
+
+
+    const mm =
+      String(
+        date.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const dd =
+      String(
+        date.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    return (
+      yyyy +
+      "-" +
+      mm +
+      "-" +
+      dd
     );
 
   }
 
 
-  return await response.json();
+  //========================================================
+  // TODAY ~ TODAY+6
+  //========================================================
 
-}
+  function setDateRange() {
 
-
-
-/************************************************************
- * 정렬
- *
- * O → X
- *
- * O → 예정시간
- * X → 계획시간
- ************************************************************/
-function sortFlights(flights) {
-
-  flights.sort(
-    (a, b) => {
-
-      const aApplied =
-        String(
-          a.applied || ""
-        ).trim();
+    const today =
+      new Date();
 
 
-      const bApplied =
-        String(
-          b.applied || ""
-        ).trim();
+    const maxDate =
+      new Date(
+        today
+      );
 
 
-      //====================================================
-      // O → X
-      //====================================================
-      if (
-        aApplied !==
-        bApplied
-      ) {
+    maxDate.setDate(
+      today.getDate() + 6
+    );
+
+
+    dateInput.min =
+      dateText(
+        today
+      );
+
+
+    dateInput.max =
+      dateText(
+        maxDate
+      );
+
+
+    dateInput.value =
+      dateText(
+        today
+      );
+
+  }
+
+
+  //========================================================
+  // HTML Escape
+  //========================================================
+
+  function esc(value) {
+
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+  //========================================================
+  // 비고 정리
+  //========================================================
+
+  function cleanRemark(value) {
+
+    return String(
+      value || ""
+    )
+      .replace(
+        /\r\n/g,
+        "\n"
+      )
+      .replace(
+        /\r/g,
+        "\n"
+      )
+      .replace(
+        /\n[ \t]*\n(?:[ \t]*\n)+/g,
+        "\n\n"
+      )
+      .trim();
+
+  }
+
+
+  //========================================================
+  // 구간 정리
+  //
+  // 최종 표시:
+  //
+  // BSL-GMP / 국제선 도착
+  // (상대공항: 스위스)
+  // *인원수송
+  //========================================================
+
+  function makeRouteText(f) {
+
+    const route =
+      String(
+        f.route || ""
+      ).trim();
+
+
+    /*
+     * Backend에서 이미 완성된 구간이 들어오는 경우
+     * 그대로 사용
+     */
+
+    if (
+      route &&
+      (
+        route.includes("국제선") ||
+        route.includes("국내선")
+      )
+    ) {
+
+      return route;
+
+    }
+
+
+    const aod =
+      String(
+        f.aod || ""
+      ).trim()
+      .toUpperCase();
+
+
+    const tof =
+      String(
+        f.tof || ""
+      ).trim()
+      .toUpperCase();
+
+
+    const nation =
+      String(
+        f.nation || ""
+      ).trim();
+
+
+    let direction = "";
+
+
+    if (tof === "I") {
+
+      direction = "국제선";
+
+    }
+
+    else if (tof === "D") {
+
+      direction = "국내선";
+
+    }
+
+
+    let arrivalDeparture = "";
+
+
+    if (aod === "A") {
+
+      arrivalDeparture = "도착";
+
+    }
+
+    else if (aod === "D") {
+
+      arrivalDeparture = "출발";
+
+    }
+
+
+    let firstLine =
+      route;
+
+
+    if (
+      direction ||
+      arrivalDeparture
+    ) {
+
+      firstLine =
+        route +
+        " / " +
+        direction +
+        " " +
+        arrivalDeparture;
+
+    }
+
+
+    const lines = [];
+
+
+    if (firstLine.trim()) {
+
+      lines.push(
+        firstLine.trim()
+      );
+
+    }
+
+
+    if (nation) {
+
+      lines.push(
+        "(상대공항: " +
+        nation +
+        ")"
+      );
+
+    }
+
+
+    /*
+     * 운항목적은 화면의 별도 칼럼에는 표시하지 않고
+     * 구간 아래에 *목적 형태로 표시
+     */
+
+    const purpose =
+      String(
+        f.purpose || ""
+      ).trim();
+
+
+    if (purpose) {
+
+      lines.push(
+        "*" + purpose
+      );
+
+    }
+
+
+    return lines.join(
+      "\n"
+    );
+
+  }
+
+
+  //========================================================
+  // 항공기
+  //
+  // HL8372
+  // (GLF6)
+  //========================================================
+
+  function makeAircraftText(f) {
+
+    const reg =
+      String(
+        f.reg || ""
+      ).trim();
+
+
+    const type =
+      String(
+        f.type || ""
+      ).trim();
+
+
+    if (
+      reg &&
+      type
+    ) {
+
+      return (
+        reg +
+        "\n(" +
+        type +
+        ")"
+      );
+
+    }
+
+
+    return (
+      reg ||
+      type ||
+      ""
+    );
+
+  }
+
+
+  //========================================================
+  // 시간
+  //
+  // -계획: 08:30 KST
+  // -예정: 09:30 KST
+  //========================================================
+
+  function makeTimeText(f) {
+
+    const stt =
+      String(
+        f.stt || ""
+      ).trim();
+
+
+    const ett =
+      String(
+        f.ett || ""
+      ).trim();
+
+
+    const lines = [];
+
+
+    if (stt) {
+
+      lines.push(
+        "-계획: " +
+        addKST(stt)
+      );
+
+    }
+
+
+    if (ett) {
+
+      lines.push(
+        "-예정: " +
+        addKST(ett)
+      );
+
+    }
+
+
+    return lines.join(
+      "\n"
+    );
+
+  }
+
+
+  //========================================================
+  // 실제시간
+  //
+  // 08:15 KST
+  //========================================================
+
+  function makeActualTime(value) {
+
+    const text =
+      String(
+        value || ""
+      ).trim();
+
+
+    if (!text) {
+
+      return "";
+
+    }
+
+
+    return addKST(
+      text
+    );
+
+  }
+
+
+  //========================================================
+  // KST 추가
+  // 이미 KST면 중복 추가하지 않음
+  //========================================================
+
+  function addKST(value) {
+
+    const text =
+      String(
+        value || ""
+      ).trim();
+
+
+    if (!text) {
+
+      return "";
+
+    }
+
+
+    if (
+      /KST$/i.test(
+        text
+      )
+    ) {
+
+      return text;
+
+    }
+
+
+    return (
+      text +
+      " KST"
+    );
+
+  }
+
+
+  //========================================================
+  // 인원
+  //
+  // -승무원 : 4
+  // -승객: 0
+  // -수화물: 10
+  //========================================================
+
+  function makePersonText(f) {
+
+    const crew =
+      f.crew ?? 0;
+
+
+    const pax =
+      f.pax ?? 0;
+
+
+    const baggage =
+      f.baggage ?? 0;
+
+
+    return (
+      "-승무원 : " +
+      crew +
+      "\n" +
+
+      "-승객: " +
+      pax +
+      "\n" +
+
+      "-수화물: " +
+      baggage
+    );
+
+  }
+
+
+  //========================================================
+  // CACHE 조회
+  //========================================================
+
+  async function getCache(date) {
+
+    const url =
+      BACKEND_URL +
+      "?action=cache" +
+      "&date=" +
+      encodeURIComponent(
+        date
+      ) +
+      "&t=" +
+      Date.now();
+
+
+    const response =
+      await fetch(
+        url,
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "HTTP " +
+        response.status
+      );
+
+    }
+
+
+    return await response.json();
+
+  }
+
+
+  //========================================================
+  // 정렬
+  //
+  // O 먼저 → 예정시간
+  // X 나중 → 계획시간
+  //========================================================
+
+  function sortFlights(flights) {
+
+    flights.sort(
+      (a, b) => {
+
+        const aApplied =
+          String(
+            a.applied || ""
+          ).trim()
+          .toUpperCase();
+
+
+        const bApplied =
+          String(
+            b.applied || ""
+          ).trim()
+          .toUpperCase();
+
+
+        // O → X
+
+        if (
+          aApplied !==
+          bApplied
+        ) {
+
+          if (
+            aApplied === "O"
+          ) {
+
+            return -1;
+
+          }
+
+
+          if (
+            bApplied === "O"
+          ) {
+
+            return 1;
+
+          }
+
+
+          if (
+            aApplied === "X"
+          ) {
+
+            return -1;
+
+          }
+
+
+          if (
+            bApplied === "X"
+          ) {
+
+            return 1;
+
+          }
+
+
+          return aApplied.localeCompare(
+            bApplied
+          );
+
+        }
+
+
+        // O → 예정시간
 
         if (
           aApplied === "O"
         ) {
 
-          return -1;
+          return String(
+            a.ett || ""
+          ).localeCompare(
+            String(
+              b.ett || ""
+            )
+          );
 
         }
 
 
-        if (
-          bApplied === "O"
-        ) {
-
-          return 1;
-
-        }
-
+        // X → 계획시간
 
         if (
           aApplied === "X"
         ) {
 
-          return -1;
+          return String(
+            a.stt || ""
+          ).localeCompare(
+            String(
+              b.stt || ""
+            )
+          );
 
         }
 
 
-        if (
-          bApplied === "X"
-        ) {
-
-          return 1;
-
-        }
-
-
-        return aApplied.localeCompare(
-          bApplied
-        );
+        return 0;
 
       }
-
-
-      //====================================================
-      // O → 예정시간
-      //====================================================
-      if (
-        aApplied === "O"
-      ) {
-
-        return String(
-          a.ett || ""
-        ).localeCompare(
-          String(
-            b.ett || ""
-          )
-        );
-
-      }
-
-
-      //====================================================
-      // X → 계획시간
-      //====================================================
-      if (
-        aApplied === "X"
-      ) {
-
-        return String(
-          a.stt || ""
-        ).localeCompare(
-          String(
-            b.stt || ""
-          )
-        );
-
-      }
-
-
-      return 0;
-
-    }
-  );
-
-}
-
-
-
-/************************************************************
- * 결과 표시
- ************************************************************/
-function renderFlights(data) {
-
-  const flights =
-    Array.isArray(
-      data.flights
-    )
-      ? [...data.flights]
-      : [];
-
-
-  //========================================================
-  // 정렬
-  //========================================================
-  sortFlights(
-    flights
-  );
-
-
-  //========================================================
-  // 갱신시간
-  //========================================================
-  updateTimeBox.textContent =
-    data.updatedAt
-      ? "최종 갱신: " +
-        data.updatedAt
-      : "최종 갱신: -";
-
-
-  statusBox.textContent =
-    (data.date || "") +
-    " / " +
-    flights.length +
-    "건";
-
-
-  //========================================================
-  // 결과 없음
-  //========================================================
-  if (
-    flights.length === 0
-  ) {
-
-    resultBody.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="11"
-          class="empty"
-        >
-          해당 날짜 예약현황이 없습니다.
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
-
-  }
-
-
-
-  //========================================================
-  // 데이터 표시
-  //========================================================
-  resultBody.innerHTML =
-
-    flights
-      .map(
-        f => {
-
-          const applied =
-            String(
-              f.applied || ""
-            ).trim();
-
-
-          const tof =
-            String(
-              f.tof || ""
-            ).trim()
-            .toUpperCase();
-
-
-          const company =
-            String(
-              f.company || ""
-            ).trim();
-
-
-          //================================================
-          // 조건부서식
-          //================================================
-          const rowClasses = [];
-
-
-          // X → 회색
-          if (
-            applied === "X"
-          ) {
-
-            rowClasses.push(
-              "flight-row-x"
-            );
-
-          }
-
-
-          // 국제선 I → 파란색
-          if (
-            tof === "I"
-          ) {
-
-            rowClasses.push(
-              "flight-row-i"
-            );
-
-          }
-
-
-          // SK 자가용 → 빨간색
-          if (
-            company ===
-            "에스케이텔레콤(주)-자가용"
-          ) {
-
-            rowClasses.push(
-              "flight-row-skt"
-            );
-
-          }
-
-
-          const badgeClass =
-            applied === "O"
-              ? "badge-o"
-              : "badge-x";
-
-
-
-          return `
-
-            <tr
-              class="${rowClasses.join(" ")}"
-            >
-
-
-              <!-- 신청여부 -->
-              <td>
-
-                <span
-                  class="badge ${badgeClass}"
-                >
-                  ${esc(applied)}
-                </span>
-
-              </td>
-
-
-              <!-- 시간 -->
-              <td class="time-cell">
-
-                ${esc(f.time)}
-
-              </td>
-
-
-              <!-- 항공기 -->
-              <td class="aircraft-cell">
-
-                ${esc(f.aircraft)}
-
-              </td>
-
-
-              <!-- 구간 -->
-              <td class="route-cell">
-
-                ${esc(f.route)}
-
-              </td>
-
-
-              <!-- 운항목적 -->
-              <td>
-
-                ${esc(f.purpose)}
-
-              </td>
-
-
-              <!-- 운항사 -->
-              <td>
-
-                ${esc(f.company)}
-
-              </td>
-
-
-              <!-- 인원 -->
-              <td class="people-cell">
-
-                ${esc(f.people)}
-
-              </td>
-
-
-              <!-- 비고 -->
-              <td class="remark">
-
-                ${esc(f.remark)}
-
-              </td>
-
-
-              <!-- 취소 -->
-              <td>
-
-                ${esc(f.cancel)}
-
-              </td>
-
-
-              <!-- 주기장 -->
-              <td>
-
-                ${esc(f.stand)}
-
-              </td>
-
-
-              <!-- 실제시간 -->
-              <td class="actual-time-cell">
-
-                ${esc(f.att)}
-
-              </td>
-
-
-            </tr>
-
-          `;
-
-        }
-      )
-      .join("");
-
-}
-
-
-
-/************************************************************
- * 조회
- ************************************************************/
-async function search() {
-
-  const date =
-    dateInput.value;
-
-
-  if (!date) {
-
-    alert(
-      "조회할 날짜를 선택하세요."
     );
 
-    return;
+  }
+
+
+  //========================================================
+  // 팝업 열기
+  //========================================================
+
+  function openDetail(f) {
+
+    modalTime.textContent =
+      makeTimeText(f);
+
+
+    modalAircraft.textContent =
+      makeAircraftText(f);
+
+
+    modalRoute.textContent =
+      makeRouteText(f);
+
+
+    modalCompany.textContent =
+      String(
+        f.company || ""
+      ).trim();
+
+
+    modalPerson.textContent =
+      makePersonText(f);
+
+
+    const remark =
+      cleanRemark(
+        f.remark
+      );
+
+
+    modalRemark.textContent =
+      remark ||
+      "비고 내용이 없습니다.";
+
+
+    detailModal.classList.add(
+      "show"
+    );
+
+
+    document.body.style.overflow =
+      "hidden";
 
   }
 
 
-  searchBtn.disabled =
-    true;
+  //========================================================
+  // 팝업 닫기
+  //========================================================
+
+  function closeDetail() {
+
+    detailModal.classList.remove(
+      "show"
+    );
 
 
-  statusBox.textContent =
-    "캐시 데이터를 불러오는 중...";
+    document.body.style.overflow =
+      "";
+
+  }
 
 
-  try {
+  //========================================================
+  // 결과 표시
+  //========================================================
 
-    const data =
-      await getCache(
-        date
-      );
+  function renderFlights(data) {
+
+    const flights =
+      Array.isArray(
+        data.flights
+      )
+        ? [...data.flights]
+        : [];
 
 
-    if (!data.ok) {
+    // 정렬
 
-      throw new Error(
-        data.error ||
-        "CACHE 조회 실패"
-      );
+    sortFlights(
+      flights
+    );
+
+
+    // 갱신시간
+
+    updateTimeBox.textContent =
+      data.updatedAt
+        ? "최종 갱신: " +
+          data.updatedAt
+        : "최종 갱신: -";
+
+
+    // 건수
+
+    statusBox.textContent =
+      (data.date || "") +
+      " / " +
+      flights.length +
+      "건";
+
+
+    // 데이터 없음
+
+    if (
+      flights.length === 0
+    ) {
+
+      resultBody.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="10"
+            class="empty"
+          >
+            해당 날짜 예약현황이 없습니다.
+          </td>
+
+        </tr>
+
+      `;
+
+      return;
 
     }
 
 
+    resultBody.innerHTML =
+      flights
+        .map(
+          (f, index) => {
+
+
+            const applied =
+              String(
+                f.applied || ""
+              ).trim()
+              .toUpperCase();
+
+
+            const tof =
+              String(
+                f.tof || ""
+              ).trim()
+              .toUpperCase();
+
+
+            const company =
+              String(
+                f.company || ""
+              ).trim();
+
+
+            const remark =
+              cleanRemark(
+                f.remark
+              );
+
+
+            //================================================
+            // 조건부서식
+            //================================================
+
+            const rowClasses = [];
+
+
+            // X → 회색
+
+            if (
+              applied === "X"
+            ) {
+
+              rowClasses.push(
+                "flight-row-x"
+              );
+
+            }
+
+
+            // 국제선 → 파란색
+
+            if (
+              tof === "I"
+            ) {
+
+              rowClasses.push(
+                "flight-row-i"
+              );
+
+            }
+
+
+            // SK 자가용 → 빨간색
+
+            if (
+              company ===
+              "에스케이텔레콤(주)-자가용"
+            ) {
+
+              rowClasses.push(
+                "flight-row-skt"
+              );
+
+            }
+
+
+            const buttonClass =
+              applied === "O"
+                ? "apply-btn-o"
+                : "apply-btn-x";
+
+
+            const buttonText =
+              applied === "O"
+                ? "O"
+                : "X";
+
+
+            return `
+
+              <tr
+                class="${rowClasses.join(" ")}"
+              >
+
+
+                <!-- 신청여부 -->
+
+                <td class="col-applied">
+
+                  <button
+                    type="button"
+                    class="apply-btn ${buttonClass}"
+                    data-flight-index="${index}"
+                    title="상세 내용 보기"
+                  >
+                    ${esc(buttonText)}
+                  </button>
+
+                </td>
+
+
+                <!-- 시간 -->
+
+                <td
+                  class="col-time time-cell"
+                >
+                  ${esc(
+                    makeTimeText(f)
+                  )}
+                </td>
+
+
+                <!-- 항공기 -->
+
+                <td
+                  class="col-aircraft aircraft-cell"
+                >
+                  ${esc(
+                    makeAircraftText(f)
+                  ).replace(
+                    /\n/g,
+                    "<br>"
+                  )}
+                </td>
+
+
+                <!-- 구간 -->
+
+                <td
+                  class="col-route route-cell"
+                >
+                  ${esc(
+                    makeRouteText(f)
+                  ).replace(
+                    /\n/g,
+                    "<br>"
+                  )}
+                </td>
+
+
+                <!-- 운항사 -->
+
+                <td
+                  class="col-company"
+                >
+                  ${esc(
+                    f.company
+                  )}
+                </td>
+
+
+                <!-- 인원 -->
+
+                <td
+                  class="col-person person-cell"
+                >
+                  ${esc(
+                    makePersonText(f)
+                  ).replace(
+                    /\n/g,
+                    "<br>"
+                  )}
+                </td>
+
+
+                <!-- 비고 -->
+
+                <td
+                  class="col-remark remark"
+                >
+                  ${esc(
+                    remark
+                  ).replace(
+                    /\n/g,
+                    "<br>"
+                  )}
+                </td>
+
+
+                <!-- 취소여부 -->
+
+                <td
+                  class="col-cancel"
+                >
+                  ${esc(
+                    f.cancel
+                  )}
+                </td>
+
+
+                <!-- 주기장 -->
+
+                <td
+                  class="col-stand"
+                >
+                  ${esc(
+                    f.stand
+                  )}
+                </td>
+
+
+                <!-- 실제시간 -->
+
+                <td
+                  class="col-att"
+                >
+                  ${esc(
+                    makeActualTime(
+                      f.att
+                    )
+                  )}
+                </td>
+
+
+              </tr>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
     //======================================================
-    // 캐시 없음
+    // 버튼 이벤트
     //======================================================
-    if (
-      data.status ===
-      "NO_CACHE"
-    ) {
+
+    const buttons =
+      resultBody.querySelectorAll(
+        ".apply-btn"
+      );
+
+
+    buttons.forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const index =
+              Number(
+                button.dataset.flightIndex
+              );
+
+
+            const flight =
+              flights[index];
+
+
+            if (flight) {
+
+              openDetail(
+                flight
+              );
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+  }
+
+
+  //========================================================
+  // 조회
+  //========================================================
+
+  async function search() {
+
+    const date =
+      dateInput.value;
+
+
+    if (!date) {
+
+      alert(
+        "조회할 날짜를 선택하세요."
+      );
+
+      return;
+
+    }
+
+
+    searchBtn.disabled =
+      true;
+
+
+    statusBox.textContent =
+      "캐시 데이터를 불러오는 중...";
+
+
+    try {
+
+      const data =
+        await getCache(
+          date
+        );
+
+
+      if (!data.ok) {
+
+        throw new Error(
+          data.error ||
+          "CACHE 조회 실패"
+        );
+
+      }
+
+
+      //====================================================
+      // 캐시 없음
+      //====================================================
+
+      if (
+        data.status ===
+        "NO_CACHE"
+      ) {
+
+        updateTimeBox.textContent =
+          "최종 갱신: -";
+
+
+        statusBox.textContent =
+          "아직 이 날짜의 캐시가 없습니다.";
+
+
+        resultBody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="10"
+              class="empty"
+            >
+              Mini PC의 다음 캐시 갱신을 기다려주세요.
+            </td>
+
+          </tr>
+
+        `;
+
+
+        return;
+
+      }
+
+
+      renderFlights(
+        data
+      );
+
+
+    } catch (err) {
+
+      console.error(
+        err
+      );
+
 
       updateTimeBox.textContent =
         "최종 갱신: -";
 
 
       statusBox.textContent =
-        "아직 이 날짜의 캐시가 없습니다.";
+        "조회 오류: " +
+        err.message;
 
 
       resultBody.innerHTML = `
@@ -1410,86 +2569,89 @@ async function search() {
         <tr>
 
           <td
-            colspan="11"
+            colspan="10"
             class="empty"
           >
-            Mini PC의 다음 캐시 갱신을 기다려주세요.
+            캐시 데이터를 가져오지 못했습니다.
           </td>
 
         </tr>
 
       `;
 
+    } finally {
 
-      return;
+      searchBtn.disabled =
+        false;
 
     }
 
-
-    renderFlights(
-      data
-    );
-
-
-  } catch (err) {
-
-    console.error(
-      err
-    );
-
-
-    updateTimeBox.textContent =
-      "최종 갱신: -";
-
-
-    statusBox.textContent =
-      "조회 오류: " +
-      err.message;
-
-
-    resultBody.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="11"
-          class="empty"
-        >
-          캐시 데이터를 가져오지 못했습니다.
-        </td>
-
-      </tr>
-
-    `;
-
-
-  } finally {
-
-    searchBtn.disabled =
-      false;
-
   }
 
-}
+
+  //========================================================
+  // 이벤트
+  //========================================================
+
+  searchBtn.addEventListener(
+    "click",
+    search
+  );
 
 
+  // 팝업 닫기
 
-/************************************************************
- * 이벤트
- ************************************************************/
-
-searchBtn.addEventListener(
-  "click",
-  search
-);
+  modalClose.addEventListener(
+    "click",
+    closeDetail
+  );
 
 
+  // 바깥쪽 클릭
 
-/************************************************************
- * 최초 실행
- ************************************************************/
+  detailModal.addEventListener(
+    "click",
+    event => {
 
-setDateRange();
+      if (
+        event.target ===
+        detailModal
+      ) {
+
+        closeDetail();
+
+      }
+
+    }
+  );
+
+
+  // ESC
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Escape" &&
+        detailModal.classList.contains(
+          "show"
+        )
+      ) {
+
+        closeDetail();
+
+      }
+
+    }
+  );
+
+
+  //========================================================
+  // 최초 실행
+  //========================================================
+
+  setDateRange();
 
 </script>
 
