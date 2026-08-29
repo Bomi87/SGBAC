@@ -1392,91 +1392,62 @@
     /* =========================================================
        구간 만들기
        ========================================================= */
+function buildRoute(f) {
+  const route = safe(f.route);
+  const purpose = safe(f.purpose);
+  const relativeAirport = safe(f.nation);
 
-    function buildRoute(f) {
-      /*
-       * 백엔드에서 route가 BSL-GMP로 내려오는 경우.
-       */
-      const route = safe(f.route);
+  const tofRaw = String(f.tof || '').trim().toUpperCase();
+  const aodRaw = String(f.aod || '').trim();
 
-      /*
-       * 이미 백엔드에서 전체 문장을 내려주는 경우도 대응.
-       */
-      const purpose = cleanPurpose(f.purpose);
+  let tofText = '';
+  if (tofRaw === 'I') {
+    tofText = '국제선';
+  } else if (tofRaw === 'D') {
+    tofText = '국내선';
+  } else {
+    tofText = safe(f.tof);
+  }
 
-      /*
-       * 상대공항 기존 데이터의 route가 상대공항 정보를
-       * 이미 포함하면 그대로 사용.
-       *
-       * 예:
-       * BSL-GMP / 국제선 도착 (상대공항: 스위스)
-       */
-      let mainRoute = route;
+  let aodText = '';
+  if (aodRaw === 'D' || aodRaw === '출발') {
+    aodText = '출발';
+  } else if (aodRaw === 'A' || aodRaw === '도착') {
+    aodText = '도착';
+  } else {
+    aodText = aodRaw;
+  }
 
-      /*
-       * 혹시 route가 단순히 BSL-GMP만 오는 경우에는
-       * aod / tof를 이용해서 보완.
-       */
-      if (mainRoute && !mainRoute.includes('/')) {
-        const aod = String(f.aod || '')
-          .trim()
-          .toUpperCase();
+  const mainRoute = `${route} / ${tofText} ${aodText}`;
 
-        const tof = String(f.tof || '').trim();
+  return `
+    <div class="route-box">
+      <span class="route-main">
+        ${mainRoute}
+      </span>
 
-        let arrivalDeparture = '';
-
-        if (aod === 'A' || aod === '도착') {
-          arrivalDeparture = '국제선 도착';
-        } else if (aod === 'D' || aod === '출발') {
-          arrivalDeparture = '국제선 출발';
-        }
-
-        if (arrivalDeparture) {
-          mainRoute =
-            route +
-            ' / ' +
-            arrivalDeparture;
-        }
+      ${
+        relativeAirport
+          ? `
+            <span class="route-relative">
+              (상대공항: ${escapeHtml(relativeAirport)})
+            </span>
+          `
+          : ''
       }
 
-      /*
-       * route에 줄바꿈이 들어있는 경우 안전하게 처리.
-       */
-      mainRoute = escapeHtml(mainRoute)
-        .replace(/\n/g, '<br>');
-
-      const relativeAirport = safe(f.nation);
-
-      return `
-        <div class="route-box">
-          <span class="route-main">
-            ${mainRoute}
-          </span>
-
-          ${
-            relativeAirport
-              ? `
-                <span class="route-relative">
-                  (상대공항: ${escapeHtml(relativeAirport)})
-                </span>
-              `
-              : ''
-          }
-
-          ${
-            purpose
-              ? `
-                <span class="route-purpose">
-                  *${escapeHtml(purpose)}
-                </span>
-              `
-              : ''
-          }
-        </div>
-      `;
-    }
-
+      ${
+        purpose
+          ? `
+            <span class="route-purpose">
+              *${escapeHtml(purpose)}
+            </span>
+          `
+          : ''
+      }
+    </div>
+  `;
+}
     /* =========================================================
        팝업
        ========================================================= */
@@ -1618,64 +1589,62 @@
        팝업 구간
        ========================================================= */
 
-    function buildRouteForModal(f) {
-      const route = safe(f.route);
-      const purpose = cleanPurpose(f.purpose);
+function buildRouteForModal(f) {
+  const route = safe(f.route);
+  const purpose = safe(f.purpose);
+  const relativeAirport = safe(f.nation);
 
-      let mainRoute = route;
+  const tofRaw = String(f.tof || '').trim().toUpperCase();
+  const aodRaw = String(f.aod || '').trim();
 
-      if (mainRoute && !mainRoute.includes('/')) {
-        const aod = String(f.aod || '')
-          .trim()
-          .toUpperCase();
+  let tofText = '';
+  if (tofRaw === 'I') {
+    tofText = '국제선';
+  } else if (tofRaw === 'D') {
+    tofText = '국내선';
+  } else {
+    tofText = safe(f.tof);
+  }
 
-        let text = '';
+  let aodText = '';
+  if (aodRaw === 'D' || aodRaw === '출발') {
+    aodText = '출발';
+  } else if (aodRaw === 'A' || aodRaw === '도착') {
+    aodText = '도착';
+  } else {
+    aodText = aodRaw;
+  }
 
-        if (aod === 'A' || aod === '도착') {
-          text = '국제선 도착';
-        } else if (aod === 'D' || aod === '출발') {
-          text = '국제선 출발';
-        }
+  const mainRoute = `${route} / ${tofText} ${aodText}`;
 
-        if (text) {
-          mainRoute =
-            route +
-            ' / ' +
-            text;
-        }
+  return `
+    <div class="detail-route">
+      <div class="detail-route-main">
+        ${escapeHtml(mainRoute)}
+      </div>
+
+      ${
+        relativeAirport
+          ? `
+            <div class="detail-route-relative">
+              (상대공항: ${escapeHtml(relativeAirport)})
+            </div>
+          `
+          : ''
       }
 
-      const relativeAirport = safe(f.nation);
-
-      return `
-        <div class="detail-route">
-          <div class="detail-route-main">
-            ${escapeHtml(mainRoute)}
-          </div>
-
-          ${
-            relativeAirport
-              ? `
-                <div class="detail-route-relative">
-                  (상대공항: ${escapeHtml(relativeAirport)})
-                </div>
-              `
-              : ''
-          }
-
-          ${
-            purpose
-              ? `
-                <div class="detail-route-purpose">
-                  *${escapeHtml(purpose)}
-                </div>
-              `
-              : ''
-          }
-        </div>
-      `;
-    }
-
+      ${
+        purpose
+          ? `
+            <div class="detail-route-purpose">
+              *${escapeHtml(purpose)}
+            </div>
+          `
+          : ''
+      }
+    </div>
+  `;
+}
     /* =========================================================
        팝업 닫기
        ========================================================= */
