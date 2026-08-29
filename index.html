@@ -784,11 +784,13 @@
       background: #f8fafc;
       border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 2px;
+      padding: 8px 12px;
+      margin-top: 0;
     }
 
     .detail-remark {
+      margin: 0;
+      padding: 0;
       white-space: pre-line;
       color: #334155;
       font-size: 13px;
@@ -1787,11 +1789,7 @@
           </div>
 
           <div class="detail-value">
-            <div class="detail-remark-wrap">
-<div class="detail-remark">
-                ${escapeHtml(remark || '비고 없음')}
-              </div>
-            </div>
+            <div class="detail-remark-wrap"><div class="detail-remark">${escapeHtml(remark || '비고 없음')}</div></div>
           </div>
         </div>
       `;
