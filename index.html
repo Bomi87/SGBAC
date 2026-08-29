@@ -81,6 +81,35 @@
       box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     }
 
+    .search-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .search-controls {
+      min-width: 0;
+    }
+
+    .sgbac-logo-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+      min-width: 0;
+    }
+
+    .sgbac-logo {
+      display: block;
+      width: auto;
+      height: 58px;
+      max-width: 220px;
+      object-fit: contain;
+    }
+
     .search-label {
       display: block;
       margin-bottom: 7px;
@@ -791,6 +820,26 @@
         padding: 11px 12px;
       }
 
+      .search-main {
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-controls {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .sgbac-logo-wrap {
+        flex: 0 0 auto;
+        padding-right: 0;
+      }
+
+      .sgbac-logo {
+        height: 42px;
+        max-width: 140px;
+      }
+
       .search-row {
         display: flex;
         width: 100%;
@@ -888,6 +937,12 @@
        아주 작은 모바일
        ========================================================= */
     @media (max-width: 430px) {
+      .sgbac-logo {
+        height: 36px;
+        max-width: 105px;
+      }
+
+
       .search-row {
         width: 100%;
       }
@@ -950,21 +1005,37 @@
          날짜 조회
          ====================================================== -->
     <div class="search-panel">
-      <label class="search-label" for="dateInput">조회일</label>
-      <div class="search-row">
-        <input
-          type="date"
-          id="dateInput"
-          class="date-input"
-          aria-label="조회일"
-        >
-        <button
-          type="button"
-          id="searchButton"
-          class="search-button"
-        >
-          조회
-        </button>
+      <div class="search-main">
+
+        <div class="search-controls">
+          <label class="search-label" for="dateInput">조회일</label>
+
+          <div class="search-row">
+            <input
+              type="date"
+              id="dateInput"
+              class="date-input"
+              aria-label="조회일"
+            >
+
+            <button
+              type="button"
+              id="searchButton"
+              class="search-button"
+            >
+              조회
+            </button>
+          </div>
+        </div>
+
+        <div class="sgbac-logo-wrap">
+          <img
+            src="SGBAC_LOGO.png"
+            alt="SGBAC"
+            class="sgbac-logo"
+          >
+        </div>
+
       </div>
     </div>
 
