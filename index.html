@@ -17,7 +17,7 @@
     body {
       margin: 0;
       padding: 0;
-      background: #f4f6f8;
+      background: #f3f6fb;
       color: #111827;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Noto Sans KR", Arial, sans-serif;
@@ -41,6 +41,97 @@
       padding: 12px 14px 30px;
     }
 
+
+    /* =========================================================
+       페이지 헤더 / 날짜 조회
+       ========================================================= */
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 4px 0 12px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #172033;
+    }
+
+    .page-subtitle {
+      margin-top: 5px;
+      color: #7b8798;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .search-panel {
+      background: #ffffff;
+      border: 1px solid #dfe3e8;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .search-label {
+      display: block;
+      margin-bottom: 7px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 88px;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .date-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #1e293b;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .date-input:focus {
+      border-color: #7aa7e8;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+    }
+
+    .search-button {
+      height: 40px;
+      border: 0;
+      border-radius: 7px;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(37, 99, 235, 0.18);
+    }
+
+    .search-button:hover {
+      background: #1d4ed8;
+    }
+
+    .search-button:disabled {
+      opacity: 0.62;
+      cursor: default;
+    }
+
     /* =========================================================
        상단 영역
        ========================================================= */
@@ -48,11 +139,11 @@
       background: #ffffff;
       border: 1px solid #dfe3e8;
       border-radius: 8px;
-      min-height: 42px;
+      min-height: 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 7px 13px;
+      padding: 8px 13px;
       margin-bottom: 10px;
       font-size: 13px;
     }
@@ -184,11 +275,11 @@
     .data-table tbody td {
       border-right: 1px solid #e1e6eb;
       border-bottom: 1px solid #e1e6eb;
-      padding: 10px 8px;
-      vertical-align: middle;
-      color: #0066cc;
+      padding: 6px 8px;
+      vertical-align: top;
+      color: #253247;
       font-weight: 500;
-      line-height: 1.45;
+      line-height: 1.35;
       word-break: keep-all;
       overflow-wrap: break-word;
     }
@@ -346,13 +437,37 @@
     .remark-cell {
       text-align: left;
       white-space: pre-line;
-      line-height: 1.45;
+      line-height: 1.32;
       font-size: 12px;
       word-break: break-word;
     }
 
     .remark-text {
       white-space: pre-line;
+    }
+
+
+    /* =========================================================
+       조건부서식
+       - X : 회색 배경
+       - 국제선(I) : 차분한 파란 글씨
+       - SK 자가용 : 딥레드 (국제선보다 우선)
+       ========================================================= */
+    .data-table tbody tr.row-x td {
+      background: #eef1f4;
+    }
+
+    .data-table tbody tr.row-i td {
+      color: #1769aa;
+    }
+
+    .data-table tbody tr.row-skt td {
+      color: #b23a3a !important;
+      font-weight: 650;
+    }
+
+    .data-table tbody tr.row-skt .apply-button {
+      color: #b23a3a !important;
     }
 
     /* =========================================================
@@ -364,7 +479,7 @@
     }
 
     .cancel-n {
-      color: #0066cc;
+      color: inherit;
     }
 
     /* =========================================================
@@ -475,7 +590,7 @@
       display: grid;
       grid-template-columns: 72px minmax(0, 1fr);
       gap: 14px;
-      padding: 14px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #e5e7eb;
     }
 
@@ -492,7 +607,7 @@
     .detail-value {
       color: #1e293b;
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.45;
       min-width: 0;
       word-break: keep-all;
       overflow-wrap: anywhere;
@@ -550,7 +665,7 @@
       background: #f8fafc;
       border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 14px;
+      padding: 10px 12px;
       margin-top: 2px;
     }
 
@@ -558,14 +673,14 @@
       font-size: 13px;
       font-weight: 800;
       color: #475569;
-      margin-bottom: 9px;
+      margin-bottom: 6px;
     }
 
     .detail-remark {
       white-space: pre-line;
       color: #334155;
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.45;
       word-break: break-word;
     }
 
@@ -574,7 +689,33 @@
        ========================================================= */
     @media (max-width: 800px) {
       .app {
-        padding: 8px 6px 20px;
+        padding: 10px 8px 20px;
+      }
+
+      .page-head {
+        margin: 3px 2px 10px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 12px;
+      }
+
+      .search-panel {
+        padding: 11px 12px;
+      }
+
+      .search-row {
+        grid-template-columns: minmax(0, 1fr) 76px;
+        gap: 7px;
+      }
+
+      .date-input,
+      .search-button {
+        height: 40px;
       }
 
       .topbar {
@@ -598,7 +739,8 @@
       }
 
       .data-table tbody td {
-        padding: 9px 7px;
+        padding: 6px 7px;
+        vertical-align: top;
       }
 
       .remark-cell {
@@ -627,7 +769,7 @@
       .detail-row {
         grid-template-columns: 64px minmax(0, 1fr);
         gap: 10px;
-        padding: 13px 0;
+        padding: 9px 0;
       }
 
       .detail-label {
@@ -643,6 +785,10 @@
        아주 작은 모바일
        ========================================================= */
     @media (max-width: 430px) {
+      .search-row {
+        grid-template-columns: minmax(0, 1fr) 72px;
+      }
+
       .topbar {
         align-items: flex-start;
       }
@@ -671,7 +817,39 @@
   <div class="app">
 
     <!-- =====================================================
-         상단
+         제목
+         ====================================================== -->
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">SGBAC 예약현황</h1>
+        <div class="page-subtitle">예약 및 운항 현황</div>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         날짜 조회
+         ====================================================== -->
+    <div class="search-panel">
+      <label class="search-label" for="dateInput">조회일</label>
+      <div class="search-row">
+        <input
+          type="date"
+          id="dateInput"
+          class="date-input"
+          aria-label="조회일"
+        >
+        <button
+          type="button"
+          id="searchButton"
+          class="search-button"
+        >
+          조회
+        </button>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         갱신 정보
          ====================================================== -->
     <div class="topbar">
       <div class="update-info">
@@ -786,6 +964,8 @@
        DOM
        ========================================================= */
 
+    const dateInput = document.getElementById('dateInput');
+    const searchButton = document.getElementById('searchButton');
     const flightBody = document.getElementById('flightBody');
     const updateText = document.getElementById('updateText');
     const dataText = document.getElementById('dataText');
@@ -799,6 +979,7 @@
        ========================================================= */
 
     document.addEventListener('DOMContentLoaded', () => {
+      initializeDateSelector();
       loadFlights();
     });
 
@@ -817,12 +998,62 @@
       }).format(now);
     }
 
+
+    /* =========================================================
+       날짜 선택 범위 : 오늘 ~ 오늘+6일
+       날짜를 바꾸는 것만으로는 조회하지 않고,
+       반드시 조회 버튼을 눌렀을 때만 데이터를 읽습니다.
+       ========================================================= */
+
+    function initializeDateSelector() {
+      const today = getTodayKST();
+      const maxDate = addDaysToDateText(today, 6);
+
+      dateInput.min = today;
+      dateInput.max = maxDate;
+
+      if (targetDate < today || targetDate > maxDate) {
+        targetDate = today;
+      }
+
+      dateInput.value = targetDate;
+    }
+
+    function addDaysToDateText(dateText, days) {
+      const parts = String(dateText).split('-').map(Number);
+      const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+      date.setUTCDate(date.getUTCDate() + days);
+
+      const yyyy = date.getUTCFullYear();
+      const mm = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(date.getUTCDate()).padStart(2, '0');
+
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    searchButton.addEventListener('click', () => {
+      const selected = dateInput.value;
+
+      if (!selected) {
+        return;
+      }
+
+      targetDate = selected;
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('date', targetDate);
+      history.replaceState(null, '', url);
+
+      loadFlights();
+    });
+
     /* =========================================================
        데이터 조회
        ========================================================= */
 
     async function loadFlights() {
       setStatus('loading');
+      searchButton.disabled = true;
 
       flightBody.innerHTML = `
         <tr>
@@ -884,6 +1115,8 @@
 
         updateHeader('', 0);
         setStatus('error');
+      } finally {
+        searchButton.disabled = false;
       }
     }
 
@@ -977,6 +1210,23 @@
       const applyText =
         applied === 'X' ? 'X' : 'O';
 
+      /* 조건부서식 */
+      const tof = String(f.tof || '').trim().toUpperCase();
+      const companyRaw = String(f.company || '').trim();
+      const rowClasses = [];
+
+      if (applied === 'X') {
+        rowClasses.push('row-x');
+      }
+
+      if (tof === 'I') {
+        rowClasses.push('row-i');
+      }
+
+      if (companyRaw === '에스케이텔레콤(주)-자가용') {
+        rowClasses.push('row-skt');
+      }
+
       /* 시간 */
       const planned = formatKST(f.stt);
       const expected = formatKST(f.ett);
@@ -997,7 +1247,7 @@
       const baggage = displayNumber(f.baggage);
 
       /* 비고 */
-      const remark = safe(f.remark);
+      const remark = cleanRemark(f.remark);
 
       /* 취소 */
       const cancel = safe(f.cancel).toUpperCase();
@@ -1011,7 +1261,7 @@
       const actual = formatKST(f.att);
 
       return `
-        <tr>
+        <tr class="${rowClasses.join(' ')}">
           <!-- 신청여부 -->
           <td class="apply-cell">
             <button
@@ -1200,7 +1450,7 @@
       const pax = displayNumber(f.pax);
       const baggage = displayNumber(f.baggage);
 
-      const remark = safe(f.remark);
+      const remark = cleanRemark(f.remark);
 
       modalBody.innerHTML = `
         <!-- 시간 -->
@@ -1649,6 +1899,29 @@
       text = text.replace(/^\*+\s*/, '');
 
       return text;
+    }
+
+
+    /* =========================================================
+       비고 정리
+       - 줄바꿈은 유지
+       - 불필요하게 연속된 빈 줄은 압축
+       - 각 줄 앞뒤의 과도한 공백은 제거
+       ========================================================= */
+
+    function cleanRemark(value) {
+      if (value === null || value === undefined) {
+        return '';
+      }
+
+      return String(value)
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .split('\n')
+        .map(line => line.trim())
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
     }
 
     /* =========================================================
