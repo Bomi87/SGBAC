@@ -1488,14 +1488,25 @@
           .trim()
           .toUpperCase();
 
-        const tof = String(f.tof || '').trim();
+        const tof = String(f.tof || '').trim().toUpperCase();
+
+        let flightTypeText = '';
+        if (tof === 'I') {
+          flightTypeText = '국제선';
+        } else if (tof === 'D') {
+          flightTypeText = '국내선';
+        }
 
         let arrivalDeparture = '';
 
         if (aod === 'A' || aod === '도착') {
-          arrivalDeparture = '국제선 도착';
+          arrivalDeparture = flightTypeText
+            ? flightTypeText + ' 도착'
+            : '도착';
         } else if (aod === 'D' || aod === '출발') {
-          arrivalDeparture = '국제선 출발';
+          arrivalDeparture = flightTypeText
+            ? flightTypeText + ' 출발'
+            : '출발';
         }
 
         if (arrivalDeparture) {
@@ -1695,12 +1706,25 @@
           .trim()
           .toUpperCase();
 
+        const tof = String(f.tof || '').trim().toUpperCase();
+
+        let flightTypeText = '';
+        if (tof === 'I') {
+          flightTypeText = '국제선';
+        } else if (tof === 'D') {
+          flightTypeText = '국내선';
+        }
+
         let text = '';
 
         if (aod === 'A' || aod === '도착') {
-          text = '국제선 도착';
+          text = flightTypeText
+            ? flightTypeText + ' 도착'
+            : '도착';
         } else if (aod === 'D' || aod === '출발') {
-          text = '국제선 출발';
+          text = flightTypeText
+            ? flightTypeText + ' 출발'
+            : '출발';
         }
 
         if (text) {
