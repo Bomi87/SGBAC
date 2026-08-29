@@ -1,1465 +1,1152 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
+<meta charset="UTF-8">
 
-  <meta charset="UTF-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<title>SGBAC 예약 조회</title>
 
-  <title>SGBAC 예약현황</title>
+<style>
 
+/* =========================================================
+   기본
+========================================================= */
 
-  <style>
+* {
+  box-sizing: border-box;
+}
 
-    /* =====================================================
-       기본
-    ===================================================== */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
 
-    * {
-      box-sizing: border-box;
-    }
+body {
+  font-family:
+    Arial,
+    "Noto Sans KR",
+    "Malgun Gothic",
+    sans-serif;
 
+  background: #f3f6fa;
+  color: #172033;
 
-    html {
-      background: #eef2f6;
-    }
+  -webkit-font-smoothing: antialiased;
+}
 
 
-    body {
+/* =========================================================
+   전체 컨테이너
+========================================================= */
 
-      margin: 0;
+.app {
+  width: 100%;
+  max-width: 1750px;
+  margin: 0 auto;
+  padding: 14px 22px 30px;
+}
 
-      font-family:
-        Arial,
-        "Noto Sans KR",
-        sans-serif;
 
-      background:
-        linear-gradient(
-          180deg,
-          #eef3f8 0%,
-          #f7f9fb 100%
-        );
+/* =========================================================
+   상단
+========================================================= */
 
-      color: #172033;
+.topbar {
+  background: #ffffff;
 
-      font-size: 14px;
-    }
+  border: 1px solid #dce2e9;
+  border-radius: 8px;
 
+  min-height: 42px;
 
-    button,
-    input {
-      font-family: inherit;
-    }
+  display: flex;
+  align-items: center;
 
+  padding: 0 14px;
 
-    .container {
+  margin-bottom: 8px;
 
-      width: 100%;
+  font-size: 13px;
+}
 
-      max-width: 1900px;
+.update-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 
-      margin: 0 auto;
+  min-width: 0;
+}
 
-      padding: 16px 20px 24px;
-    }
+.update-main {
+  font-weight: 700;
+  color: #172033;
+}
 
+.update-data {
+  color: #667085;
+  white-space: nowrap;
+}
 
-    /* =====================================================
-       제목
-    ===================================================== */
 
-    .page-header {
+/* =========================================================
+   날짜 영역
+========================================================= */
 
-      display: flex;
+.controlbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-      align-items: center;
+  margin-bottom: 8px;
+}
 
-      justify-content: space-between;
+.date-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-      gap: 15px;
+.date-input {
+  height: 34px;
 
-      margin-bottom: 12px;
-    }
+  border: 1px solid #cfd6df;
+  border-radius: 6px;
 
+  background: #ffffff;
 
-    .page-title {
+  padding: 0 10px;
 
-      margin: 0;
+  font-size: 13px;
+}
 
-      font-size: 23px;
+.date-btn {
+  height: 34px;
 
-      font-weight: 800;
+  border: 0;
+  border-radius: 6px;
 
-      letter-spacing: -0.5px;
+  padding: 0 14px;
 
-      color: #172033;
-    }
+  background: #2563eb;
+  color: #ffffff;
 
+  font-weight: 700;
 
-    .page-subtitle {
+  cursor: pointer;
+}
 
-      margin-top: 4px;
+.date-btn:hover {
+  background: #1d4ed8;
+}
 
-      font-size: 12px;
 
-      color: #718096;
-    }
+/* =========================================================
+   상태
+========================================================= */
 
+.status {
+  font-size: 12px;
+  color: #667085;
+}
 
-    /* =====================================================
-       검색 영역
-    ===================================================== */
+.status.error {
+  color: #dc2626;
+}
 
-    .search-box {
+.status.success {
+  color: #16a34a;
+}
 
-      display: flex;
 
-      align-items: center;
+/* =========================================================
+   테이블
+========================================================= */
 
-      gap: 9px;
+.table-wrap {
+  width: 100%;
 
-      flex-wrap: wrap;
+  background: #ffffff;
 
-      padding: 11px 13px;
+  border: 1px solid #d8dee7;
+  border-radius: 8px;
 
-      margin-bottom: 9px;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-      background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03);
+}
 
-      border: 1px solid #dbe2ea;
+.flight-table {
+  width: 100%;
 
-      border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
 
-      box-shadow:
-        0 2px 8px rgba(20, 35, 55, 0.04);
-    }
+  table-layout: auto;
 
+  font-size: 13px;
+}
 
-    .search-label {
 
-      font-weight: 800;
+/* =========================================================
+   헤더
+========================================================= */
 
-      color: #334155;
+.flight-table thead th {
+  background: #e7eef6;
 
-      margin-right: 2px;
-    }
+  color: #172033;
 
+  font-weight: 700;
 
-    input[type="date"] {
+  text-align: center;
 
-      height: 38px;
+  white-space: nowrap;
 
-      padding: 0 11px;
+  padding: 9px 8px;
 
-      border: 1px solid #cbd5e1;
+  border-right: 1px solid #d6dee8;
+  border-bottom: 1px solid #d6dee8;
 
-      border-radius: 7px;
+  height: 36px;
+}
 
-      background: #ffffff;
+.flight-table thead th:last-child {
+  border-right: 0;
+}
 
-      color: #1e293b;
 
-      font-size: 14px;
+/* =========================================================
+   데이터 셀
+========================================================= */
 
-      outline: none;
-    }
+.flight-table tbody td {
+  padding: 10px 9px;
 
+  vertical-align: middle;
 
-    input[type="date"]:focus {
+  border-right: 1px solid #e1e6ec;
+  border-bottom: 1px solid #e1e6ec;
 
-      border-color: #2563eb;
+  background: #ffffff;
 
-      box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.10);
-    }
+  line-height: 1.45;
 
+  height: 90px;
+}
 
-    #searchBtn {
+.flight-table tbody tr:last-child td {
+  border-bottom: 0;
+}
 
-      height: 38px;
+.flight-table tbody td:last-child {
+  border-right: 0;
+}
 
-      padding: 0 18px;
 
-      border: 0;
+/* =========================================================
+   컬럼별 정렬
+========================================================= */
 
-      border-radius: 7px;
+.col-apply {
+  width: 62px;
+  min-width: 62px;
 
-      background:
-        linear-gradient(
-          135deg,
-          #2563eb,
-          #1d4ed8
-        );
+  text-align: center;
+}
 
-      color: #ffffff;
+.col-time {
+  width: 135px;
+  min-width: 135px;
 
-      font-size: 14px;
+  text-align: left;
+}
 
-      font-weight: 800;
+.col-aircraft {
+  width: 105px;
+  min-width: 105px;
 
-      cursor: pointer;
+  text-align: center;
+}
 
-      transition:
-        transform 0.12s ease,
-        box-shadow 0.12s ease;
-    }
+.col-route {
+  width: 245px;
+  min-width: 220px;
 
+  text-align: left;
+}
 
-    #searchBtn:hover {
+.col-company {
+  width: 190px;
+  min-width: 165px;
 
-      transform: translateY(-1px);
+  text-align: center;
+}
 
-      box-shadow:
-        0 4px 12px rgba(37, 99, 235, 0.25);
-    }
+.col-person {
+  width: 125px;
+  min-width: 115px;
 
+  text-align: left;
+}
 
-    #searchBtn:disabled {
+.col-remark {
+  width: auto;
+  min-width: 300px;
 
-      opacity: 0.55;
+  text-align: left;
+}
 
-      cursor: not-allowed;
+.col-cancel {
+  width: 62px;
+  min-width: 62px;
 
-      transform: none;
+  text-align: center;
+}
 
-      box-shadow: none;
-    }
+.col-stand {
+  width: 62px;
+  min-width: 62px;
 
+  text-align: center;
+}
 
-    /* =====================================================
-       정보 영역
-    ===================================================== */
+.col-actual {
+  width: 105px;
+  min-width: 105px;
 
-    .info-box {
+  text-align: center;
+}
 
-      display: flex;
 
-      align-items: center;
+/* =========================================================
+   공통 텍스트
+========================================================= */
 
-      justify-content: space-between;
+.cell-text {
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
 
-      gap: 12px;
+.normal-blue {
+  color: #0066cc;
+}
 
-      flex-wrap: wrap;
+.alert-red {
+  color: #e00000;
+}
 
-      padding: 9px 13px;
 
-      margin-bottom: 9px;
+/* =========================================================
+   신청여부 버튼
+========================================================= */
 
-      background: #ffffff;
+.apply-btn {
+  display: inline-flex;
 
-      border: 1px solid #dbe2ea;
+  align-items: center;
+  justify-content: center;
 
-      border-radius: 9px;
+  width: 28px;
+  height: 28px;
 
-      box-shadow:
-        0 2px 8px rgba(20, 35, 55, 0.035);
-    }
+  border: 0;
+  border-radius: 7px;
 
+  font-size: 13px;
+  font-weight: 800;
 
-    .update-time {
+  cursor: pointer;
 
-      font-size: 13px;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease;
+}
 
-      font-weight: 700;
+.apply-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
 
-      color: #263449;
-    }
+.apply-btn:active {
+  transform: scale(0.96);
+}
 
+.apply-o {
+  background: #dcfce7;
+  color: #15803d;
+}
 
-    .update-time strong {
+.apply-x {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
-      color: #0f172a;
-    }
 
+/* =========================================================
+   시간
+========================================================= */
 
-    .status {
+.time-cell {
+  white-space: nowrap;
+  line-height: 1.75;
+  font-weight: 600;
+}
 
-      font-size: 13px;
+.time-line {
+  display: block;
+}
 
-      color: #64748b;
+.time-plan {
+  color: inherit;
+}
 
-      font-weight: 600;
-    }
+.time-expected {
+  color: inherit;
+}
 
 
-    /* =====================================================
-       테이블 외곽
-    ===================================================== */
+/* =========================================================
+   항공기
+========================================================= */
 
-    .table-wrap {
+.aircraft-main {
+  font-weight: 700;
+  font-size: 13px;
+}
 
-      width: 100%;
+.aircraft-type {
+  margin-top: 2px;
 
-      overflow-x: auto;
+  font-weight: 600;
+  color: inherit;
+}
 
-      background: #ffffff;
 
-      border: 1px solid #d8e0e8;
+/* =========================================================
+   구간
+========================================================= */
 
-      border-radius: 10px;
+.route-main {
+  font-weight: 700;
+}
 
-      box-shadow:
-        0 3px 12px rgba(15, 23, 42, 0.055);
+.route-airport {
+  margin-top: 2px;
+}
 
-      scrollbar-width: thin;
-    }
+.route-purpose {
+  margin-top: 3px;
 
+  font-weight: 600;
 
-    table {
+  /* 중요:
+     보라색 제거.
+     부모 색상을 그대로 사용 */
+  color: inherit;
+}
 
-      width: 100%;
 
-      min-width: 1180px;
+/* =========================================================
+   인원
+========================================================= */
 
-      border-collapse: separate;
+.person-cell {
+  line-height: 1.7;
+  white-space: nowrap;
+}
 
-      border-spacing: 0;
+.person-line {
+  display: block;
+}
 
-      table-layout: fixed;
 
-      font-size: 13px;
-    }
+/* =========================================================
+   비고
+========================================================= */
 
+.remark-cell {
+  white-space: pre-line;
 
-    /* =====================================================
-       컬럼 폭
-    ===================================================== */
+  word-break: keep-all;
 
-    th:nth-child(1),
-    td:nth-child(1) {
-      width: 70px;
-    }
+  overflow-wrap: anywhere;
 
+  line-height: 1.55;
 
-    th:nth-child(2),
-    td:nth-child(2) {
-      width: 145px;
-    }
+  font-size: 12px;
+}
 
 
-    th:nth-child(3),
-    td:nth-child(3) {
-      width: 110px;
-    }
+/* =========================================================
+   취소 / 주기장 / 실제시간
+========================================================= */
 
+.cancel-cell,
+.stand-cell,
+.actual-cell {
+  text-align: center;
+  white-space: nowrap;
+}
 
-    th:nth-child(4),
-    td:nth-child(4) {
-      width: 245px;
-    }
+.actual-cell {
+  font-weight: 700;
+}
 
 
-    th:nth-child(5),
-    td:nth-child(5) {
-      width: 160px;
-    }
+/* =========================================================
+   데이터 없음
+========================================================= */
 
+.empty-row td {
+  height: 130px !important;
 
-    th:nth-child(6),
-    td:nth-child(6) {
-      width: 115px;
-    }
+  text-align: center;
 
+  color: #98a2b3;
 
-    th:nth-child(7),
-    td:nth-child(7) {
-      width: auto;
-      min-width: 380px;
-    }
+  font-size: 13px;
+}
 
 
-    th:nth-child(8),
-    td:nth-child(8) {
-      width: 65px;
-    }
+/* =========================================================
+   팝업 배경
+========================================================= */
 
+.modal-overlay {
+  position: fixed;
 
-    th:nth-child(9),
-    td:nth-child(9) {
-      width: 65px;
-    }
+  inset: 0;
 
+  background: rgba(15, 23, 42, 0.55);
 
-    th:nth-child(10),
-    td:nth-child(10) {
-      width: 105px;
-    }
+  display: none;
 
+  align-items: center;
+  justify-content: center;
 
-    /* =====================================================
-       헤더
-    ===================================================== */
+  padding: 18px;
 
-    thead th {
+  z-index: 9999;
+}
 
-      position: sticky;
+.modal-overlay.show {
+  display: flex;
+}
 
-      top: 0;
 
-      z-index: 5;
+/* =========================================================
+   팝업
+========================================================= */
 
-      height: 38px;
+.modal {
+  width: min(680px, 100%);
 
-      padding: 8px 6px;
+  max-height: min(88vh, 760px);
 
-      background:
-        linear-gradient(
-          180deg,
-          #e4edf7,
-          #d9e5f1
-        );
+  background: #ffffff;
 
-      color: #24364b;
+  border-radius: 14px;
 
-      border-right: 1px solid #cbd6e2;
+  overflow: hidden;
 
-      border-bottom: 1px solid #c4d0dc;
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, 0.25);
 
-      font-size: 12px;
+  display: flex;
+  flex-direction: column;
 
-      font-weight: 800;
+  animation: modalIn 0.16s ease-out;
+}
 
-      text-align: center;
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
 
-      white-space: nowrap;
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 
-    thead th:first-child {
+/* =========================================================
+   팝업 헤더
+========================================================= */
 
-      border-top-left-radius: 9px;
-    }
+.modal-header {
+  height: 58px;
 
+  flex: 0 0 58px;
 
-    thead th:last-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-      border-right: 0;
+  padding: 0 18px;
 
-      border-top-right-radius: 9px;
-    }
+  border-bottom: 1px solid #e5e7eb;
 
+  background: #ffffff;
+}
 
-    /* =====================================================
-       셀
-    ===================================================== */
+.modal-title {
+  margin: 0;
 
-    tbody td {
+  font-size: 18px;
 
-      height: 92px;
+  font-weight: 800;
 
-      padding: 8px 8px;
+  color: #172033;
+}
 
-      border-right: 1px solid #e8edf2;
+.modal-close {
+  width: 34px;
+  height: 34px;
 
-      border-bottom: 1px solid #e3e8ee;
+  border: 0;
 
-      text-align: center;
+  border-radius: 8px;
 
-      vertical-align: middle;
+  background: #f1f5f9;
 
-      white-space: nowrap;
+  color: #334155;
 
-      color: #1e293b;
-    }
+  font-size: 20px;
 
+  font-weight: 700;
 
-    tbody tr:last-child td {
+  cursor: pointer;
+}
 
-      border-bottom: 0;
-    }
+.modal-close:hover {
+  background: #e2e8f0;
+}
 
 
-    tbody td:last-child {
+/* =========================================================
+   팝업 본문
+========================================================= */
 
-      border-right: 0;
-    }
+.modal-body {
+  overflow-y: auto;
 
+  padding: 8px 18px 18px;
+}
 
-    /* =====================================================
-       비고
-    ===================================================== */
 
-    td.remark {
+/* =========================================================
+   팝업 정보 행
+   핵심: grid로 라벨/값 정렬
+========================================================= */
 
-      text-align: left;
+.detail-row {
+  display: grid;
 
-      white-space: pre-line;
+  grid-template-columns: 76px minmax(0, 1fr);
 
-      word-break: break-word;
+  align-items: start;
 
-      overflow-wrap: anywhere;
+  column-gap: 16px;
 
-      line-height: 1.4;
+  padding: 13px 0;
 
-      font-size: 12px;
+  border-bottom: 1px solid #edf0f3;
+}
 
-      padding: 8px 10px;
+.detail-row:last-child {
+  border-bottom: 0;
+}
 
-      color: #334155;
-    }
+.detail-label {
+  color: #667085;
 
+  font-size: 13px;
 
-    /* =====================================================
-       시간
-    ===================================================== */
+  font-weight: 700;
 
-    .time-cell {
+  line-height: 1.5;
+}
 
-      white-space: normal;
+.detail-value {
+  min-width: 0;
 
-      line-height: 1.65;
+  color: #172033;
 
-      font-weight: 700;
-    }
+  font-size: 13px;
 
+  line-height: 1.55;
 
-    .time-line {
+  white-space: pre-line;
 
-      display: block;
+  word-break: keep-all;
 
-      white-space: nowrap;
-    }
+  overflow-wrap: anywhere;
+}
 
 
-    .time-plan {
+/* =========================================================
+   팝업 시간
+========================================================= */
 
-      color: #475569;
-    }
+.detail-time {
+  white-space: pre-line;
 
+  line-height: 1.7;
 
-    .time-expected {
+  font-weight: 600;
+}
 
-      color: #2563eb;
-    }
 
+/* =========================================================
+   팝업 항공기
+========================================================= */
 
-    /* =====================================================
-       항공기
-    ===================================================== */
+.detail-aircraft {
+  font-weight: 700;
 
-    .aircraft-cell {
+  line-height: 1.55;
+}
 
-      line-height: 1.45;
 
-      white-space: normal;
+/* =========================================================
+   팝업 구간
+========================================================= */
 
-      font-weight: 700;
-    }
+.detail-route {
+  white-space: pre-line;
 
+  line-height: 1.6;
+}
 
-    .aircraft-reg {
 
-      display: block;
+/* =========================================================
+   팝업 인원
+========================================================= */
 
-      font-weight: 800;
-    }
+.detail-person {
+  white-space: pre-line;
 
+  line-height: 1.7;
+}
 
-    .aircraft-type {
 
-      display: block;
+/* =========================================================
+   팝업 비고 박스
+========================================================= */
 
-      color: #64748b;
+.detail-remark-row {
+  display: block;
 
-      font-weight: 600;
-    }
+  padding-top: 15px;
+}
 
+.detail-remark-row .detail-label {
+  display: block;
 
-    /* =====================================================
-       구간
-    ===================================================== */
+  margin-bottom: 8px;
+}
 
-    .route-cell {
+.detail-remark {
+  width: 100%;
 
-      text-align: left;
+  background: #f8fafc;
 
-      white-space: normal;
+  border: 1px solid #e8edf3;
 
-      line-height: 1.45;
+  border-radius: 9px;
 
-      word-break: keep-all;
-    }
+  padding: 13px;
 
+  color: #334155;
 
-    .route-main {
+  font-size: 12px;
 
-      display: block;
+  line-height: 1.65;
 
-      font-weight: 700;
-    }
+  white-space: pre-line;
 
+  word-break: keep-all;
 
-    .route-airport {
+  overflow-wrap: anywhere;
 
-      display: block;
+  max-height: 300px;
 
-      color: #64748b;
+  overflow-y: auto;
+}
 
-      font-size: 12px;
-    }
 
+/* =========================================================
+   팝업 하단
+========================================================= */
 
-    .route-purpose {
+.modal-footer {
+  flex: 0 0 auto;
 
-      display: block;
+  padding: 11px 18px;
 
-      margin-top: 2px;
+  border-top: 1px solid #e5e7eb;
 
-      color: #7c3aed;
+  background: #fafafa;
 
-      font-size: 12px;
+  text-align: right;
+}
 
-      font-weight: 800;
-    }
+.modal-footer button {
+  height: 34px;
 
+  border: 0;
 
-    /* =====================================================
-       운항사
-    ===================================================== */
+  border-radius: 7px;
 
-    .company-cell {
+  padding: 0 15px;
 
-      white-space: normal;
+  background: #334155;
 
-      word-break: keep-all;
+  color: #ffffff;
 
-      line-height: 1.4;
+  font-size: 12px;
 
-      font-weight: 600;
-    }
+  font-weight: 700;
 
+  cursor: pointer;
+}
 
-    /* =====================================================
-       인원
-    ===================================================== */
 
-    .people-cell {
+/* =========================================================
+   모바일
+========================================================= */
 
-      text-align: left;
+@media (max-width: 900px) {
 
-      white-space: pre-line;
+  .app {
+    padding: 8px 8px 20px;
+  }
 
-      line-height: 1.55;
+  .topbar {
+    min-height: 40px;
 
-      font-size: 12px;
+    padding: 0 10px;
 
-      font-weight: 600;
-    }
+    font-size: 11px;
+  }
 
+  .update-info {
+    gap: 8px;
+  }
 
-    .people-line {
+  .update-data {
+    font-size: 11px;
+  }
 
-      display: block;
+  .controlbar {
+    margin-bottom: 6px;
+  }
 
-      white-space: nowrap;
-    }
+  .table-wrap {
+    border-radius: 7px;
+  }
 
+  .flight-table {
+    font-size: 12px;
+  }
 
-    /* =====================================================
-       신청여부 버튼
-    ===================================================== */
+  .flight-table tbody td {
+    padding: 9px 7px;
+  }
 
-    .apply-btn {
+  .col-time {
+    width: 126px;
+    min-width: 126px;
+  }
 
-      display: inline-flex;
+  .col-aircraft {
+    width: 92px;
+    min-width: 92px;
+  }
 
-      align-items: center;
+  .col-route {
+    width: 225px;
+    min-width: 210px;
+  }
 
-      justify-content: center;
+  .col-company {
+    width: 165px;
+    min-width: 150px;
+  }
 
-      width: 30px;
+  .col-person {
+    width: 112px;
+    min-width: 105px;
+  }
 
-      height: 26px;
+  .col-remark {
+    min-width: 280px;
+  }
 
-      padding: 0;
+  .remark-cell {
+    font-size: 11px;
+  }
 
-      border: 0;
+  /* 모바일 팝업 */
+  .modal-overlay {
+    padding: 10px;
+  }
 
-      border-radius: 7px;
+  .modal {
+    width: 100%;
 
-      font-size: 13px;
+    max-height: 92vh;
 
-      font-weight: 900;
+    border-radius: 13px;
+  }
 
-      cursor: pointer;
+  .modal-header {
+    height: 54px;
 
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.35);
+    flex-basis: 54px;
 
-      transition:
-        transform 0.12s ease,
-        box-shadow 0.12s ease;
-    }
+    padding: 0 14px;
+  }
 
+  .modal-title {
+    font-size: 17px;
+  }
 
-    .apply-btn:hover {
+  .modal-body {
+    padding: 5px 14px 14px;
+  }
 
-      transform: translateY(-1px);
+  .detail-row {
+    grid-template-columns: 66px minmax(0, 1fr);
 
-      box-shadow:
-        0 3px 8px rgba(15, 23, 42, 0.15);
-    }
+    column-gap: 10px;
 
+    padding: 11px 0;
+  }
 
-    .apply-o {
+  .detail-label {
+    font-size: 12px;
+  }
 
-      background: #dcfce7;
+  .detail-value {
+    font-size: 12px;
+  }
 
-      color: #15803d;
-    }
+  .detail-remark {
+    font-size: 11px;
 
+    padding: 11px;
+  }
 
-    .apply-x {
+  .modal-footer {
+    padding: 9px 14px;
+  }
+}
 
-      background: #fee2e2;
 
-      color: #b91c1c;
-    }
+/* =========================================================
+   아주 작은 모바일
+========================================================= */
 
+@media (max-width: 480px) {
 
-    /* =====================================================
-       조건부서식
-    ===================================================== */
+  .topbar {
+    overflow: hidden;
+  }
 
-    /* 신청 X → 회색 */
+  .update-info {
+    width: 100%;
 
-    .flight-row-x td {
+    display: block;
+  }
 
-      background: #f1f3f5;
-    }
+  .update-main,
+  .update-data {
+    display: inline;
+  }
 
+  .update-data {
+    margin-left: 5px;
+  }
 
-    /* 국제선 → 파란 글씨 */
+  .modal-overlay {
+    padding: 0;
+  }
 
-    .flight-row-i td {
+  .modal {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
 
-      color: #0066cc;
-    }
+    border-radius: 0;
+  }
 
+  .modal-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
-    .flight-row-i .route-airport {
+}
 
-      color: #0066cc;
-    }
 
+/* =========================================================
+   스크롤바
+========================================================= */
 
-    .flight-row-i .aircraft-type {
+.modal-body::-webkit-scrollbar,
+.detail-remark::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
 
-      color: #0066cc;
-    }
+.modal-body::-webkit-scrollbar-thumb,
+.detail-remark::-webkit-scrollbar-thumb,
+.table-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
 
+.modal-body::-webkit-scrollbar-track,
+.detail-remark::-webkit-scrollbar-track,
+.table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-    /* SK 자가용 → 딥레드 */
-
-    .flight-row-skt td {
-
-      color: #c62828 !important;
-
-      font-weight: 700;
-    }
-
-
-    .flight-row-skt .route-airport,
-    .flight-row-skt .aircraft-type,
-    .flight-row-skt .route-purpose {
-
-      color: #c62828 !important;
-    }
-
-
-    .flight-row-skt .time-plan,
-    .flight-row-skt .time-expected {
-
-      color: #c62828 !important;
-    }
-
-
-    /* SK + 국제선 → SK 빨강 우선 */
-
-    .flight-row-i.flight-row-skt td {
-
-      color: #c62828 !important;
-    }
-
-
-    /* =====================================================
-       실제시간
-    ===================================================== */
-
-    .actual-time {
-
-      font-weight: 800;
-
-      white-space: nowrap;
-    }
-
-
-    /* =====================================================
-       빈 결과
-    ===================================================== */
-
-    .empty {
-
-      height: 180px;
-
-      padding: 40px;
-
-      text-align: center;
-
-      color: #64748b;
-
-      font-size: 14px;
-    }
-
-
-    /* =====================================================
-       예약 상세 팝업
-    ===================================================== */
-
-    .modal-overlay {
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 9999;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      padding: 16px;
-
-      background:
-        rgba(15, 23, 42, 0.52);
-
-      backdrop-filter:
-        blur(2px);
-    }
-
-
-    .modal {
-
-      width: min(650px, 100%);
-
-      max-height: 92vh;
-
-      display: flex;
-
-      flex-direction: column;
-
-      overflow: hidden;
-
-      background: #ffffff;
-
-      border-radius: 14px;
-
-      box-shadow:
-        0 25px 70px rgba(15, 23, 42, 0.30);
-    }
-
-
-    .modal-header {
-
-      flex: 0 0 auto;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      min-height: 58px;
-
-      padding: 0 17px;
-
-      border-bottom: 1px solid #e5e7eb;
-
-      background:
-        linear-gradient(
-          180deg,
-          #ffffff,
-          #f8fafc
-        );
-    }
-
-
-    .modal-title {
-
-      margin: 0;
-
-      font-size: 19px;
-
-      font-weight: 900;
-
-      color: #172033;
-    }
-
-
-    .modal-close {
-
-      width: 36px;
-
-      height: 36px;
-
-      display: inline-flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      padding: 0;
-
-      border: 0;
-
-      border-radius: 8px;
-
-      background: #eef2f6;
-
-      color: #334155;
-
-      font-size: 21px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-    }
-
-
-    .modal-close:hover {
-
-      background: #e2e8f0;
-    }
-
-
-    .modal-body {
-
-      overflow-y: auto;
-
-      padding: 7px 16px 17px;
-    }
-
-
-    /* =====================================================
-       팝업 상세 행
-    ===================================================== */
-
-    .detail-row {
-
-      display: grid;
-
-      grid-template-columns: 65px minmax(0, 1fr);
-
-      column-gap: 13px;
-
-      padding: 12px 0;
-
-      border-bottom: 1px solid #e8edf2;
-    }
-
-
-    .detail-label {
-
-      color: #64748b;
-
-      font-size: 13px;
-
-      font-weight: 800;
-
-      line-height: 1.55;
-    }
-
-
-    .detail-value {
-
-      min-width: 0;
-
-      color: #1e293b;
-
-      font-size: 13px;
-
-      line-height: 1.55;
-
-      white-space: pre-line;
-
-      word-break: break-word;
-    }
-
-
-    .detail-time-line {
-
-      display: block;
-
-      white-space: nowrap;
-
-      font-weight: 700;
-    }
-
-
-    .detail-aircraft-reg {
-
-      display: block;
-
-      font-weight: 800;
-    }
-
-
-    .detail-aircraft-type {
-
-      display: block;
-
-      color: #64748b;
-    }
-
-
-    .detail-route-main {
-
-      display: block;
-
-      font-weight: 700;
-    }
-
-
-    .detail-route-airport {
-
-      display: block;
-
-      color: #64748b;
-    }
-
-
-    .detail-route-purpose {
-
-      display: block;
-
-      color: #7c3aed;
-
-      font-weight: 800;
-    }
-
-
-    .detail-people-line {
-
-      display: block;
-
-      white-space: nowrap;
-    }
-
-
-    /* =====================================================
-       팝업 비고
-    ===================================================== */
-
-    .detail-remark {
-
-      margin-top: 13px;
-
-      padding: 15px;
-
-      background: #f5f7fa;
-
-      border: 1px solid #e7ebf0;
-
-      border-radius: 10px;
-    }
-
-
-    .detail-remark-title {
-
-      margin-bottom: 11px;
-
-      color: #475569;
-
-      font-size: 13px;
-
-      font-weight: 900;
-    }
-
-
-    .detail-remark-text {
-
-      color: #334155;
-
-      font-size: 13px;
-
-      line-height: 1.55;
-
-      white-space: pre-line;
-
-      word-break: break-word;
-    }
-
-
-    /* =====================================================
-       모바일
-    ===================================================== */
-
-    @media (max-width: 700px) {
-
-      body {
-
-        font-size: 13px;
-      }
-
-
-      .container {
-
-        padding:
-          10px
-          8px
-          16px;
-      }
-
-
-      .page-header {
-
-        margin-bottom: 9px;
-      }
-
-
-      .page-title {
-
-        font-size: 19px;
-      }
-
-
-      .page-subtitle {
-
-        font-size: 11px;
-      }
-
-
-      .search-box {
-
-        padding: 10px;
-
-        gap: 7px;
-      }
-
-
-      .search-label {
-
-        width: 100%;
-      }
-
-
-      input[type="date"] {
-
-        flex: 1;
-
-        min-width: 150px;
-      }
-
-
-      #searchBtn {
-
-        padding: 0 15px;
-      }
-
-
-      .info-box {
-
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        gap: 3px;
-
-        padding: 8px 10px;
-      }
-
-
-      .update-time,
-      .status {
-
-        font-size: 11px;
-      }
-
-
-      .table-wrap {
-
-        border-radius: 8px;
-      }
-
-
-      table {
-
-        min-width: 1180px;
-
-        font-size: 12px;
-      }
-
-
-      tbody td {
-
-        height: 88px;
-
-        padding: 7px;
-      }
-
-
-      td.remark {
-
-        font-size: 11px;
-
-        line-height: 1.35;
-      }
-
-
-      .route-cell {
-
-        font-size: 12px;
-      }
-
-
-      .route-airport,
-      .route-purpose {
-
-        font-size: 11px;
-      }
-
-
-      .people-cell {
-
-        font-size: 11px;
-      }
-
-
-      /* 팝업 */
-
-      .modal-overlay {
-
-        padding: 8px;
-      }
-
-
-      .modal {
-
-        width: 100%;
-
-        max-height: 94vh;
-
-        border-radius: 12px;
-      }
-
-
-      .modal-header {
-
-        min-height: 53px;
-
-        padding: 0 14px;
-      }
-
-
-      .modal-title {
-
-        font-size: 18px;
-      }
-
-
-      .modal-body {
-
-        padding:
-          5px
-          14px
-          14px;
-      }
-
-
-      .detail-row {
-
-        grid-template-columns:
-          52px
-          minmax(0, 1fr);
-
-        column-gap: 9px;
-
-        padding: 10px 0;
-      }
-
-
-      .detail-label {
-
-        font-size: 12px;
-      }
-
-
-      .detail-value {
-
-        font-size: 12px;
-
-        line-height: 1.55;
-      }
-
-
-      .detail-remark {
-
-        margin-top: 10px;
-
-        padding: 13px;
-      }
-
-
-      .detail-remark-title {
-
-        margin-bottom: 9px;
-
-        font-size: 12px;
-      }
-
-
-      .detail-remark-text {
-
-        font-size: 12px;
-
-        line-height: 1.55;
-      }
-
-    }
-
-  </style>
-
+</style>
 </head>
 
 
 <body>
 
+<div class="app">
 
-<div class="container">
+  <!-- =====================================================
+       상단 갱신 정보
+  ====================================================== -->
 
+  <div class="topbar">
 
-  <!-- ====================================================
-       제목
-  ===================================================== -->
+    <div class="update-info">
 
-  <div class="page-header">
+      <span
+        id="updateText"
+        class="update-main"
+      >
+        최종 갱신: -
+      </span>
 
-    <div>
-
-      <h1 class="page-title">
-        SGBAC 예약현황
-      </h1>
-
-      <div class="page-subtitle">
-        예약 및 운항 현황
-      </div>
+      <span
+        id="dataText"
+        class="update-data"
+      >
+        DATA : -건 추출
+      </span>
 
     </div>
 
   </div>
 
 
-  <!-- ====================================================
-       검색
-  ===================================================== -->
+  <!-- =====================================================
+       날짜 / 상태
+  ====================================================== -->
 
-  <div class="search-box">
+  <div class="controlbar">
 
-    <label
-      class="search-label"
-      for="dateInput"
-    >
-      조회일
-    </label>
+    <div class="date-area">
 
+      <input
+        id="dateInput"
+        class="date-input"
+        type="date"
+      >
 
-    <input
-      id="dateInput"
-      type="date"
-    >
+      <button
+        id="loadButton"
+        class="date-btn"
+        type="button"
+      >
+        조회
+      </button>
 
-
-    <button
-      id="searchBtn"
-      type="button"
-    >
-      조회
-    </button>
-
-  </div>
-
-
-  <!-- ====================================================
-       갱신 정보
-  ===================================================== -->
-
-  <div class="info-box">
-
-    <div
-      id="updateTime"
-      class="update-time"
-    >
-      최종 갱신: -
     </div>
 
 
     <div
-      id="status"
+      id="statusText"
       class="status"
     >
-      날짜를 선택한 후 조회 버튼을 눌러주세요.
+      준비
     </div>
 
   </div>
 
 
-  <!-- ====================================================
+  <!-- =====================================================
        테이블
-  ===================================================== -->
+  ====================================================== -->
 
   <div class="table-wrap">
 
-    <table>
+    <table
+      id="flightTable"
+      class="flight-table"
+    >
 
       <thead>
 
         <tr>
 
-          <th>
+          <th class="col-apply">
             신청여부
           </th>
 
-          <th>
+          <th class="col-time">
             시간
           </th>
 
-          <th>
+          <th class="col-aircraft">
             항공기
           </th>
 
-          <th>
+          <th class="col-route">
             구간
           </th>
 
-          <th>
+          <th class="col-company">
             운항사
           </th>
 
-          <th>
+          <th class="col-person">
             인원
           </th>
 
-          <th>
+          <th class="col-remark">
             비고
           </th>
 
-          <th>
+          <th class="col-cancel">
             취소여부
           </th>
 
-          <th>
+          <th class="col-stand">
             주기장
           </th>
 
-          <th>
+          <th class="col-actual">
             실제시간
           </th>
 
@@ -1468,15 +1155,12 @@
       </thead>
 
 
-      <tbody id="resultBody">
+      <tbody id="flightBody">
 
-        <tr>
+        <tr class="empty-row">
 
-          <td
-            colspan="10"
-            class="empty"
-          >
-            조회 결과가 없습니다.
+          <td colspan="10">
+            데이터를 불러오는 중입니다.
           </td>
 
         </tr>
@@ -1487,1949 +1171,2360 @@
 
   </div>
 
+</div>
+
+
+<!-- =======================================================
+     예약 상세 팝업
+======================================================== -->
+
+<div
+  id="modalOverlay"
+  class="modal-overlay"
+  aria-hidden="true"
+>
+
+  <div
+    id="detailModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+
+    <div class="modal-header">
+
+      <h2
+        id="modalTitle"
+        class="modal-title"
+      >
+        예약 상세
+      </h2>
+
+      <button
+        id="modalClose"
+        class="modal-close"
+        type="button"
+        aria-label="닫기"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      id="modalBody"
+      class="modal-body"
+    >
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        id="modalCloseBottom"
+        type="button"
+      >
+        닫기
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
 
 <script>
 
-  /* ======================================================
-     Apps Script Backend
-  ====================================================== */
-
-  const BACKEND_URL =
-    "https://script.google.com/macros/s/AKfycbzyICmjBmXkMmWHPGYg9PJ-mICmjOCT2WB9iOGKQ0OsblBn5u4DOLqXLls3mojEBTvo/exec";
+/* =========================================================
+   SGBAC FRONTEND
+========================================================= */
 
 
-  const dateInput =
-    document.getElementById(
-      "dateInput"
-    );
+/* =========================================================
+   설정
+========================================================= */
+
+/*
+ * 여기에 현재 사용 중인 Apps Script Web App 주소를 넣으세요.
+ *
+ * 예:
+ * https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+ */
+
+const API_URL =
+  '여기에_현재_Apps_Script_Web_App_URL_입력';
 
 
-  const searchBtn =
-    document.getElementById(
-      "searchBtn"
-    );
+/*
+ * 기본 날짜
+ *
+ * 오늘 날짜를 기본으로 사용
+ */
+
+const DEFAULT_DATE =
+  getKSTDateString();
 
 
-  const statusBox =
-    document.getElementById(
-      "status"
-    );
+/* =========================================================
+   DOM
+========================================================= */
+
+const dateInput =
+  document.getElementById(
+    'dateInput'
+  );
+
+const loadButton =
+  document.getElementById(
+    'loadButton'
+  );
+
+const flightBody =
+  document.getElementById(
+    'flightBody'
+  );
+
+const updateText =
+  document.getElementById(
+    'updateText'
+  );
+
+const dataText =
+  document.getElementById(
+    'dataText'
+  );
+
+const statusText =
+  document.getElementById(
+    'statusText'
+  );
+
+const modalOverlay =
+  document.getElementById(
+    'modalOverlay'
+  );
+
+const modalBody =
+  document.getElementById(
+    'modalBody'
+  );
+
+const modalClose =
+  document.getElementById(
+    'modalClose'
+  );
+
+const modalCloseBottom =
+  document.getElementById(
+    'modalCloseBottom'
+  );
 
 
-  const updateTimeBox =
-    document.getElementById(
-      "updateTime"
-    );
+/* =========================================================
+   초기화
+========================================================= */
 
-
-  const resultBody =
-    document.getElementById(
-      "resultBody"
-    );
-
-
-  /* ======================================================
-     날짜
-  ====================================================== */
-
-  function dateText(date) {
-
-    const yyyy =
-      date.getFullYear();
-
-
-    const mm =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, "0");
-
-
-    const dd =
-      String(
-        date.getDate()
-      ).padStart(2, "0");
-
-
-    return (
-      yyyy +
-      "-" +
-      mm +
-      "-" +
-      dd
-    );
-
-  }
-
-
-  function setDateRange() {
-
-    const today =
-      new Date();
-
-
-    const maxDate =
-      new Date(today);
-
-
-    maxDate.setDate(
-      today.getDate() + 6
-    );
-
-
-    dateInput.min =
-      dateText(today);
-
-
-    dateInput.max =
-      dateText(maxDate);
-
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
 
     dateInput.value =
-      dateText(today);
+      DEFAULT_DATE;
+
+    loadCache();
 
   }
+);
 
 
-  /* ======================================================
-     HTML Escape
-  ====================================================== */
+/* =========================================================
+   조회 버튼
+========================================================= */
 
-  function esc(value) {
+loadButton.addEventListener(
+  'click',
+  loadCache
+);
 
-    return String(
-      value ?? ""
-    )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
+
+/* =========================================================
+   날짜 변경
+========================================================= */
+
+dateInput.addEventListener(
+  'change',
+  () => {
+
+    loadCache();
 
   }
+);
 
 
-  /* ======================================================
-     비고 정리
-  ====================================================== */
+/* =========================================================
+   ESC
+========================================================= */
 
-  function cleanRemark(value) {
+document.addEventListener(
+  'keydown',
+  event => {
 
-    return String(
-      value || ""
-    )
-      .replace(
-        /\r\n/g,
-        "\n"
-      )
-      .replace(
-        /\r/g,
-        "\n"
-      )
-      .replace(
-        /\n[ \t]*\n(?:[ \t]*\n)+/g,
-        "\n\n"
-      )
-      .trim();
+    if (
+      event.key === 'Escape'
+    ) {
+
+      closeModal();
+
+    }
 
   }
+);
 
 
-  /* ======================================================
-     시간 정리
-  ====================================================== */
+/* =========================================================
+   팝업 닫기
+========================================================= */
 
-  function cleanTime(value) {
+modalClose.addEventListener(
+  'click',
+  closeModal
+);
 
-    let text =
-      String(
-        value || ""
-      ).trim();
-
-
-    if (!text) {
-
-      return "";
-
-    }
+modalCloseBottom.addEventListener(
+  'click',
+  closeModal
+);
 
 
-    text =
-      text
-        .replace(
-          /KST/gi,
-          ""
-        )
-        .trim();
-
-
-    text =
-      text.replace(
-        ":",
-        ""
-      );
-
+modalOverlay.addEventListener(
+  'click',
+  event => {
 
     if (
-      text.length === 3 &&
-      /^\d+$/.test(text)
+      event.target ===
+      modalOverlay
     ) {
 
-      text =
-        "0" + text;
+      closeModal();
 
     }
 
-
-    if (
-      /^\d{4}$/.test(text)
-    ) {
-
-      return (
-        text.substring(0, 2) +
-        ":" +
-        text.substring(2, 4) +
-        " KST"
-      );
-
-    }
+  }
+);
 
 
-    if (
-      /^\d{1,2}:\d{2}$/.test(
-        text
-      )
-    ) {
+/* =========================================================
+   CACHE 조회
+========================================================= */
 
-      return (
-        text +
-        " KST"
-      );
+async function loadCache() {
 
-    }
+  const date =
+    dateInput.value;
 
 
-    return (
-      text +
-      (
-        /KST/i.test(text)
-          ? ""
-          : " KST"
-      )
+  if (!date) {
+
+    setStatus(
+      '날짜를 선택하세요.',
+      'error'
     );
 
-  }
-
-
-  /* ======================================================
-     시간 줄 생성
-  ====================================================== */
-
-  function makeTimeText(
-    stt,
-    ett
-  ) {
-
-    const plan =
-      cleanTime(stt);
-
-
-    const expected =
-      cleanTime(ett);
-
-
-    const lines = [];
-
-
-    if (plan) {
-
-      lines.push(
-        "-계획: " +
-        plan
-      );
-
-    }
-
-
-    if (expected) {
-
-      lines.push(
-        "-예정: " +
-        expected
-      );
-
-    }
-
-
-    return lines.join("\n");
+    return;
 
   }
 
 
-  /* ======================================================
-     실제시간
-  ====================================================== */
+  setStatus(
+    '데이터 조회 중...',
+    ''
+  );
 
-  function makeActualTime(value) {
 
-    return cleanTime(value);
+  loadButton.disabled =
+    true;
 
-  }
 
-
-  /* ======================================================
-     항공기
-     기존 백엔드:
-       reg
-       type
-  ====================================================== */
-
-  function makeAircraftText(f) {
-
-    const reg =
-      String(
-        f.reg ||
-        f.aircraftReg ||
-        f.aircraft ||
-        ""
-      ).trim();
-
-
-    const type =
-      String(
-        f.type ||
-        f.aircraftType ||
-        ""
-      ).trim();
-
-
-    return {
-      reg,
-      type
-    };
-
-  }
-
-
-  /* ======================================================
-     국내/국제
-  ====================================================== */
-
-  function getTofText(f) {
-
-    const tof =
-      String(
-        f.tof ||
-        f.domesticInternational ||
-        ""
-      )
-        .trim()
-        .toUpperCase();
-
-
-    if (
-      tof === "I"
-    ) {
-
-      return "국제선";
-
-    }
-
-
-    if (
-      tof === "D"
-    ) {
-
-      return "국내선";
-
-    }
-
-
-    if (
-      tof === "국내"
-    ) {
-
-      return "국내선";
-
-    }
-
-
-    if (
-      tof === "국제"
-    ) {
-
-      return "국제선";
-
-    }
-
-
-    return "";
-
-  }
-
-
-  /* ======================================================
-     출도착
-  ====================================================== */
-
-  function getAodText(f) {
-
-    const aod =
-      String(
-        f.aod ||
-        ""
-      )
-        .trim()
-        .toUpperCase();
-
-
-    if (
-      aod === "A" ||
-      aod === "ARRIVAL" ||
-      aod === "도착"
-    ) {
-
-      return "도착";
-
-    }
-
-
-    if (
-      aod === "D" ||
-      aod === "DEPARTURE" ||
-      aod === "출발"
-    ) {
-
-      return "출발";
-
-    }
-
-
-    return "";
-
-  }
-
-
-  /* ======================================================
-     구간
-     
-     최종 표시:
-
-     BSL-GMP / 국제선 도착
-     (상대공항: 스위스)
-     *인원수송
-  ====================================================== */
-
-  function makeRouteText(f) {
-
-    const route =
-      String(
-        f.route ||
-        ""
-      ).trim();
-
-
-    const tof =
-      getTofText(f);
-
-
-    const aod =
-      getAodText(f);
-
-
-    let firstLine =
-      route;
-
-
-    if (
-      route &&
-      tof
-    ) {
-
-      firstLine +=
-        " / " +
-        tof;
-
-    }
-
-
-    if (
-      aod
-    ) {
-
-      firstLine +=
-        " " +
-        aod;
-
-    }
-
-
-    let airportText =
-      String(
-        f.relativeAirport ||
-        f.nation ||
-        ""
-      ).trim();
-
-
-    /*
-     * 기존 백엔드에서는 nation이
-     * 국가값으로 들어오기 때문에
-     * 상대공항 표시용으로 사용.
-     */
-
-    let secondLine = "";
-
-
-    if (
-      airportText
-    ) {
-
-      secondLine =
-        "(상대공항: " +
-        airportText +
-        ")";
-
-    }
-
-
-    const purpose =
-      String(
-        f.purpose ||
-        f.operationPurpose ||
-        ""
-      ).trim();
-
-
-    let purposeLine = "";
-
-
-    if (
-      purpose
-    ) {
-
-      purposeLine =
-        "*" +
-        purpose.replace(
-          /^\*/,
-          ""
-        ).trim();
-
-    }
-
-
-    return {
-
-      firstLine,
-      secondLine,
-      purposeLine
-
-    };
-
-  }
-
-
-  /* ======================================================
-     인원
-  ====================================================== */
-
-  function makePeopleText(f) {
-
-    const crew =
-      numberText(
-        f.crew
-      );
-
-
-    const pax =
-      numberText(
-        f.pax
-      );
-
-
-    const baggage =
-      numberText(
-        f.baggage
-      );
-
-
-    return [
-      "-승무원: " + crew,
-      "-승객: " + pax,
-      "-수화물: " + baggage
-    ].join("\n");
-
-  }
-
-
-  function numberText(value) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-
-      return "0";
-
-    }
-
-
-    const n =
-      Number(value);
-
-
-    if (
-      Number.isFinite(n)
-    ) {
-
-      return String(n);
-
-    }
-
-
-    return String(value);
-
-  }
-
-
-  /* ======================================================
-     시간 비교용
-  ====================================================== */
-
-  function timeSortValue(value) {
-
-    const text =
-      String(
-        value || ""
-      )
-        .replace(
-          /KST/gi,
-          ""
-        )
-        .trim();
-
-
-    const match =
-      text.match(
-        /(\d{1,2}):?(\d{2})/
-      );
-
-
-    if (!match) {
-
-      return 999999;
-
-    }
-
-
-    return (
-      Number(match[1]) * 60 +
-      Number(match[2])
-    );
-
-  }
-
-
-  /* ======================================================
-     정렬
-     
-     O 먼저 → 예정시간
-     X 나중 → 계획시간
-  ====================================================== */
-
-  function sortFlights(
-    flights
-  ) {
-
-    flights.sort(
-      (a, b) => {
-
-        const aApplied =
-          String(
-            a.applied || ""
-          )
-            .trim()
-            .toUpperCase();
-
-
-        const bApplied =
-          String(
-            b.applied || ""
-          )
-            .trim()
-            .toUpperCase();
-
-
-        /* O → X */
-
-        if (
-          aApplied !==
-          bApplied
-        ) {
-
-          if (
-            aApplied === "O"
-          ) {
-
-            return -1;
-
-          }
-
-
-          if (
-            bApplied === "O"
-          ) {
-
-            return 1;
-
-          }
-
-
-          if (
-            aApplied === "X"
-          ) {
-
-            return -1;
-
-          }
-
-
-          if (
-            bApplied === "X"
-          ) {
-
-            return 1;
-
-          }
-
-        }
-
-
-        /* O → 예정시간 */
-
-        if (
-          aApplied === "O"
-        ) {
-
-          return (
-            timeSortValue(
-              a.ett
-            ) -
-            timeSortValue(
-              b.ett
-            )
-          );
-
-        }
-
-
-        /* X → 계획시간 */
-
-        if (
-          aApplied === "X"
-        ) {
-
-          return (
-            timeSortValue(
-              a.stt
-            ) -
-            timeSortValue(
-              b.stt
-            )
-          );
-
-        }
-
-
-        return 0;
-
-      }
-    );
-
-  }
-
-
-  /* ======================================================
-     CACHE 조회
-  ====================================================== */
-
-  async function getCache(
-    date
-  ) {
+  try {
 
     const url =
-      BACKEND_URL +
-      "?action=cache" +
-      "&date=" +
-      encodeURIComponent(date) +
-      "&t=" +
-      Date.now();
+      API_URL +
+      '?action=cache&date=' +
+      encodeURIComponent(
+        date
+      );
 
 
     const response =
       await fetch(
         url,
         {
-          cache: "no-store"
+          method: 'GET',
+          cache: 'no-store'
         }
       );
 
 
-    if (!response.ok) {
+    if (
+      !response.ok
+    ) {
 
       throw new Error(
-        "HTTP " +
+        'HTTP ' +
         response.status
       );
 
     }
 
 
-    return await response.json();
-
-  }
-
-
-  /* ======================================================
-     팝업 데이터 생성
-  ====================================================== */
-
-  function makePopupData(f) {
-
-    const aircraft =
-      makeAircraftText(f);
-
-
-    const route =
-      makeRouteText(f);
-
-
-    return {
-
-      time:
-        makeTimeText(
-          f.stt,
-          f.ett
-        ),
-
-      aircraft,
-
-      route,
-
-      company:
-        String(
-          f.company ||
-          ""
-        ).trim(),
-
-      people:
-        makePeopleText(f),
-
-      remark:
-        cleanRemark(
-          f.remark
-        )
-
-    };
-
-  }
-
-
-  /* ======================================================
-     예약 상세 팝업
-  ====================================================== */
-
-  function showDetail(f) {
-
     const data =
-      makePopupData(f);
+      await response.json();
 
-
-    const overlay =
-      document.createElement(
-        "div"
-      );
-
-
-    overlay.className =
-      "modal-overlay";
-
-
-    overlay.innerHTML = `
-
-      <div
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label="예약 상세"
-      >
-
-
-        <div class="modal-header">
-
-          <h2 class="modal-title">
-            예약 상세
-          </h2>
-
-
-          <button
-            class="modal-close"
-            type="button"
-            aria-label="닫기"
-          >
-            ×
-          </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-
-          <!-- 시간 -->
-
-          <div class="detail-row">
-
-            <div class="detail-label">
-              시간
-            </div>
-
-            <div class="detail-value">
-
-              ${
-                data.time
-                  .split("\n")
-                  .map(
-                    line =>
-                      `
-                      <span class="detail-time-line">
-                        ${esc(line)}
-                      </span>
-                      `
-                  )
-                  .join("")
-              }
-
-            </div>
-
-          </div>
-
-
-          <!-- 항공기 -->
-
-          <div class="detail-row">
-
-            <div class="detail-label">
-              항공기
-            </div>
-
-            <div class="detail-value">
-
-              ${
-                data.aircraft.reg
-                  ? `
-                    <span class="detail-aircraft-reg">
-                      ${esc(data.aircraft.reg)}
-                    </span>
-                  `
-                  : ""
-              }
-
-              ${
-                data.aircraft.type
-                  ? `
-                    <span class="detail-aircraft-type">
-                      (${esc(data.aircraft.type)})
-                    </span>
-                  `
-                  : ""
-              }
-
-            </div>
-
-          </div>
-
-
-          <!-- 구간 -->
-
-          <div class="detail-row">
-
-            <div class="detail-label">
-              구간
-            </div>
-
-            <div class="detail-value">
-
-              ${
-                data.route.firstLine
-                  ? `
-                    <span class="detail-route-main">
-                      ${esc(data.route.firstLine)}
-                    </span>
-                  `
-                  : ""
-              }
-
-
-              ${
-                data.route.secondLine
-                  ? `
-                    <span class="detail-route-airport">
-                      ${esc(data.route.secondLine)}
-                    </span>
-                  `
-                  : ""
-              }
-
-
-              ${
-                data.route.purposeLine
-                  ? `
-                    <span class="detail-route-purpose">
-                      ${esc(data.route.purposeLine)}
-                    </span>
-                  `
-                  : ""
-              }
-
-            </div>
-
-          </div>
-
-
-          <!-- 운항사 -->
-
-          <div class="detail-row">
-
-            <div class="detail-label">
-              운항사
-            </div>
-
-            <div class="detail-value">
-              ${esc(data.company)}
-            </div>
-
-          </div>
-
-
-          <!-- 인원 -->
-
-          <div class="detail-row">
-
-            <div class="detail-label">
-              인원
-            </div>
-
-            <div class="detail-value">
-
-              ${
-                data.people
-                  .split("\n")
-                  .map(
-                    line =>
-                      `
-                      <span class="detail-people-line">
-                        ${esc(line)}
-                      </span>
-                      `
-                  )
-                  .join("")
-              }
-
-            </div>
-
-          </div>
-
-
-          <!-- 비고 -->
-
-          <div class="detail-remark">
-
-            <div class="detail-remark-title">
-              비고
-            </div>
-
-            <div class="detail-remark-text">
-              ${
-                data.remark
-                  ? esc(data.remark)
-                  : "비고 없음"
-              }
-            </div>
-
-          </div>
-
-
-        </div>
-
-      </div>
-
-    `;
-
-
-    document.body.appendChild(
-      overlay
-    );
-
-
-    const closeBtn =
-      overlay.querySelector(
-        ".modal-close"
-      );
-
-
-    function closeModal() {
-
-      overlay.remove();
-
-      document.removeEventListener(
-        "keydown",
-        escHandler
-      );
-
-    }
-
-
-    function escHandler(e) {
-
-      if (
-        e.key === "Escape"
-      ) {
-
-        closeModal();
-
-      }
-
-    }
-
-
-    closeBtn.addEventListener(
-      "click",
-      closeModal
-    );
-
-
-    overlay.addEventListener(
-      "click",
-      e => {
-
-        if (
-          e.target === overlay
-        ) {
-
-          closeModal();
-
-        }
-
-      }
-    );
-
-
-    document.addEventListener(
-      "keydown",
-      escHandler
-    );
-
-
-    closeBtn.focus();
-
-  }
-
-
-  /* ======================================================
-     메인 테이블 렌더링
-  ====================================================== */
-
-  function renderFlights(data) {
-
-    const flights =
-      Array.isArray(
-        data.flights
-      )
-        ? [...data.flights]
-        : [];
-
-
-    sortFlights(
-      flights
-    );
-
-
-    /* ====================================================
-       갱신시간
-    ==================================================== */
-
-    updateTimeBox.textContent =
-      makeUpdateText(
-        data.updatedAt,
-        flights.length,
-        data.date
-      );
-
-
-    statusBox.textContent =
-      "예약현황";
-
-
-    /* ====================================================
-       데이터 없음
-    ==================================================== */
 
     if (
-      flights.length === 0
+      !data.ok
     ) {
 
-      resultBody.innerHTML = `
-
-        <tr>
-
-          <td
-            colspan="10"
-            class="empty"
-          >
-            해당 날짜 예약현황이 없습니다.
-          </td>
-
-        </tr>
-
-      `;
-
-      return;
+      throw new Error(
+        data.error ||
+        '조회 실패'
+      );
 
     }
 
 
-    /* ====================================================
-       행 생성
-    ==================================================== */
+    renderData(
+      data
+    );
 
-    resultBody.innerHTML =
-      flights
-        .map(
-          (f, index) => {
 
-            const applied =
-              String(
-                f.applied || ""
-              )
-                .trim()
-                .toUpperCase();
+    setStatus(
+      '조회 완료',
+      'success'
+    );
 
 
-            const tof =
-              getTofText(f);
+  } catch (error) {
 
+    console.error(
+      error
+    );
 
-            const company =
-              String(
-                f.company ||
-                ""
-              ).trim();
 
+    renderEmpty(
+      '캐시 데이터를 불러오지 못했습니다.'
+    );
 
-            const aircraft =
-              makeAircraftText(f);
 
+    setStatus(
+      '조회 실패: ' +
+      error.message,
+      'error'
+    );
 
-            const route =
-              makeRouteText(f);
 
+  } finally {
 
-            const people =
-              makePeopleText(f);
-
-
-            const remark =
-              cleanRemark(
-                f.remark
-              );
-
-
-            /* ==============================================
-               행 조건부서식
-            ============================================== */
-
-            const rowClasses =
-              [];
-
-
-            if (
-              applied === "X"
-            ) {
-
-              rowClasses.push(
-                "flight-row-x"
-              );
-
-            }
-
-
-            if (
-              tof === "국제선"
-            ) {
-
-              rowClasses.push(
-                "flight-row-i"
-              );
-
-            }
-
-
-            if (
-              company ===
-              "에스케이텔레콤(주)-자가용"
-            ) {
-
-              rowClasses.push(
-                "flight-row-skt"
-              );
-
-            }
-
-
-            const buttonClass =
-              applied === "O"
-                ? "apply-o"
-                : "apply-x";
-
-
-            return `
-
-              <tr
-                class="${rowClasses.join(" ")}"
-                data-index="${index}"
-              >
-
-
-                <!-- 신청여부 -->
-
-                <td>
-
-                  <button
-                    type="button"
-                    class="apply-btn ${buttonClass}"
-                    data-index="${index}"
-                    title="예약 상세 보기"
-                  >
-                    ${esc(applied)}
-                  </button>
-
-                </td>
-
-
-                <!-- 시간 -->
-
-                <td class="time-cell">
-
-                  ${
-                    f.stt
-                      ? `
-                        <span class="time-line time-plan">
-                          -계획: ${esc(cleanTime(f.stt))}
-                        </span>
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    f.ett
-                      ? `
-                        <span class="time-line time-expected">
-                          -예정: ${esc(cleanTime(f.ett))}
-                        </span>
-                      `
-                      : ""
-                  }
-
-                </td>
-
-
-                <!-- 항공기 -->
-
-                <td class="aircraft-cell">
-
-                  ${
-                    aircraft.reg
-                      ? `
-                        <span class="aircraft-reg">
-                          ${esc(aircraft.reg)}
-                        </span>
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    aircraft.type
-                      ? `
-                        <span class="aircraft-type">
-                          (${esc(aircraft.type)})
-                        </span>
-                      `
-                      : ""
-                  }
-
-                </td>
-
-
-                <!-- 구간 -->
-
-                <td class="route-cell">
-
-                  ${
-                    route.firstLine
-                      ? `
-                        <span class="route-main">
-                          ${esc(route.firstLine)}
-                        </span>
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    route.secondLine
-                      ? `
-                        <span class="route-airport">
-                          ${esc(route.secondLine)}
-                        </span>
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    route.purposeLine
-                      ? `
-                        <span class="route-purpose">
-                          ${esc(route.purposeLine)}
-                        </span>
-                      `
-                      : ""
-                  }
-
-                </td>
-
-
-                <!-- 운항사 -->
-
-                <td class="company-cell">
-
-                  ${esc(company)}
-
-                </td>
-
-
-                <!-- 인원 -->
-
-                <td class="people-cell">
-
-                  ${
-                    people
-                      .split("\n")
-                      .map(
-                        line =>
-                          `
-                          <span class="people-line">
-                            ${esc(line)}
-                          </span>
-                          `
-                      )
-                      .join("")
-                  }
-
-                </td>
-
-
-                <!-- 비고 -->
-
-                <td class="remark">
-
-                  ${esc(remark)}
-
-                </td>
-
-
-                <!-- 취소여부 -->
-
-                <td>
-
-                  ${esc(f.cancel)}
-
-                </td>
-
-
-                <!-- 주기장 -->
-
-                <td>
-
-                  ${esc(f.stand)}
-
-                </td>
-
-
-                <!-- 실제시간 -->
-
-                <td class="actual-time">
-
-                  ${esc(
-                    makeActualTime(
-                      f.att
-                    )
-                  )}
-
-                </td>
-
-
-              </tr>
-
-            `;
-
-          }
-        )
-        .join("");
-
-
-    /* ====================================================
-       O / X 버튼 이벤트
-    ==================================================== */
-
-    resultBody
-      .querySelectorAll(
-        ".apply-btn"
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const index =
-                Number(
-                  button.dataset.index
-                );
-
-
-              const selected =
-                flights[index];
-
-
-              if (
-                selected
-              ) {
-
-                showDetail(
-                  selected
-                );
-
-              }
-
-            }
-          );
-
-        }
-      );
+    loadButton.disabled =
+      false;
 
   }
 
+}
 
-  /* ======================================================
-     상단 갱신시간 표시
-     
-     최종 갱신:
-     2026-08-29 17:35 KST
-     / DATA : 4건 추출(29AUG)
-  ====================================================== */
 
-  function makeUpdateText(
-    updatedAt,
-    count,
-    date
+/* =========================================================
+   데이터 렌더링
+========================================================= */
+
+function renderData(
+  data
+) {
+
+  const flights =
+    Array.isArray(
+      data.flights
+    )
+      ? data.flights
+      : [];
+
+
+  /*
+   * O 먼저
+   * X 나중
+   *
+   * 같은 그룹에서는
+   * 예정시간 / 계획시간 기준 정렬
+   */
+
+  const sortedFlights =
+    [...flights].sort(
+      sortFlights
+    );
+
+
+  renderTable(
+    sortedFlights
+  );
+
+
+  updateHeader(
+    data
+  );
+
+}
+
+
+/* =========================================================
+   정렬
+========================================================= */
+
+function sortFlights(
+  a,
+  b
+) {
+
+  const aApplied =
+    String(
+      a?.applied || ''
+    )
+      .trim()
+      .toUpperCase();
+
+
+  const bApplied =
+    String(
+      b?.applied || ''
+    )
+      .trim()
+      .toUpperCase();
+
+
+  /*
+   * O 먼저
+   */
+
+  if (
+    aApplied !==
+    bApplied
   ) {
-
-    const formatted =
-      formatUpdatedAt(
-        updatedAt
-      );
-
-
-    const dateCode =
-      makeDateCode(
-        date
-      );
-
 
     return (
-      "최종 갱신: " +
-      formatted +
-      " / DATA : " +
-      count +
-      "건 추출(" +
-      dateCode +
-      ")"
+      aApplied === 'O'
+        ? -1
+        : 1
     );
 
   }
 
 
-  /* ======================================================
-     갱신시간 포맷
-  ====================================================== */
+  /*
+   * O:
+   * 예정시간 기준
+   */
 
-  function formatUpdatedAt(
-    value
+  if (
+    aApplied === 'O'
   ) {
 
-    if (!value) {
+    return compareTime(
+      a?.ett,
+      b?.ett
+    );
 
-      return "-";
-
-    }
-
-
-    let text =
-      String(
-        value
-      ).trim();
+  }
 
 
-    /*
-     * 이미
-     * 2026-08-29 17:35
-     * 형식인 경우
-     */
+  /*
+   * X:
+   * 계획시간 기준
+   */
 
-    const direct =
-      text.match(
-        /^(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})/
-      );
+  return compareTime(
+    a?.stt,
+    b?.stt
+  );
 
-
-    if (direct) {
-
-      return (
-        direct[1] +
-        " " +
-        direct[2] +
-        ":" +
-        direct[3] +
-        " KST"
-      );
-
-    }
+}
 
 
-    /*
-     * Google Date 문자열 대응
-     */
+/* =========================================================
+   시간 비교
+========================================================= */
 
-    const parsed =
-      new Date(
-        text
-      );
+function compareTime(
+  a,
+  b
+) {
 
+  const aa =
+    normalizeTimeForSort(
+      a
+    );
 
-    if (
-      !Number.isNaN(
-        parsed.getTime()
-      )
-    ) {
-
-      const yyyy =
-        parsed.getFullYear();
-
-
-      const mm =
-        String(
-          parsed.getMonth() + 1
-        ).padStart(2, "0");
+  const bb =
+    normalizeTimeForSort(
+      b
+    );
 
 
-      const dd =
-        String(
-          parsed.getDate()
-        ).padStart(2, "0");
+  if (
+    aa === '' &&
+    bb === ''
+  ) {
+
+    return 0;
+
+  }
 
 
-      const hh =
-        String(
-          parsed.getHours()
-        ).padStart(2, "0");
+  if (
+    aa === ''
+  ) {
+
+    return 1;
+
+  }
 
 
-      const min =
-        String(
-          parsed.getMinutes()
-        ).padStart(2, "0");
+  if (
+    bb === ''
+  ) {
+
+    return -1;
+
+  }
 
 
-      return (
-        yyyy +
-        "-" +
-        mm +
-        "-" +
-        dd +
-        " " +
-        hh +
-        ":" +
-        min +
-        " KST"
-      );
+  return aa.localeCompare(
+    bb
+  );
 
-    }
+}
 
+
+function normalizeTimeForSort(
+  value
+) {
+
+  const text =
+    String(
+      value || ''
+    )
+      .trim();
+
+
+  const match =
+    text.match(
+      /(\d{1,2}):?(\d{2})/
+    );
+
+
+  if (!match) {
 
     return text;
 
   }
 
 
-  /* ======================================================
-     29AUG
-  ====================================================== */
+  return (
+    String(
+      match[1]
+    ).padStart(2, '0') +
+    ':' +
+    match[2]
+  );
 
-  function makeDateCode(
-    date
+}
+
+
+/* =========================================================
+   테이블 생성
+========================================================= */
+
+function renderTable(
+  flights
+) {
+
+  flightBody.innerHTML =
+    '';
+
+
+  if (
+    flights.length === 0
   ) {
 
-    if (!date) {
+    renderEmpty(
+      '조회된 데이터가 없습니다.'
+    );
 
-      return "";
+    return;
 
-    }
-
-
-    const parts =
-      String(date).split("-");
+  }
 
 
-    if (
-      parts.length !== 3
-    ) {
+  flights.forEach(
+    flight => {
 
-      return "";
-
-    }
-
-
-    const months = [
-
-      "JAN",
-      "FEB",
-      "MAR",
-      "APR",
-      "MAY",
-      "JUN",
-      "JUL",
-      "AUG",
-      "SEP",
-      "OCT",
-      "NOV",
-      "DEC"
-
-    ];
+      const tr =
+        document.createElement(
+          'tr'
+        );
 
 
-    const month =
-      Number(
-        parts[1]
+      /*
+       * 변경 / 재접수 / 문제성 데이터
+       * 기존 화면처럼 빨간색 강조
+       */
+
+      const alert =
+        isAlertFlight(
+          flight
+        );
+
+
+      const textClass =
+        alert
+          ? 'alert-red'
+          : 'normal-blue';
+
+
+      /* ---------------------------------------------------
+         신청여부
+      --------------------------------------------------- */
+
+      const applyTd =
+        document.createElement(
+          'td'
+        );
+
+      applyTd.className =
+        'col-apply';
+
+
+      const applyButton =
+        document.createElement(
+          'button'
+        );
+
+
+      const applied =
+        String(
+          flight.applied || ''
+        )
+          .trim()
+          .toUpperCase();
+
+
+      applyButton.type =
+        'button';
+
+
+      applyButton.className =
+        'apply-btn ' +
+        (
+          applied === 'X'
+            ? 'apply-x'
+            : 'apply-o'
+        );
+
+
+      applyButton.textContent =
+        applied === 'X'
+          ? 'X'
+          : 'O';
+
+
+      applyButton.title =
+        '예약 상세 보기';
+
+
+      applyButton.addEventListener(
+        'click',
+        () => {
+
+          openModal(
+            flight
+          );
+
+        }
       );
 
 
-    const day =
-      String(
-        Number(parts[2])
-      ).padStart(
-        2,
-        "0"
+      applyTd.appendChild(
+        applyButton
       );
 
 
-    return (
-      day +
-      (
-        months[month - 1] ||
-        ""
+      /* ---------------------------------------------------
+         시간
+      --------------------------------------------------- */
+
+      const timeTd =
+        document.createElement(
+          'td'
+        );
+
+      timeTd.className =
+        'col-time ' +
+        textClass;
+
+
+      const timeDiv =
+        document.createElement(
+          'div'
+        );
+
+      timeDiv.className =
+        'time-cell';
+
+
+      timeDiv.innerHTML =
+        buildTimeHtml(
+          flight
+        );
+
+
+      timeTd.appendChild(
+        timeDiv
+      );
+
+
+      /* ---------------------------------------------------
+         항공기
+      --------------------------------------------------- */
+
+      const aircraftTd =
+        document.createElement(
+          'td'
+        );
+
+      aircraftTd.className =
+        'col-aircraft ' +
+        textClass;
+
+
+      aircraftTd.innerHTML =
+        buildAircraftHtml(
+          flight
+        );
+
+
+      /* ---------------------------------------------------
+         구간
+      --------------------------------------------------- */
+
+      const routeTd =
+        document.createElement(
+          'td'
+        );
+
+      routeTd.className =
+        'col-route ' +
+        textClass;
+
+
+      routeTd.innerHTML =
+        buildRouteHtml(
+          flight
+        );
+
+
+      /* ---------------------------------------------------
+         운항사
+      --------------------------------------------------- */
+
+      const companyTd =
+        document.createElement(
+          'td'
+        );
+
+      companyTd.className =
+        'col-company ' +
+        textClass;
+
+
+      companyTd.innerHTML =
+        escapeHtml(
+          valueOrBlank(
+            flight.company
+          )
+        );
+
+
+      /* ---------------------------------------------------
+         인원
+      --------------------------------------------------- */
+
+      const personTd =
+        document.createElement(
+          'td'
+        );
+
+      personTd.className =
+        'col-person ' +
+        textClass;
+
+
+      personTd.innerHTML =
+        buildPersonHtml(
+          flight
+        );
+
+
+      /* ---------------------------------------------------
+         비고
+      --------------------------------------------------- */
+
+      const remarkTd =
+        document.createElement(
+          'td'
+        );
+
+      remarkTd.className =
+        'col-remark ' +
+        textClass;
+
+
+      const remarkDiv =
+        document.createElement(
+          'div'
+        );
+
+      remarkDiv.className =
+        'remark-cell';
+
+
+      remarkDiv.textContent =
+        normalizeRemark(
+          flight.remark
+        );
+
+
+      remarkTd.appendChild(
+        remarkDiv
+      );
+
+
+      /* ---------------------------------------------------
+         취소여부
+      --------------------------------------------------- */
+
+      const cancelTd =
+        document.createElement(
+          'td'
+        );
+
+      cancelTd.className =
+        'col-cancel ' +
+        textClass;
+
+
+      cancelTd.textContent =
+        valueOrBlank(
+          flight.cancel
+        );
+
+
+      /* ---------------------------------------------------
+         주기장
+      --------------------------------------------------- */
+
+      const standTd =
+        document.createElement(
+          'td'
+        );
+
+      standTd.className =
+        'col-stand ' +
+        textClass;
+
+
+      standTd.textContent =
+        valueOrBlank(
+          flight.stand
+        );
+
+
+      /* ---------------------------------------------------
+         실제시간
+      --------------------------------------------------- */
+
+      const actualTd =
+        document.createElement(
+          'td'
+        );
+
+      actualTd.className =
+        'col-actual ' +
+        textClass;
+
+
+      actualTd.innerHTML =
+        escapeHtml(
+          formatKSTTime(
+            flight.att
+          )
+        );
+
+
+      /* ---------------------------------------------------
+         추가
+      --------------------------------------------------- */
+
+      tr.appendChild(
+        applyTd
+      );
+
+      tr.appendChild(
+        timeTd
+      );
+
+      tr.appendChild(
+        aircraftTd
+      );
+
+      tr.appendChild(
+        routeTd
+      );
+
+      tr.appendChild(
+        companyTd
+      );
+
+      tr.appendChild(
+        personTd
+      );
+
+      tr.appendChild(
+        remarkTd
+      );
+
+      tr.appendChild(
+        cancelTd
+      );
+
+      tr.appendChild(
+        standTd
+      );
+
+      tr.appendChild(
+        actualTd
+      );
+
+
+      flightBody.appendChild(
+        tr
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   시간 HTML
+========================================================= */
+
+function buildTimeHtml(
+  flight
+) {
+
+  const plan =
+    formatKSTTime(
+      flight.stt
+    );
+
+
+  const expected =
+    formatKSTTime(
+      flight.ett
+    );
+
+
+  let html = '';
+
+
+  if (plan) {
+
+    html +=
+      '<span class="time-line">-계획: ' +
+      escapeHtml(plan) +
+      '</span>';
+
+  }
+
+
+  if (expected) {
+
+    html +=
+      '<span class="time-line">-예정: ' +
+      escapeHtml(expected) +
+      '</span>';
+
+  }
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   항공기
+========================================================= */
+
+function buildAircraftHtml(
+  flight
+) {
+
+  const reg =
+    valueOrBlank(
+      flight.reg
+    );
+
+
+  const type =
+    valueOrBlank(
+      flight.type
+    );
+
+
+  let html =
+    '<div class="aircraft-main">' +
+    escapeHtml(reg) +
+    '</div>';
+
+
+  if (type) {
+
+    html +=
+      '<div class="aircraft-type">(' +
+      escapeHtml(type) +
+      ')</div>';
+
+  }
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   구간
+========================================================= */
+
+function buildRouteHtml(
+  flight
+) {
+
+  const route =
+    valueOrBlank(
+      flight.route
+    );
+
+
+  const purpose =
+    valueOrBlank(
+      flight.purpose
+    );
+
+
+  /*
+   * 구간 데이터는 다음처럼 표시
+   *
+   * BSL-GMP / 국제선 도착
+   * (상대공항: 스위스)
+   * *인원수송
+   *
+   * 백엔드 route가 이미
+   * "(상대공항: 스위스)"까지 포함하고 있어도
+   * 중복되지 않도록 처리
+   */
+
+  const lines =
+    route
+      .split(/\r?\n/)
+      .map(
+        x => x.trim()
       )
+      .filter(Boolean);
+
+
+  let html = '';
+
+
+  if (lines.length > 0) {
+
+    html +=
+      '<div class="route-main">' +
+      escapeHtml(lines[0]) +
+      '</div>';
+
+  }
+
+
+  for (
+    let i = 1;
+    i < lines.length;
+    i++
+  ) {
+
+    html +=
+      '<div class="route-airport">' +
+      escapeHtml(lines[i]) +
+      '</div>';
+
+  }
+
+
+  /*
+   * 운항목적은 구간 밑에
+   *
+   * *인원수송
+   *
+   * 형태로 표시
+   *
+   * 보라색 지정 없음.
+   */
+
+  if (purpose) {
+
+    const purposeText =
+      purpose.startsWith('*')
+        ? purpose
+        : '*' + purpose;
+
+
+    html +=
+      '<div class="route-purpose">' +
+      escapeHtml(purposeText) +
+      '</div>';
+
+  }
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   인원
+========================================================= */
+
+function buildPersonHtml(
+  flight
+) {
+
+  const crew =
+    numberValue(
+      flight.crew
+    );
+
+
+  const pax =
+    numberValue(
+      flight.pax
+    );
+
+
+  const baggage =
+    numberValue(
+      flight.baggage
+    );
+
+
+  let html =
+    '<div class="person-cell">';
+
+
+  /*
+   * 0은 표시하지 않음.
+   *
+   * 예:
+   *
+   * -승무원 : 4
+   * -승객: 4
+   * -수화물: 10
+   *
+   * 0이면 해당 줄 자체를 생략
+   */
+
+  if (crew > 0) {
+
+    html +=
+      '<span class="person-line">' +
+      '-승무원 : ' +
+      crew +
+      '</span>';
+
+  }
+
+
+  if (pax > 0) {
+
+    html +=
+      '<span class="person-line">' +
+      '-승객: ' +
+      pax +
+      '</span>';
+
+  }
+
+
+  if (baggage > 0) {
+
+    html +=
+      '<span class="person-line">' +
+      '-수화물: ' +
+      baggage +
+      '</span>';
+
+  }
+
+
+  html +=
+    '</div>';
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   예약 상세 팝업
+========================================================= */
+
+function openModal(
+  flight
+) {
+
+  modalBody.innerHTML =
+    '';
+
+
+  /* -------------------------------------------------------
+     시간
+  ------------------------------------------------------- */
+
+  const time =
+    buildTimeText(
+      flight
+    );
+
+
+  modalBody.appendChild(
+    createDetailRow(
+      '시간',
+      time,
+      'detail-time'
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     항공기
+  ------------------------------------------------------- */
+
+  const aircraft =
+    buildAircraftText(
+      flight
+    );
+
+
+  modalBody.appendChild(
+    createDetailRow(
+      '항공기',
+      aircraft,
+      'detail-aircraft'
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     구간
+  ------------------------------------------------------- */
+
+  const route =
+    buildRouteText(
+      flight
+    );
+
+
+  modalBody.appendChild(
+    createDetailRow(
+      '구간',
+      route,
+      'detail-route'
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     운항사
+  ------------------------------------------------------- */
+
+  modalBody.appendChild(
+    createDetailRow(
+      '운항사',
+      valueOrBlank(
+        flight.company
+      )
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     인원
+  ------------------------------------------------------- */
+
+  const person =
+    buildPersonText(
+      flight
+    );
+
+
+  modalBody.appendChild(
+    createDetailRow(
+      '인원',
+      person,
+      'detail-person'
+    )
+  );
+
+
+  /* -------------------------------------------------------
+     비고
+  ------------------------------------------------------- */
+
+  const remarkRow =
+    document.createElement(
+      'div'
+    );
+
+  remarkRow.className =
+    'detail-remark-row';
+
+
+  const remarkLabel =
+    document.createElement(
+      'div'
+    );
+
+  remarkLabel.className =
+    'detail-label';
+
+
+  remarkLabel.textContent =
+    '비고';
+
+
+  const remark =
+    document.createElement(
+      'div'
+    );
+
+  remark.className =
+    'detail-remark';
+
+
+  const remarkText =
+    normalizeRemark(
+      flight.remark
+    );
+
+
+  remark.textContent =
+    remarkText || '-';
+
+
+  remarkRow.appendChild(
+    remarkLabel
+  );
+
+  remarkRow.appendChild(
+    remark
+  );
+
+
+  modalBody.appendChild(
+    remarkRow
+  );
+
+
+  modalOverlay.classList.add(
+    'show'
+  );
+
+
+  modalOverlay.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+
+  document.body.style.overflow =
+    'hidden';
+
+}
+
+
+/* =========================================================
+   팝업 닫기
+========================================================= */
+
+function closeModal() {
+
+  modalOverlay.classList.remove(
+    'show'
+  );
+
+
+  modalOverlay.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+
+  document.body.style.overflow =
+    '';
+
+}
+
+
+/* =========================================================
+   팝업 상세 행
+========================================================= */
+
+function createDetailRow(
+  label,
+  value,
+  valueClass
+) {
+
+  const row =
+    document.createElement(
+      'div'
+    );
+
+
+  row.className =
+    'detail-row';
+
+
+  const labelEl =
+    document.createElement(
+      'div'
+    );
+
+
+  labelEl.className =
+    'detail-label';
+
+
+  labelEl.textContent =
+    label;
+
+
+  const valueEl =
+    document.createElement(
+      'div'
+    );
+
+
+  valueEl.className =
+    'detail-value';
+
+
+  if (valueClass) {
+
+    valueEl.classList.add(
+      valueClass
     );
 
   }
 
 
-  /* ======================================================
-     조회
-  ====================================================== */
-
-  async function search() {
-
-    const date =
-      dateInput.value;
+  valueEl.textContent =
+    value || '-';
 
 
-    if (!date) {
+  row.appendChild(
+    labelEl
+  );
 
-      alert(
-        "조회할 날짜를 선택하세요."
+  row.appendChild(
+    valueEl
+  );
+
+
+  return row;
+
+}
+
+
+/* =========================================================
+   팝업 시간
+========================================================= */
+
+function buildTimeText(
+  flight
+) {
+
+  const plan =
+    formatKSTTime(
+      flight.stt
+    );
+
+
+  const expected =
+    formatKSTTime(
+      flight.ett
+    );
+
+
+  const lines = [];
+
+
+  if (plan) {
+
+    lines.push(
+      '-계획: ' + plan
+    );
+
+  }
+
+
+  if (expected) {
+
+    lines.push(
+      '-예정: ' + expected
+    );
+
+  }
+
+
+  return lines.join(
+    '\n'
+  );
+
+}
+
+
+/* =========================================================
+   팝업 항공기
+========================================================= */
+
+function buildAircraftText(
+  flight
+) {
+
+  const reg =
+    valueOrBlank(
+      flight.reg
+    );
+
+
+  const type =
+    valueOrBlank(
+      flight.type
+    );
+
+
+  if (!type) {
+
+    return reg;
+
+  }
+
+
+  return (
+    reg +
+    '\n(' +
+    type +
+    ')'
+  );
+
+}
+
+
+/* =========================================================
+   팝업 구간
+========================================================= */
+
+function buildRouteText(
+  flight
+) {
+
+  const route =
+    valueOrBlank(
+      flight.route
+    );
+
+
+  const purpose =
+    valueOrBlank(
+      flight.purpose
+    );
+
+
+  const lines =
+    route
+      .split(/\r?\n/)
+      .map(
+        x => x.trim()
+      )
+      .filter(Boolean);
+
+
+  const result = [];
+
+
+  lines.forEach(
+    line => {
+
+      result.push(
+        line
       );
-
-      return;
 
     }
+  );
 
 
-    searchBtn.disabled =
-      true;
+  if (purpose) {
+
+    result.push(
+      purpose.startsWith('*')
+        ? purpose
+        : '*' + purpose
+    );
+
+  }
 
 
-    statusBox.textContent =
-      "캐시 데이터를 불러오는 중...";
+  return result.join(
+    '\n'
+  );
+
+}
 
 
-    try {
+/* =========================================================
+   팝업 인원
+========================================================= */
 
-      const data =
-        await getCache(
-          date
-        );
+function buildPersonText(
+  flight
+) {
 
-
-      if (
-        !data.ok
-      ) {
-
-        throw new Error(
-          data.error ||
-          "CACHE 조회 실패"
-        );
-
-      }
+  const crew =
+    numberValue(
+      flight.crew
+    );
 
 
-      /* ================================================
-         캐시 없음
-      ================================================= */
-
-      if (
-        data.status ===
-        "NO_CACHE"
-      ) {
-
-        updateTimeBox.textContent =
-          "최종 갱신: -";
+  const pax =
+    numberValue(
+      flight.pax
+    );
 
 
-        statusBox.textContent =
-          "해당 날짜의 캐시가 없습니다.";
+  const baggage =
+    numberValue(
+      flight.baggage
+    );
 
 
-        resultBody.innerHTML = `
-
-          <tr>
-
-            <td
-              colspan="10"
-              class="empty"
-            >
-              아직 이 날짜의 캐시가 없습니다.
-            </td>
-
-          </tr>
-
-        `;
+  const lines = [];
 
 
-        return;
+  if (crew > 0) {
 
-      }
+    lines.push(
+      '-승무원 : ' + crew
+    );
+
+  }
 
 
-      renderFlights(
-        data
+  if (pax > 0) {
+
+    lines.push(
+      '-승객: ' + pax
+    );
+
+  }
+
+
+  if (baggage > 0) {
+
+    lines.push(
+      '-수화물: ' + baggage
+    );
+
+  }
+
+
+  return lines.join(
+    '\n'
+  );
+
+}
+
+
+/* =========================================================
+   헤더
+========================================================= */
+
+function updateHeader(
+  data
+) {
+
+  const date =
+    String(
+      data.date || ''
+    );
+
+
+  const count =
+    Number(
+      data.count || 0
+    );
+
+
+  const updatedAt =
+    formatUpdatedAt(
+      data.updatedAt
+    );
+
+
+  const ddmmm =
+    formatDDMMM(
+      date
+    );
+
+
+  updateText.textContent =
+    '최종 갱신: ' +
+    updatedAt +
+    ' KST';
+
+
+  dataText.textContent =
+    'DATA : ' +
+    count +
+    '건 추출(' +
+    ddmmm +
+    ')';
+
+}
+
+
+/* =========================================================
+   갱신시간
+========================================================= */
+
+function formatUpdatedAt(
+  value
+) {
+
+  if (!value) {
+
+    return '-';
+
+  }
+
+
+  const text =
+    String(
+      value
+    ).trim();
+
+
+  /*
+   * Apps Script에서
+   * yyyy-MM-dd HH:mm:ss 형태가
+   * 그대로 들어오는 경우
+   */
+
+  const match =
+    text.match(
+      /^(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})(?::\d{2})?/
+    );
+
+
+  if (match) {
+
+    return (
+      match[1] +
+      ' ' +
+      match[2] +
+      ':' +
+      match[3]
+    );
+
+  }
+
+
+  /*
+   * GMT 형태 등
+   */
+
+  const date =
+    new Date(
+      text
+    );
+
+
+  if (
+    !Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
+    const parts =
+      new Intl.DateTimeFormat(
+        'sv-SE',
+        {
+          timeZone:
+            'Asia/Seoul',
+
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+
+          hour: '2-digit',
+          minute: '2-digit',
+
+          hour12: false
+        }
+      ).formatToParts(
+        date
       );
 
 
-    } catch (err) {
+    const get =
+      type => {
 
-      console.error(
-        err
+        const item =
+          parts.find(
+            x =>
+              x.type === type
+          );
+
+        return item
+          ? item.value
+          : '';
+
+      };
+
+
+    return (
+      get('year') +
+      '-' +
+      get('month') +
+      '-' +
+      get('day') +
+      ' ' +
+      get('hour') +
+      ':' +
+      get('minute')
+    );
+
+  }
+
+
+  return text;
+
+}
+
+
+/* =========================================================
+   DDMMM
+========================================================= */
+
+function formatDDMMM(
+  dateText
+) {
+
+  const match =
+    String(
+      dateText || ''
+    ).match(
+      /^(\d{4})-(\d{2})-(\d{2})$/
+    );
+
+
+  if (!match) {
+
+    return '';
+
+  }
+
+
+  const months = [
+
+    'JAN',
+    'FEB',
+    'MAR',
+    'APR',
+    'MAY',
+    'JUN',
+    'JUL',
+    'AUG',
+    'SEP',
+    'OCT',
+    'NOV',
+    'DEC'
+
+  ];
+
+
+  const month =
+    Number(
+      match[2]
+    );
+
+
+  return (
+    match[3] +
+    months[
+      month - 1
+    ]
+  );
+
+}
+
+
+/* =========================================================
+   KST 시간
+========================================================= */
+
+function formatKSTTime(
+  value
+) {
+
+  if (!value) {
+
+    return '';
+
+  }
+
+
+  const text =
+    String(
+      value
+    ).trim();
+
+
+  /*
+   * 이미 HH:MM
+   */
+
+  let match =
+    text.match(
+      /^(\d{1,2}):(\d{2})/
+    );
+
+
+  if (match) {
+
+    return (
+      String(
+        match[1]
+      ).padStart(2, '0') +
+      ':' +
+      match[2] +
+      ' KST'
+    );
+
+  }
+
+
+  /*
+   * HHMM
+   */
+
+  match =
+    text.match(
+      /^(\d{3,4})$/
+    );
+
+
+  if (match) {
+
+    const raw =
+      match[1]
+        .padStart(4, '0');
+
+
+    return (
+      raw.substring(0, 2) +
+      ':' +
+      raw.substring(2, 4) +
+      ' KST'
+    );
+
+  }
+
+
+  /*
+   * 날짜 객체 / ISO 등
+   */
+
+  const date =
+    new Date(
+      text
+    );
+
+
+  if (
+    !Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
+    const parts =
+      new Intl.DateTimeFormat(
+        'en-GB',
+        {
+          timeZone:
+            'Asia/Seoul',
+
+          hour: '2-digit',
+          minute: '2-digit',
+
+          hour12: false
+        }
+      ).formatToParts(
+        date
       );
 
 
-      updateTimeBox.textContent =
-        "최종 갱신: -";
+    const get =
+      type => {
+
+        const item =
+          parts.find(
+            x =>
+              x.type === type
+          );
+
+        return item
+          ? item.value
+          : '';
+
+      };
 
 
-      statusBox.textContent =
-        "조회 오류";
+    const hour =
+      get('hour');
+
+    const minute =
+      get('minute');
 
 
-      resultBody.innerHTML = `
+    if (
+      hour &&
+      minute
+    ) {
 
-        <tr>
-
-          <td
-            colspan="10"
-            class="empty"
-          >
-            캐시 데이터를 가져오지 못했습니다.
-            <br><br>
-            ${esc(err.message)}
-
-          </td>
-
-        </tr>
-
-      `;
-
-    } finally {
-
-      searchBtn.disabled =
-        false;
+      return (
+        hour +
+        ':' +
+        minute +
+        ' KST'
+      );
 
     }
 
   }
 
 
-  /* ======================================================
-     이벤트
-  ====================================================== */
+  return text;
 
-  searchBtn.addEventListener(
-    "click",
-    search
+}
+
+
+/* =========================================================
+   실제시간
+========================================================= */
+
+function formatActualTime(
+  value
+) {
+
+  return formatKSTTime(
+    value
   );
 
+}
 
-  /* ======================================================
-     최초 실행
-  ====================================================== */
 
-  setDateRange();
+/* =========================================================
+   빈 데이터
+========================================================= */
+
+function renderEmpty(
+  message
+) {
+
+  flightBody.innerHTML =
+    `
+      <tr class="empty-row">
+        <td colspan="10">
+          ${escapeHtml(message)}
+        </td>
+      </tr>
+    `;
+
+}
+
+
+/* =========================================================
+   변경/강조 데이터 판별
+========================================================= */
+
+function isAlertFlight(
+  flight
+) {
+
+  const remark =
+    String(
+      flight?.remark || ''
+    );
+
+
+  /*
+   * 기존 화면에서
+   * 변경/재접수 계열 데이터를
+   * 빨간색으로 강조하기 위한 처리
+   */
+
+  const keywords = [
+
+    '변경',
+    '재접수',
+    '재접수 부탁',
+    '재첨부',
+    '변경된',
+    '변경했습니다'
+
+  ];
+
+
+  return keywords.some(
+    keyword =>
+      remark.includes(
+        keyword
+      )
+  );
+
+}
+
+
+/* =========================================================
+   비고 정리
+========================================================= */
+
+function normalizeRemark(
+  value
+) {
+
+  if (!value) {
+
+    return '';
+
+  }
+
+
+  return String(
+    value
+  )
+    .replace(
+      /\r\n/g,
+      '\n'
+    )
+    .replace(
+      /\r/g,
+      '\n'
+    )
+    .trim();
+
+}
+
+
+/* =========================================================
+   숫자
+========================================================= */
+
+function numberValue(
+  value
+) {
+
+  const n =
+    Number(
+      value
+    );
+
+
+  if (
+    !Number.isFinite(n)
+  ) {
+
+    return 0;
+
+  }
+
+
+  return n;
+
+}
+
+
+/* =========================================================
+   값
+========================================================= */
+
+function valueOrBlank(
+  value
+) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+
+    return '';
+
+  }
+
+
+  return String(
+    value
+  ).trim();
+
+}
+
+
+/* =========================================================
+   HTML Escape
+========================================================= */
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ''
+  )
+    .replace(
+      /&/g,
+      '&amp;'
+    )
+    .replace(
+      /</g,
+      '&lt;'
+    )
+    .replace(
+      />/g,
+      '&gt;'
+    )
+    .replace(
+      /"/g,
+      '&quot;'
+    )
+    .replace(
+      /'/g,
+      '&#039;'
+    );
+
+}
+
+
+/* =========================================================
+   오늘 날짜
+========================================================= */
+
+function getKSTDateString() {
+
+  const parts =
+    new Intl.DateTimeFormat(
+      'en-CA',
+      {
+        timeZone:
+          'Asia/Seoul',
+
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }
+    ).formatToParts(
+      new Date()
+    );
+
+
+  const get =
+    type => {
+
+      const item =
+        parts.find(
+          x =>
+            x.type === type
+        );
+
+      return item
+        ? item.value
+        : '';
+
+    };
+
+
+  return (
+    get('year') +
+    '-' +
+    get('month') +
+    '-' +
+    get('day')
+  );
+
+}
+
+
+/* =========================================================
+   자동 갱신
+========================================================= */
+
+/*
+ * 사용자 화면은 Apps Script를 직접 호출해서
+ * CACHE만 읽습니다.
+ *
+ * 30분마다 자동 갱신.
+ */
+
+const FRONTEND_REFRESH_MS =
+  30 * 60 * 1000;
+
+
+setInterval(
+  () => {
+
+    loadCache();
+
+  },
+  FRONTEND_REFRESH_MS
+);
+
 
 </script>
 
-
 </body>
-
 </html>
