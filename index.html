@@ -169,7 +169,7 @@
       cursor: default;
     }
 
-    .png-button {
+    .pdf-button {
       width: 92px;
       flex: 0 0 92px;
       height: 40px;
@@ -183,11 +183,11 @@
       white-space: nowrap;
     }
 
-    .png-button:hover {
+    .pdf-button:hover {
       background: #eef2f7;
     }
 
-    .png-button:disabled {
+    .pdf-button:disabled {
       opacity: 0.62;
       cursor: default;
     }
@@ -881,7 +881,7 @@
         flex: 0 0 72px;
       }
 
-      .png-button {
+      .pdf-button {
         width: 78px;
         flex: 0 0 78px;
         font-size: 12px;
@@ -889,7 +889,7 @@
 
       .date-input,
       .search-button,
-      .png-button {
+      .pdf-button {
         height: 40px;
       }
 
@@ -1003,6 +1003,196 @@
     .modal-close {
       -webkit-tap-highlight-color: transparent;
     }
+  
+    /* =========================================================
+       PDF / 인쇄 전용
+       ========================================================= */
+    @media print {
+
+      @page {
+        size: A4 landscape;
+        margin: 8mm;
+      }
+
+      html,
+      body {
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #111827 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      #authScreen {
+        display: none !important;
+      }
+
+      #appRoot {
+        display: block !important;
+      }
+
+      .app {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .page-head {
+        margin: 0 0 4mm !important;
+      }
+
+      .page-title {
+        font-size: 16pt !important;
+      }
+
+      .page-subtitle {
+        font-size: 8.5pt !important;
+      }
+
+      /*
+        조회 입력창/버튼은 PDF에서 제거.
+        SGBAC 로고는 우측에 유지.
+      */
+      .search-panel {
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 0 3mm !important;
+        background: transparent !important;
+      }
+
+      .search-main {
+        justify-content: flex-end !important;
+      }
+
+      .search-controls {
+        display: none !important;
+      }
+
+      .sgbac-logo-wrap {
+        padding: 0 !important;
+        margin-left: auto !important;
+      }
+
+      .sgbac-logo {
+        height: 12mm !important;
+        max-width: 48mm !important;
+      }
+
+      .topbar {
+        min-height: 0 !important;
+        padding: 2.2mm 3mm !important;
+        margin-bottom: 3mm !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        font-size: 8pt !important;
+        break-inside: avoid;
+      }
+
+      .status-dot,
+      .no-print {
+        display: none !important;
+      }
+
+      .table-wrap {
+        width: 100% !important;
+        overflow: visible !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .data-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 6.9pt !important;
+      }
+
+      /*
+        인쇄 시 각 칼럼 비율.
+        비고와 구간에 충분한 폭을 주되 한 페이지 가로폭에 맞춤.
+      */
+      .col-apply   { width: 5% !important; }
+      .col-time    { width: 9% !important; }
+      .col-aircraft{ width: 8% !important; }
+      .col-route   { width: 17% !important; }
+      .col-company { width: 12% !important; }
+      .col-person  { width: 9% !important; }
+      .col-remark  { width: 25% !important; }
+      .col-cancel  { width: 4% !important; }
+      .col-stand   { width: 4% !important; }
+      .col-actual  { width: 7% !important; }
+
+      .data-table thead {
+        display: table-header-group;
+      }
+
+      .data-table thead th {
+        height: auto !important;
+        padding: 1.6mm 1.2mm !important;
+        font-size: 7pt !important;
+      }
+
+      .data-table tbody tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .data-table tbody td {
+        padding: 1.4mm 1.3mm !important;
+        line-height: 1.25 !important;
+        vertical-align: top !important;
+      }
+
+      .time-box,
+      .aircraft-box,
+      .person-box {
+        white-space: normal !important;
+      }
+
+      .route-main {
+        font-weight: 700 !important;
+      }
+
+      .route-relative {
+        font-size: 6.6pt !important;
+      }
+
+      .route-purpose {
+        min-height: 0 !important;
+        padding: 0.6mm 1.6mm !important;
+        margin-top: 0.6mm !important;
+        font-size: 6.4pt !important;
+      }
+
+      .remark-cell,
+      .remark-text {
+        font-size: 6.6pt !important;
+        line-height: 1.22 !important;
+      }
+
+      .apply-button {
+        min-width: 0 !important;
+        width: 6mm !important;
+        height: 5mm !important;
+        padding: 0 !important;
+        font-size: 7pt !important;
+        box-shadow: none !important;
+      }
+
+      /*
+        상세 팝업은 PDF에 포함하지 않음.
+      */
+      .modal-backdrop,
+      .modal {
+        display: none !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -1060,12 +1250,11 @@
 
             <button
               type="button"
-              id="pngButton"
-              class="png-button"
-              data-html2canvas-ignore="true"
-              title="현재 예약현황을 PNG 파일로 저장"
+              id="pdfButton"
+              class="pdf-button no-print"
+              title="현재 예약현황을 A4 가로 PDF로 저장"
             >
-              PNG 저장
+              PDF 저장
             </button>
           </div>
         </div>
@@ -1170,10 +1359,7 @@
       <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
-  <script>
+<script>
     /* =========================================================
        설정
        ========================================================= */
@@ -1199,7 +1385,7 @@
 
     const dateInput = document.getElementById('dateInput');
     const searchButton = document.getElementById('searchButton');
-    const pngButton = document.getElementById('pngButton');
+    const pdfButton = document.getElementById('pdfButton');
     const flightBody = document.getElementById('flightBody');
     const updateText = document.getElementById('updateText');
     const dataText = document.getElementById('dataText');
@@ -1303,153 +1489,45 @@
 
 
     /* =========================================================
-       PNG 저장
-       - 현재 조회 중인 SGBAC 예약현황 전체를 PNG 1장으로 저장
-       - 모바일에서도 가로로 숨겨진 테이블 전체 폭을 포함
-       - PNG 저장 버튼 자체는 이미지에 포함하지 않음
+       PDF 저장
+       - 브라우저의 인쇄 엔진을 사용하므로 한글이 깨지지 않습니다.
+       - 텍스트/표는 이미지 캡처가 아니라 인쇄용 문서로 출력됩니다.
+       - A4 가로(Landscape) 기준으로 맞춰집니다.
+       - 버튼을 누르면 인쇄창이 열리고 'PDF로 저장'을 선택하면 됩니다.
        ========================================================= */
 
-    pngButton.addEventListener('click', exportCurrentViewToPng);
+    pdfButton.addEventListener('click', exportCurrentViewToPdf);
 
-    async function exportCurrentViewToPng() {
-      if (typeof html2canvas !== 'function') {
-        alert('PNG 저장 모듈을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.');
-        return;
-      }
-
-      pngButton.disabled = true;
-      const originalText = pngButton.textContent;
-      pngButton.textContent = '저장 중...';
-
-      let captureWrap = null;
+    function exportCurrentViewToPdf() {
+      const oldTitle = document.title;
 
       try {
-        const sourceApp = document.querySelector('.app');
-        const sourceTable = sourceApp.querySelector('.data-table');
-
-        if (!sourceApp || !sourceTable) {
-          throw new Error('capture_target_missing');
-        }
-
-        /*
-          모바일에서는 table-wrap 내부에 가로 스크롤이 생기므로,
-          복제본을 충분히 넓게 만들어 전체 테이블이 잘리지 않게 합니다.
-        */
-        const tableWidth = Math.max(
-          sourceTable.scrollWidth || 0,
-          sourceTable.offsetWidth || 0,
-          1280
-        );
-
-        const captureWidth = Math.max(
-          tableWidth + 28,
-          1280
-        );
-
-        captureWrap = document.createElement('div');
-        captureWrap.style.position = 'fixed';
-        captureWrap.style.left = '-100000px';
-        captureWrap.style.top = '0';
-        captureWrap.style.width = captureWidth + 'px';
-        captureWrap.style.background = '#f3f6fb';
-        captureWrap.style.zIndex = '-1';
-
-        const clone = sourceApp.cloneNode(true);
-
-        clone.style.width = captureWidth + 'px';
-        clone.style.maxWidth = 'none';
-        clone.style.margin = '0';
-        clone.style.background = '#f3f6fb';
-
-        const cloneTableWrap = clone.querySelector('.table-wrap');
-        const cloneTable = clone.querySelector('.data-table');
-
-        if (cloneTableWrap) {
-          cloneTableWrap.style.overflow = 'visible';
-        }
-
-        if (cloneTable) {
-          cloneTable.style.width = '100%';
-          cloneTable.style.minWidth = '0';
-        }
-
-        /*
-          복제본 안에서 불필요한 인터랙션 요소를 비활성화.
-          data-html2canvas-ignore 속성이 있는 PNG 버튼은 자동 제외됨.
-        */
-        clone.querySelectorAll('button').forEach(button => {
-          button.style.pointerEvents = 'none';
-        });
-
-        captureWrap.appendChild(clone);
-        document.body.appendChild(captureWrap);
-
-        /*
-          로고 등 이미지가 로딩될 시간을 조금 보장.
-        */
-        await waitForCaptureImages(clone);
-
-        const canvas = await html2canvas(clone, {
-          backgroundColor: '#f3f6fb',
-          scale: 2,
-          useCORS: true,
-          allowTaint: false,
-          logging: false,
-          windowWidth: captureWidth,
-          scrollX: 0,
-          scrollY: 0
-        });
-
         const fileDate = String(targetDate || getTodayKST())
           .replace(/-/g, '');
 
-        const filename =
+        /*
+          Chrome/Edge/Safari의 PDF 저장 시 기본 파일명에
+          문서 제목이 사용되는 경우가 많아 일시적으로 변경합니다.
+        */
+        document.title =
           'SGBAC_예약현황_' +
-          fileDate +
-          '.png';
+          fileDate;
 
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/png');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        window.print();
 
       } catch (error) {
-        console.error('PNG 저장 오류', error);
-        alert('PNG 파일 저장에 실패했습니다.');
+        console.error('PDF 저장 오류', error);
+        alert('PDF 저장 화면을 열지 못했습니다.');
       } finally {
-        if (captureWrap && captureWrap.parentNode) {
-          captureWrap.parentNode.removeChild(captureWrap);
-        }
-
-        pngButton.disabled = false;
-        pngButton.textContent = originalText;
+        /*
+          print() 호출 후 원래 브라우저 제목으로 복구
+        */
+        setTimeout(() => {
+          document.title = oldTitle;
+        }, 500);
       }
     }
 
-    function waitForCaptureImages(root) {
-      const images = Array.from(root.querySelectorAll('img'));
-
-      if (!images.length) {
-        return Promise.resolve();
-      }
-
-      return Promise.all(
-        images.map(img => {
-          if (img.complete) {
-            return Promise.resolve();
-          }
-
-          return new Promise(resolve => {
-            img.addEventListener('load', resolve, { once: true });
-            img.addEventListener('error', resolve, { once: true });
-
-            setTimeout(resolve, 2000);
-          });
-        })
-      );
-    }
 
     /* =========================================================
        데이터 조회
