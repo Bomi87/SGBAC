@@ -30,6 +30,18 @@
       min-height: 100vh;
     }
 
+    /*
+     * 상세 팝업이 열려 있을 때
+     * 뒤쪽 페이지 스크롤 방지
+     */
+    body.modal-open {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      left: 0;
+      right: 0;
+    }
+
     button {
       font-family: inherit;
     }
@@ -865,6 +877,121 @@
     }
 
     /* =========================================================
+       모바일 전용 7일 날짜 선택 팝업
+       iOS 기본 date picker는 min/max 날짜를 회색으로 표현하지
+       않는 경우가 있어, 모바일에서는 자체 달력으로 표시.
+       ========================================================= */
+    .mobile-date-picker {
+      position: fixed;
+      inset: 0;
+      z-index: 10050;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.42);
+    }
+
+    .mobile-date-picker.show {
+      display: flex;
+    }
+
+    .mobile-date-card {
+      width: min(360px, 100%);
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+    }
+
+    .mobile-date-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .mobile-date-close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mobile-calendar {
+      padding: 12px 14px 16px;
+    }
+
+    .mobile-calendar-month {
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .mobile-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .mobile-calendar-dow {
+      padding: 4px 0 6px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .mobile-calendar-day {
+      height: 38px;
+      border: 0;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #1e293b;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .mobile-calendar-day.allowed {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .mobile-calendar-day.selected {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .mobile-calendar-day.disabled {
+      background: #f8fafc;
+      color: #cbd5e1;
+      cursor: default;
+      opacity: 0.65;
+    }
+
+    .mobile-calendar-day.empty {
+      visibility: hidden;
+    }
+
+    .mobile-calendar-note {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    /* =========================================================
        모바일
        ========================================================= */
     @media (max-width: 800px) {
@@ -1200,6 +1327,39 @@
   </div>
 
   <!-- =======================================================
+       모바일 전용 날짜 선택 팝업
+       ======================================================== -->
+  <div class="mobile-date-picker" id="mobileDatePicker">
+    <div class="mobile-date-card">
+      <div class="mobile-date-head">
+        <span>조회일 선택</span>
+        <button
+          type="button"
+          class="mobile-date-close"
+          id="mobileDateClose"
+          aria-label="닫기"
+        >×</button>
+      </div>
+
+      <div class="mobile-calendar">
+        <div
+          class="mobile-calendar-month"
+          id="mobileCalendarMonth"
+        ></div>
+
+        <div
+          class="mobile-calendar-grid"
+          id="mobileCalendarGrid"
+        ></div>
+
+        <div class="mobile-calendar-note">
+          오늘부터 7일간만 조회할 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================
        상세 팝업
        ======================================================== -->
   <div class="modal-backdrop" id="detailModal">
@@ -1264,6 +1424,10 @@
     const detailModal = document.getElementById('detailModal');
     const modalBody = document.getElementById('modalBody');
     const modalClose = document.getElementById('modalClose');
+    const mobileDatePicker = document.getElementById('mobileDatePicker');
+    const mobileDateClose = document.getElementById('mobileDateClose');
+    const mobileCalendarMonth = document.getElementById('mobileCalendarMonth');
+    const mobileCalendarGrid = document.getElementById('mobileCalendarGrid');
 
     /* =========================================================
        시작
@@ -1271,6 +1435,7 @@
 
     let SGBAC_APP_STARTED = false;
     let SGBAC_REFRESH_TIMER = null;
+    let MODAL_SCROLL_Y = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
       initializeDateSelector();
@@ -1328,7 +1493,178 @@
       }
 
       dateInput.value = targetDate;
+
+      /*
+       * 모바일 Safari/Chrome에서는 OS 기본 date picker가
+       * min/max 밖 날짜를 회색으로 보여주지 않는 경우가 있어
+       * 모바일에서는 자체 달력을 사용.
+       */
+      if (isMobileDateUi()) {
+        dateInput.setAttribute('readonly', 'readonly');
+        dateInput.setAttribute('inputmode', 'none');
+      } else {
+        dateInput.removeAttribute('readonly');
+        dateInput.removeAttribute('inputmode');
+      }
     }
+
+    function isMobileDateUi() {
+      return window.matchMedia(
+        '(max-width: 800px)'
+      ).matches;
+    }
+
+
+    function openMobileDatePicker() {
+      if (!isMobileDateUi()) {
+        return;
+      }
+
+      renderMobileCalendar();
+
+      mobileDatePicker.classList.add(
+        'show'
+      );
+    }
+
+
+    function closeMobileDatePicker() {
+      mobileDatePicker.classList.remove(
+        'show'
+      );
+    }
+
+
+    function renderMobileCalendar() {
+      const todayText = getTodayKST();
+      const maxText =
+        addDaysToDateText(
+          todayText,
+          6
+        );
+
+      const parts =
+        todayText
+          .split('-')
+          .map(Number);
+
+      const year = parts[0];
+      const month = parts[1];
+
+      mobileCalendarMonth.textContent =
+        `${year}년 ${month}월`;
+
+      const firstDay =
+        new Date(
+          Date.UTC(
+            year,
+            month - 1,
+            1
+          )
+        );
+
+      const lastDay =
+        new Date(
+          Date.UTC(
+            year,
+            month,
+            0
+          )
+        );
+
+      const dayCount =
+        lastDay.getUTCDate();
+
+      const startDow =
+        firstDay.getUTCDay();
+
+      const dow =
+        ['일', '월', '화', '수', '목', '금', '토'];
+
+      let html = '';
+
+      dow.forEach(label => {
+        html += `
+          <div class="mobile-calendar-dow">
+            ${label}
+          </div>
+        `;
+      });
+
+      for (let i = 0; i < startDow; i++) {
+        html += `
+          <button
+            type="button"
+            class="mobile-calendar-day empty"
+            tabindex="-1"
+          ></button>
+        `;
+      }
+
+      for (let day = 1; day <= dayCount; day++) {
+        const dateText =
+          `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        const allowed =
+          dateText >= todayText &&
+          dateText <= maxText;
+
+        const selected =
+          dateText === targetDate;
+
+        const classes = [
+          'mobile-calendar-day'
+        ];
+
+        if (!allowed) {
+          classes.push('disabled');
+        } else {
+          classes.push('allowed');
+        }
+
+        if (selected) {
+          classes.push('selected');
+        }
+
+        html += `
+          <button
+            type="button"
+            class="${classes.join(' ')}"
+            data-date="${dateText}"
+            ${allowed ? '' : 'disabled'}
+          >
+            ${day}
+          </button>
+        `;
+      }
+
+      mobileCalendarGrid.innerHTML =
+        html;
+
+      mobileCalendarGrid
+        .querySelectorAll(
+          '.mobile-calendar-day.allowed'
+        )
+        .forEach(button => {
+          button.addEventListener(
+            'click',
+            () => {
+              const selected =
+                button.dataset.date;
+
+              if (!selected) {
+                return;
+              }
+
+              targetDate = selected;
+              dateInput.value = selected;
+
+              closeMobileDatePicker();
+            }
+          );
+        });
+    }
+
 
     function addDaysToDateText(dateText, days) {
       const parts = String(dateText).split('-').map(Number);
@@ -1341,6 +1677,49 @@
 
       return `${yyyy}-${mm}-${dd}`;
     }
+
+    dateInput.addEventListener(
+      'click',
+      event => {
+        if (!isMobileDateUi()) {
+          return;
+        }
+
+        event.preventDefault();
+        openMobileDatePicker();
+      }
+    );
+
+
+    dateInput.addEventListener(
+      'focus',
+      event => {
+        if (!isMobileDateUi()) {
+          return;
+        }
+
+        event.preventDefault();
+        dateInput.blur();
+        openMobileDatePicker();
+      }
+    );
+
+
+    mobileDateClose.addEventListener(
+      'click',
+      closeMobileDatePicker
+    );
+
+
+    mobileDatePicker.addEventListener(
+      'click',
+      event => {
+        if (event.target === mobileDatePicker) {
+          closeMobileDatePicker();
+        }
+      }
+    );
+
 
     searchButton.addEventListener('click', () => {
       const selected = dateInput.value;
@@ -1940,6 +2319,22 @@
        ========================================================= */
 
     function openDetail(f) {
+      /*
+       * 모바일에서 팝업 뒤쪽 화면이 움직이지 않도록
+       * 현재 스크롤 위치를 저장한 뒤 body를 고정.
+       */
+      MODAL_SCROLL_Y =
+        window.scrollY ||
+        window.pageYOffset ||
+        0;
+
+      document.body.style.top =
+        `-${MODAL_SCROLL_Y}px`;
+
+      document.body.classList.add(
+        'modal-open'
+      );
+
       const planned = formatKST(f.stt);
       const expected = formatKST(f.ett);
       const actual = formatKST(f.att);
@@ -2148,6 +2543,21 @@
        ========================================================= */
 
     function closeModal() {
+      /*
+       * 팝업을 닫으면 body 고정을 해제하고
+       * 팝업 열기 전 스크롤 위치로 복원.
+       */
+      document.body.classList.remove(
+        'modal-open'
+      );
+
+      document.body.style.top = '';
+
+      window.scrollTo(
+        0,
+        MODAL_SCROLL_Y
+      );
+
       detailModal.classList.remove('show');
       document.body.style.overflow = '';
     }
