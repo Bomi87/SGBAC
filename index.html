@@ -271,7 +271,7 @@
        칼럼 너비
        ========================================================= */
     .col-apply {
-      width: 62px;
+      width: 165px;
     }
 
     .col-time {
@@ -405,6 +405,49 @@
 
     .apply-button.apply-x:hover {
       box-shadow: 0 2px 7px rgba(220, 38, 38, 0.18);
+    }
+
+    /* =========================================================
+       SK텔레콤 국내선 인원수송 신청 가능성 안내
+       ========================================================= */
+    .apply-guide {
+      display: block;
+      width: 100%;
+      margin-top: 5px;
+      padding: 4px 5px;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 800;
+      text-align: center;
+      white-space: normal;
+      word-break: keep-all;
+    }
+
+    .apply-guide.guide-available {
+      background: #dcfce7;
+      color: #15803d !important;
+      border: 1px solid #bbf7d0;
+    }
+
+    .apply-guide.guide-possible {
+      background: #fff7ed;
+      color: #c2410c !important;
+      border: 1px solid #fed7aa;
+    }
+
+    .apply-guide.guide-unavailable {
+      background: #fee2e2;
+      color: #dc2626 !important;
+      border: 1px solid #fecaca;
+    }
+
+    .apply-guide-time {
+      display: block;
+      margin-top: 2px;
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 700;
     }
 
     /* =========================================================
@@ -1584,8 +1627,22 @@
         return;
       }
 
+      /*
+       * 에스케이텔레콤 국내선 인원수송편에 대해서만
+       * 주변 국제선 운항편과의 시간차를 계산해 신청 가능성 표시.
+       */
+      const applicationGuides =
+        buildApplicationGuides(flights);
+
       flightBody.innerHTML = flights
-        .map((flight, index) => createFlightRow(flight, index))
+        .map(
+          (flight, index) =>
+            createFlightRow(
+              flight,
+              index,
+              applicationGuides[index]
+            )
+        )
         .join('');
 
       /* 팝업 버튼 이벤트 */
@@ -1603,7 +1660,7 @@
        행 생성
        ========================================================= */
 
-    function createFlightRow(f, index) {
+    function createFlightRow(f, index, applicationGuide) {
       const applied = String(f.applied || '')
         .trim()
         .toUpperCase();
@@ -1613,6 +1670,11 @@
 
       const applyText =
         applied === 'X' ? 'X' : 'O';
+
+      const applicationGuideHtml =
+        buildApplicationGuideHtml(
+          applicationGuide
+        );
 
       /* 조건부서식 */
       const tof = String(f.tof || '').trim().toUpperCase();
@@ -1675,6 +1737,7 @@
             >
               ${applyText}
             </button>
+            ${applicationGuideHtml}
           </td>
 
           <!-- 시간 -->
@@ -2297,6 +2360,300 @@
     /* =========================================================
        숫자 표시
        ========================================================= */
+
+    /* =========================================================
+       SK텔레콤 국내선 인원수송 신청 가능성 계산
+
+       적용 대상
+       - 운항사명에 "에스케이텔레콤" 포함
+       - 국내선 (tof = D)
+       - 출발 또는 도착 (aod = D/A)
+       - 운항목적 = 인원수송
+
+       비교 시간
+       - 예정시간(ETT)이 있으면 예정시간 우선
+       - 예정시간이 없으면 계획시간(STT)
+
+       판정
+       1) 신청된 국제선(O)이 2시간 미만 → 신청불가
+       2) 위 조건은 없고 미신청 국제선(X)이 2시간 미만
+          → 신청가능 + "(HH:MM KST 국제선 가능성)"
+       3) 그 외 → 신청가능
+       ========================================================= */
+
+    function buildApplicationGuides(flights) {
+      const internationalFlights = flights
+        .map((flight, index) => ({
+          flight,
+          index,
+          timeMinutes: getPriorityTimeMinutes(flight)
+        }))
+        .filter(item => {
+          const tof = String(
+            item.flight.tof || ''
+          )
+            .trim()
+            .toUpperCase();
+
+          return (
+            tof === 'I' &&
+            item.timeMinutes !== null
+          );
+        });
+
+      return flights.map(flight => {
+        if (!isSktDomesticPassengerFlight(flight)) {
+          return null;
+        }
+
+        const targetMinutes =
+          getPriorityTimeMinutes(flight);
+
+        if (targetMinutes === null) {
+          return null;
+        }
+
+        const nearby = internationalFlights
+          .map(item => {
+            const diff =
+              Math.abs(
+                targetMinutes -
+                item.timeMinutes
+              );
+
+            return {
+              ...item,
+              diff
+            };
+          })
+          .filter(item => item.diff < 120);
+
+        /*
+         * 이미 신청된 국제선(O)이 2시간 미만이면
+         * 다른 조건보다 우선해서 신청불가.
+         */
+        const appliedInternational = nearby
+          .filter(item => {
+            return (
+              String(
+                item.flight.applied || ''
+              )
+                .trim()
+                .toUpperCase() === 'O'
+            );
+          })
+          .sort((a, b) => a.diff - b.diff);
+
+        if (appliedInternational.length > 0) {
+          return {
+            status: 'unavailable',
+            text: '신청불가'
+          };
+        }
+
+        /*
+         * 미신청 국제선(X)이 2시간 미만이면
+         * 가장 가까운 국제선 시간을 가능성 시간으로 표시.
+         */
+        const unappliedInternational = nearby
+          .filter(item => {
+            return (
+              String(
+                item.flight.applied || ''
+              )
+                .trim()
+                .toUpperCase() === 'X'
+            );
+          })
+          .sort((a, b) => a.diff - b.diff);
+
+        if (unappliedInternational.length > 0) {
+          const nearest =
+            unappliedInternational[0].flight;
+
+          return {
+            status: 'possible',
+            text: '신청가능',
+            timeText:
+              getPriorityTimeText(nearest)
+          };
+        }
+
+        /*
+         * 주변 2시간 미만 국제선 충돌 없음.
+         * 정확히 2시간(120분)은 "2시간 이상"이므로 신청가능.
+         */
+        return {
+          status: 'available',
+          text: '신청가능'
+        };
+      });
+    }
+
+
+    function isSktDomesticPassengerFlight(flight) {
+      const company =
+        String(flight.company || '')
+          .trim();
+
+      const tof =
+        String(flight.tof || '')
+          .trim()
+          .toUpperCase();
+
+      const aod =
+        String(flight.aod || '')
+          .trim()
+          .toUpperCase();
+
+      const purpose =
+        String(flight.purpose || '')
+          .trim()
+          .replace(/^\*+\s*/, '');
+
+      const isSkt =
+        company.includes(
+          '에스케이텔레콤'
+        );
+
+      const isDomestic =
+        tof === 'D';
+
+      const isDepartureOrArrival =
+        aod === 'D' ||
+        aod === 'A';
+
+      const isPassenger =
+        purpose.includes('인원수송') ||
+        purpose.includes('인원 수송');
+
+      return (
+        isSkt &&
+        isDomestic &&
+        isDepartureOrArrival &&
+        isPassenger
+      );
+    }
+
+
+    function getPriorityTimeMinutes(flight) {
+      const expected =
+        parseTimeMinutes(flight.ett);
+
+      if (expected !== null) {
+        return expected;
+      }
+
+      return parseTimeMinutes(
+        flight.stt
+      );
+    }
+
+
+    function getPriorityTimeText(flight) {
+      const expected =
+        parseTimeMinutes(flight.ett);
+
+      if (expected !== null) {
+        return minutesToHHMM(expected);
+      }
+
+      const planned =
+        parseTimeMinutes(flight.stt);
+
+      if (planned !== null) {
+        return minutesToHHMM(planned);
+      }
+
+      return '';
+    }
+
+
+    function parseTimeMinutes(value) {
+      const text =
+        String(value || '').trim();
+
+      const match =
+        text.match(
+          /(\d{1,2}):(\d{2})/
+        );
+
+      if (!match) {
+        return null;
+      }
+
+      const hour =
+        Number(match[1]);
+
+      const minute =
+        Number(match[2]);
+
+      if (
+        !Number.isInteger(hour) ||
+        !Number.isInteger(minute) ||
+        hour < 0 ||
+        hour > 23 ||
+        minute < 0 ||
+        minute > 59
+      ) {
+        return null;
+      }
+
+      return hour * 60 + minute;
+    }
+
+
+    function minutesToHHMM(minutes) {
+      const hour =
+        Math.floor(minutes / 60);
+
+      const minute =
+        minutes % 60;
+
+      return (
+        String(hour).padStart(2, '0') +
+        ':' +
+        String(minute).padStart(2, '0')
+      );
+    }
+
+
+    function buildApplicationGuideHtml(guide) {
+      if (!guide) {
+        return '';
+      }
+
+      if (guide.status === 'unavailable') {
+        return `
+          <span class="apply-guide guide-unavailable">
+            신청불가
+          </span>
+        `;
+      }
+
+      if (guide.status === 'possible') {
+        const timeText =
+          escapeHtml(
+            guide.timeText || ''
+          );
+
+        return `
+          <span class="apply-guide guide-possible">
+            신청가능
+            <span class="apply-guide-time">
+              (${timeText} KST 국제선 가능성)
+            </span>
+          </span>
+        `;
+      }
+
+      return `
+        <span class="apply-guide guide-available">
+          신청가능
+        </span>
+      `;
+    }
+
 
     function displayNumber(value) {
       if (
