@@ -930,12 +930,38 @@
       padding: 12px 14px 16px;
     }
 
-    .mobile-calendar-month {
+    .mobile-calendar-month-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      gap: 6px;
       margin-bottom: 10px;
+    }
+
+    .mobile-calendar-month {
       text-align: center;
       font-size: 15px;
       font-weight: 800;
       color: #1e293b;
+    }
+
+    .mobile-calendar-nav {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 9px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mobile-calendar-nav:disabled {
+      background: #f8fafc;
+      color: #cbd5e1;
+      cursor: default;
     }
 
     .mobile-calendar-grid {
@@ -1342,10 +1368,26 @@
       </div>
 
       <div class="mobile-calendar">
-        <div
-          class="mobile-calendar-month"
-          id="mobileCalendarMonth"
-        ></div>
+        <div class="mobile-calendar-month-row">
+          <button
+            type="button"
+            class="mobile-calendar-nav"
+            id="mobileCalendarPrev"
+            aria-label="이전 달"
+          >‹</button>
+
+          <div
+            class="mobile-calendar-month"
+            id="mobileCalendarMonth"
+          ></div>
+
+          <button
+            type="button"
+            class="mobile-calendar-nav"
+            id="mobileCalendarNext"
+            aria-label="다음 달"
+          >›</button>
+        </div>
 
         <div
           class="mobile-calendar-grid"
@@ -1428,6 +1470,8 @@
     const mobileDateClose = document.getElementById('mobileDateClose');
     const mobileCalendarMonth = document.getElementById('mobileCalendarMonth');
     const mobileCalendarGrid = document.getElementById('mobileCalendarGrid');
+    const mobileCalendarPrev = document.getElementById('mobileCalendarPrev');
+    const mobileCalendarNext = document.getElementById('mobileCalendarNext');
 
     /* =========================================================
        시작
@@ -1436,6 +1480,7 @@
     let SGBAC_APP_STARTED = false;
     let SGBAC_REFRESH_TIMER = null;
     let MODAL_SCROLL_Y = 0;
+    let MOBILE_CALENDAR_VIEW = '';
 
     document.addEventListener('DOMContentLoaded', () => {
       initializeDateSelector();
@@ -1520,6 +1565,15 @@
         return;
       }
 
+      /*
+       * 현재 선택된 날짜가 있으면 그 달부터,
+       * 없으면 오늘이 속한 달부터 표시.
+       */
+      MOBILE_CALENDAR_VIEW =
+        String(
+          targetDate || getTodayKST()
+        ).substring(0, 7);
+
       renderMobileCalendar();
 
       mobileDatePicker.classList.add(
@@ -1537,22 +1591,48 @@
 
     function renderMobileCalendar() {
       const todayText = getTodayKST();
+
       const maxText =
         addDaysToDateText(
           todayText,
           6
         );
 
-      const parts =
-        todayText
+      /*
+       * 조회 가능 기간이 월을 넘어갈 수 있으므로,
+       * 현재 표시할 달을 별도로 관리.
+       */
+      const viewText =
+        MOBILE_CALENDAR_VIEW ||
+        String(targetDate || todayText)
+          .substring(0, 7);
+
+      const viewParts =
+        viewText
           .split('-')
           .map(Number);
 
-      const year = parts[0];
-      const month = parts[1];
+      const year = viewParts[0];
+      const month = viewParts[1];
 
       mobileCalendarMonth.textContent =
         `${year}년 ${month}월`;
+
+      const firstAllowedMonth =
+        todayText.substring(0, 7);
+
+      const lastAllowedMonth =
+        maxText.substring(0, 7);
+
+      /*
+       * 조회 가능 7일 범위에 포함되는 달까지만 이동 가능.
+       * 예: 8/30~9/5라면 8월 ↔ 9월 이동 가능.
+       */
+      mobileCalendarPrev.disabled =
+        viewText <= firstAllowedMonth;
+
+      mobileCalendarNext.disabled =
+        viewText >= lastAllowedMonth;
 
       const firstDay =
         new Date(
@@ -1666,6 +1746,65 @@
     }
 
 
+    function changeMobileCalendarMonth(offset) {
+      if (!offset) {
+        return;
+      }
+
+      const current =
+        MOBILE_CALENDAR_VIEW ||
+        String(
+          targetDate || getTodayKST()
+        ).substring(0, 7);
+
+      const parts =
+        current
+          .split('-')
+          .map(Number);
+
+      const d =
+        new Date(
+          Date.UTC(
+            parts[0],
+            parts[1] - 1 + offset,
+            1
+          )
+        );
+
+      const nextView =
+        `${d.getUTCFullYear()}-${String(
+          d.getUTCMonth() + 1
+        ).padStart(2, '0')}`;
+
+      const todayText =
+        getTodayKST();
+
+      const maxText =
+        addDaysToDateText(
+          todayText,
+          6
+        );
+
+      const firstAllowedMonth =
+        todayText.substring(0, 7);
+
+      const lastAllowedMonth =
+        maxText.substring(0, 7);
+
+      if (
+        nextView < firstAllowedMonth ||
+        nextView > lastAllowedMonth
+      ) {
+        return;
+      }
+
+      MOBILE_CALENDAR_VIEW =
+        nextView;
+
+      renderMobileCalendar();
+    }
+
+
     function addDaysToDateText(dateText, days) {
       const parts = String(dateText).split('-').map(Number);
       const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
@@ -1708,6 +1847,22 @@
     mobileDateClose.addEventListener(
       'click',
       closeMobileDatePicker
+    );
+
+
+    mobileCalendarPrev.addEventListener(
+      'click',
+      () => {
+        changeMobileCalendarMonth(-1);
+      }
+    );
+
+
+    mobileCalendarNext.addEventListener(
+      'click',
+      () => {
+        changeMobileCalendarMonth(1);
+      }
     );
 
 
