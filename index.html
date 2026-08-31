@@ -1434,7 +1434,7 @@
       </div>
 
       <div class="remote-login-message" id="remoteLoginMessage">
-        미니PC에서 SGBAC 로그인을 진행 중입니다. 휴대폰으로 받은 인증번호를 입력하세요.
+        SGBAC 로그인을 진행 중입니다. 휴대폰으로 받은 인증번호를 입력하세요.
       </div>
 
       <div class="remote-login-row">
@@ -2268,7 +2268,7 @@
         if (state === 'OTP_SUBMITTED') {
           showRemoteLoginPanel(
             data.message ||
-            '인증번호를 전송했습니다. 미니PC에서 확인 중입니다.',
+            '인증번호를 전송했습니다. 확인 중입니다.',
             false,
             false
           );
@@ -2278,7 +2278,7 @@
         if (state === 'OTP_RECEIVED') {
           showRemoteLoginPanel(
             data.message ||
-            '미니PC가 인증번호를 수신했습니다. 로그인 완료를 기다리는 중입니다.',
+            '인증번호를 수신했습니다. 로그인 완료를 기다리는 중입니다.',
             false,
             false
           );
@@ -2298,7 +2298,7 @@
         if (state === 'RELOGIN_REQUESTED') {
           showRemoteLoginPanel(
             data.message ||
-            '재인증 요청을 전송했습니다. 미니PC 확인을 기다리는 중입니다.',
+            '재인증 요청을 전송했습니다. 확인을 기다리는 중입니다.',
             false,
             false
           );
@@ -2437,7 +2437,7 @@
 
         remoteRetryButton.classList.remove('show');
         remoteLoginMessage.textContent =
-          '재인증 요청을 전송했습니다. 미니PC가 확인하면 새 SMS가 1회 발송됩니다.';
+          '재인증 요청을 전송했습니다. 확인 후 새 SMS가 1회 발송됩니다.';
 
         setTimeout(checkRemoteLoginState, 500);
 
@@ -2506,7 +2506,7 @@
 
         remoteOtpInput.value = '';
         remoteLoginMessage.textContent =
-          '인증번호를 전송했습니다. 미니PC에서 확인 중입니다.';
+          '인증번호를 전송했습니다. 확인 중입니다.';
 
       } catch (error) {
         console.error(
