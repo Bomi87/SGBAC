@@ -261,6 +261,106 @@
     }
 
     /* =========================================================
+       원격 SMS 인증
+       ========================================================= */
+    .remote-login-panel {
+      display: none;
+      margin-bottom: 10px;
+      padding: 12px 14px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .remote-login-panel.show {
+      display: block;
+    }
+
+    .remote-login-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #9a3412;
+      margin-bottom: 5px;
+    }
+
+    .remote-login-message {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #7c2d12;
+      margin-bottom: 9px;
+    }
+
+    .remote-login-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 360px;
+    }
+
+    .remote-otp-input {
+      width: 150px;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #fdba74;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #111827;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      outline: none;
+    }
+
+    .remote-otp-input:focus {
+      border-color: #f97316;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.10);
+    }
+
+    .remote-otp-button {
+      height: 40px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 7px;
+      background: #ea580c;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .remote-otp-button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .remote-retry-button {
+      display: none;
+      height: 40px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 7px;
+      background: #ea580c;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .remote-retry-button.show {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remote-retry-button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    /* =========================================================
        테이블
        ========================================================= */
     .table-wrap {
@@ -1107,6 +1207,21 @@
         font-size: 11px;
       }
 
+      .remote-login-row {
+        max-width: none;
+        width: 100%;
+      }
+
+      .remote-otp-input {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+      }
+
+      .remote-otp-button {
+        flex: 0 0 auto;
+      }
+
       .table-wrap {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -1309,6 +1424,50 @@
     </div>
 
     <!-- =====================================================
+         원격 SMS 인증
+         - 미니PC가 세션 만료를 감지했을 때만 표시
+         - 첫 SMS는 자동 1회, 미입력 시 재인증 시작 버튼으로만 재발송
+         ====================================================== -->
+    <div class="remote-login-panel" id="remoteLoginPanel">
+      <div class="remote-login-title">
+        SGBAC SMS 인증 필요
+      </div>
+
+      <div class="remote-login-message" id="remoteLoginMessage">
+        미니PC에서 재로그인을 진행 중입니다. 휴대폰으로 받은 인증번호를 입력하세요.
+      </div>
+
+      <div class="remote-login-row">
+        <input
+          type="text"
+          id="remoteOtpInput"
+          class="remote-otp-input"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="10"
+          placeholder="인증번호"
+          aria-label="SGBAC SMS 인증번호"
+        >
+
+        <button
+          type="button"
+          id="remoteOtpButton"
+          class="remote-otp-button"
+        >
+          인증번호 전송
+        </button>
+      </div>
+
+      <button
+        type="button"
+        id="remoteRetryButton"
+        class="remote-retry-button"
+      >
+        재인증 시작
+      </button>
+    </div>
+
+    <!-- =====================================================
          테이블
          ====================================================== -->
     <div class="table-wrap">
@@ -1472,6 +1631,11 @@
     const mobileCalendarGrid = document.getElementById('mobileCalendarGrid');
     const mobileCalendarPrev = document.getElementById('mobileCalendarPrev');
     const mobileCalendarNext = document.getElementById('mobileCalendarNext');
+    const remoteLoginPanel = document.getElementById('remoteLoginPanel');
+    const remoteLoginMessage = document.getElementById('remoteLoginMessage');
+    const remoteOtpInput = document.getElementById('remoteOtpInput');
+    const remoteOtpButton = document.getElementById('remoteOtpButton');
+    const remoteRetryButton = document.getElementById('remoteRetryButton');
 
     /* =========================================================
        시작
@@ -1481,6 +1645,8 @@
     let SGBAC_REFRESH_TIMER = null;
     let MODAL_SCROLL_Y = 0;
     let MOBILE_CALENDAR_VIEW = '';
+    let SGBAC_LOGIN_STATE_TIMER = null;
+    let SGBAC_LOGIN_REQUEST_ID = '';
 
     document.addEventListener('DOMContentLoaded', () => {
       initializeDateSelector();
@@ -1502,6 +1668,8 @@
           loadFlights();
         }, 30 * 60 * 1000);
       }
+
+      startRemoteLoginStatePolling();
     }
 
     /* =========================================================
@@ -2041,6 +2209,318 @@
         })
       );
     }
+
+    /* =========================================================
+       원격 SMS 인증 상태 확인
+       ========================================================= */
+
+    function startRemoteLoginStatePolling() {
+      checkRemoteLoginState();
+
+      if (SGBAC_LOGIN_STATE_TIMER) {
+        return;
+      }
+
+      SGBAC_LOGIN_STATE_TIMER = setInterval(() => {
+        checkRemoteLoginState();
+      }, 5000);
+    }
+
+
+    async function checkRemoteLoginState() {
+      try {
+        const url =
+          API_URL +
+          '?action=loginstate&_=' +
+          Date.now();
+
+        const response = await fetch(url, {
+          method: 'GET',
+          cache: 'no-store'
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          return;
+        }
+
+        const state =
+          String(data.state || '').toUpperCase();
+
+        SGBAC_LOGIN_REQUEST_ID =
+          String(data.requestId || '');
+
+        if (state === 'SMS_REQUIRED') {
+          showRemoteLoginPanel(
+            data.message ||
+            '새 SMS가 발송되었습니다. 휴대폰으로 받은 인증번호를 입력하세요.',
+            true,
+            false
+          );
+          return;
+        }
+
+        if (state === 'OTP_SUBMITTED') {
+          showRemoteLoginPanel(
+            data.message ||
+            '인증번호를 전송했습니다. 미니PC에서 확인 중입니다.',
+            false,
+            false
+          );
+          return;
+        }
+
+        if (state === 'OTP_RECEIVED') {
+          showRemoteLoginPanel(
+            data.message ||
+            '미니PC가 인증번호를 수신했습니다. 로그인 완료를 기다리는 중입니다.',
+            false,
+            false
+          );
+          return;
+        }
+
+        if (state === 'LOGIN_IN_PROGRESS') {
+          showRemoteLoginPanel(
+            data.message ||
+            'SGBAC 재로그인을 시작하고 있습니다.',
+            false,
+            false
+          );
+          return;
+        }
+
+        if (state === 'RELOGIN_REQUESTED') {
+          showRemoteLoginPanel(
+            data.message ||
+            '재인증 요청을 전송했습니다. 미니PC 확인을 기다리는 중입니다.',
+            false,
+            false
+          );
+          return;
+        }
+
+        if (state === 'AUTH_REQUIRED' || state === 'LOGIN_ERROR') {
+          showRemoteLoginPanel(
+            data.message ||
+            'SGBAC 인증이 필요합니다. 재인증 시작을 누르면 새 SMS가 1회 발송됩니다.',
+            false,
+            true
+          );
+          return;
+        }
+
+        hideRemoteLoginPanel();
+
+      } catch (error) {
+        console.warn(
+          'SGBAC 로그인 상태 확인 오류',
+          error
+        );
+      }
+    }
+
+
+    function showRemoteLoginPanel(
+      message,
+      allowInput,
+      allowRetry
+    ) {
+      remoteLoginMessage.textContent =
+        String(message || '');
+
+      remoteOtpInput.disabled =
+        !allowInput;
+
+      remoteOtpButton.disabled =
+        !allowInput;
+
+      remoteLoginPanel.classList.add('show');
+
+      remoteRetryButton.classList.toggle(
+        'show',
+        !!allowRetry
+      );
+
+      remoteRetryButton.disabled =
+        !allowRetry;
+
+      const otpRow =
+        remoteOtpInput.closest('.remote-login-row');
+
+      if (otpRow) {
+        otpRow.style.display =
+          allowInput ? 'flex' : 'none';
+      }
+
+      if (allowInput) {
+        remoteOtpInput.value = '';
+      }
+    }
+
+
+    function hideRemoteLoginPanel() {
+      remoteLoginPanel.classList.remove('show');
+      remoteOtpInput.value = '';
+      remoteOtpInput.disabled = false;
+      remoteOtpButton.disabled = false;
+      remoteRetryButton.classList.remove('show');
+      remoteRetryButton.disabled = false;
+
+      const otpRow =
+        remoteOtpInput.closest('.remote-login-row');
+
+      if (otpRow) {
+        otpRow.style.display = 'flex';
+      }
+
+      SGBAC_LOGIN_REQUEST_ID = '';
+    }
+
+
+    remoteOtpButton.addEventListener(
+      'click',
+      submitRemoteOtp
+    );
+
+
+    remoteOtpInput.addEventListener(
+      'keydown',
+      event => {
+        if (event.key === 'Enter') {
+          submitRemoteOtp();
+        }
+      }
+    );
+
+
+    remoteRetryButton.addEventListener(
+      'click',
+      requestRemoteRelogin
+    );
+
+
+    async function requestRemoteRelogin() {
+      remoteRetryButton.disabled = true;
+      remoteLoginMessage.textContent =
+        '재인증 요청 전송 중...';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            action: 'requestRelogin'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            'HTTP ' + response.status
+          );
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(
+            data.error || 'request_relogin_failed'
+          );
+        }
+
+        remoteRetryButton.classList.remove('show');
+        remoteLoginMessage.textContent =
+          '재인증 요청을 전송했습니다. 미니PC가 확인하면 새 SMS가 1회 발송됩니다.';
+
+        setTimeout(checkRemoteLoginState, 500);
+
+      } catch (error) {
+        console.error(
+          'SGBAC 재인증 요청 오류',
+          error
+        );
+
+        remoteRetryButton.disabled = false;
+        remoteRetryButton.classList.add('show');
+        remoteLoginMessage.textContent =
+          '재인증 요청에 실패했습니다. 다시 시도해 주세요.';
+      }
+    }
+
+
+    async function submitRemoteOtp() {
+      const otp =
+        String(remoteOtpInput.value || '')
+          .replace(/\s+/g, '')
+          .trim();
+
+      if (!/^\d{4,10}$/.test(otp)) {
+        alert('SMS 인증번호를 숫자로 입력해 주세요.');
+        remoteOtpInput.focus();
+        return;
+      }
+
+      if (!SGBAC_LOGIN_REQUEST_ID) {
+        alert('재로그인 요청 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+        return;
+      }
+
+      remoteOtpButton.disabled = true;
+      remoteOtpInput.disabled = true;
+      remoteLoginMessage.textContent =
+        '인증번호 전송 중...';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            action: 'submitOtp',
+            requestId: SGBAC_LOGIN_REQUEST_ID,
+            otp: otp
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            'HTTP ' + response.status
+          );
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(
+            data.error || 'submit_otp_failed'
+          );
+        }
+
+        remoteOtpInput.value = '';
+        remoteLoginMessage.textContent =
+          '인증번호를 전송했습니다. 미니PC에서 확인 중입니다.';
+
+      } catch (error) {
+        console.error(
+          'SMS 인증번호 전송 오류',
+          error
+        );
+
+        remoteOtpInput.disabled = false;
+        remoteOtpButton.disabled = false;
+        remoteLoginMessage.textContent =
+          '인증번호 전송에 실패했습니다. 다시 시도해 주세요.';
+      }
+    }
+
 
     /* =========================================================
        데이터 조회
