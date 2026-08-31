@@ -1660,6 +1660,14 @@
       initializeDateSelector();
       loadFlights();
 
+      /*
+        인증된 사용자에게만 30분 자동 새로고침 시작
+      */
+      if (!SGBAC_REFRESH_TIMER) {
+        SGBAC_REFRESH_TIMER = setInterval(() => {
+          loadFlights();
+        }, 30 * 60 * 1000);
+      }
 
       startRemoteLoginStatePolling();
     }
@@ -1687,25 +1695,36 @@
        ========================================================= */
 
     function initializeDateSelector() {
-      /*
-       * On-demand 방식: TODAY~+6 제한 제거.
-       * 브라우저/휴대폰 OS 기본 date picker를 그대로 사용한다.
-       */
-      dateInput.removeAttribute('min');
-      dateInput.removeAttribute('max');
-      dateInput.removeAttribute('readonly');
-      dateInput.removeAttribute('inputmode');
+      const today = getTodayKST();
+      const maxDate = addDaysToDateText(today, 6);
 
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(targetDate || ''))) {
-        targetDate = getTodayKST();
+      dateInput.min = today;
+      dateInput.max = maxDate;
+
+      if (targetDate < today || targetDate > maxDate) {
+        targetDate = today;
       }
 
       dateInput.value = targetDate;
+
+      /*
+       * 모바일 Safari/Chrome에서는 OS 기본 date picker가
+       * min/max 밖 날짜를 회색으로 보여주지 않는 경우가 있어
+       * 모바일에서는 자체 달력을 사용.
+       */
+      if (isMobileDateUi()) {
+        dateInput.setAttribute('readonly', 'readonly');
+        dateInput.setAttribute('inputmode', 'none');
+      } else {
+        dateInput.removeAttribute('readonly');
+        dateInput.removeAttribute('inputmode');
+      }
     }
 
     function isMobileDateUi() {
-      /* 기본 OS date picker 사용 */
-      return false;
+      return window.matchMedia(
+        '(max-width: 800px)'
+      ).matches;
     }
 
 
@@ -2512,19 +2531,18 @@
       flightBody.innerHTML = `
         <tr>
           <td colspan="10" class="loading-box">
-            최신 데이터 확인 중...
+            데이터 조회 중...
           </td>
         </tr>
       `;
 
       try {
-        const queryUrl =
+        const url =
           API_URL +
-          '?action=query&date=' +
-          encodeURIComponent(targetDate) +
-          '&_=' + Date.now();
+          '?action=cache&date=' +
+          encodeURIComponent(targetDate);
 
-        const response = await fetch(queryUrl, {
+        const response = await fetch(url, {
           method: 'GET',
           cache: 'no-store'
         });
@@ -2536,50 +2554,26 @@
         const data = await response.json();
 
         if (!data.ok) {
-          throw new Error(data.error || 'query_error');
+          throw new Error(data.error || 'cache_error');
         }
 
-        if (data.status === 'CACHE_HIT') {
-          renderCachePayload(data);
+        if (data.status === 'NO_CACHE') {
+          renderEmpty();
+          updateHeader('', 0);
+          setStatus('error');
           return;
         }
 
-        if (data.status !== 'REFRESH_REQUIRED' || !data.requestId) {
-          throw new Error('unexpected_query_status');
-        }
+        let flights = Array.isArray(data.flights)
+          ? data.flights
+          : [];
 
-        flightBody.innerHTML = `
-          <tr>
-            <td colspan="10" class="loading-box">
-              SGBAC에서 ${escapeHtml(targetDate)} 최신 데이터를 조회 중입니다...
-            </td>
-          </tr>
-        `;
+        /* 프론트에서도 한 번 더 정렬. */
+        flights = sortFlights(flights);
 
-        await waitForRefreshComplete(data.requestId);
-
-        const cacheUrl =
-          API_URL +
-          '?action=cache&date=' +
-          encodeURIComponent(targetDate) +
-          '&_=' + Date.now();
-
-        const cacheResponse = await fetch(cacheUrl, {
-          method: 'GET',
-          cache: 'no-store'
-        });
-
-        if (!cacheResponse.ok) {
-          throw new Error('HTTP ' + cacheResponse.status);
-        }
-
-        const cacheData = await cacheResponse.json();
-
-        if (!cacheData.ok) {
-          throw new Error(cacheData.error || 'cache_error');
-        }
-
-        renderCachePayload(cacheData);
+        renderFlights(flights);
+        updateHeader(data.updatedAt || '', flights.length);
+        setStatus('ready');
 
       } catch (error) {
         console.error(error);
@@ -2587,7 +2581,7 @@
         flightBody.innerHTML = `
           <tr>
             <td colspan="10" class="empty-row">
-              ${escapeHtml(error.message || '데이터를 불러오지 못했습니다.')}
+              데이터를 불러오지 못했습니다.
             </td>
           </tr>
         `;
@@ -2598,77 +2592,6 @@
         searchButton.disabled = false;
       }
     }
-
-
-    async function waitForRefreshComplete(requestId) {
-      const startedAt = Date.now();
-      const timeoutMs = 90 * 1000;
-
-      while (Date.now() - startedAt < timeoutMs) {
-        await sleepMs(1000);
-
-        const url =
-          API_URL +
-          '?action=refreshstatus&requestId=' +
-          encodeURIComponent(requestId) +
-          '&_=' + Date.now();
-
-        const response = await fetch(url, {
-          method: 'GET',
-          cache: 'no-store'
-        });
-
-        if (!response.ok) {
-          continue;
-        }
-
-        const data = await response.json();
-
-        if (!data.ok) {
-          continue;
-        }
-
-        const status = String(data.status || '').toUpperCase();
-
-        if (status === 'COMPLETE') {
-          return;
-        }
-
-        if (status === 'ERROR') {
-          throw new Error(
-            data.error || 'SGBAC 최신 데이터 조회에 실패했습니다.'
-          );
-        }
-      }
-
-      throw new Error('SGBAC 조회 대기 시간이 초과되었습니다. 다시 조회해 주세요.');
-    }
-
-
-    function sleepMs(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-
-    function renderCachePayload(data) {
-      if (data.status === 'NO_CACHE') {
-        renderEmpty();
-        updateHeader('', 0);
-        setStatus('ready');
-        return;
-      }
-
-      let flights = Array.isArray(data.flights)
-        ? data.flights
-        : [];
-
-      flights = sortFlights(flights);
-
-      renderFlights(flights);
-      updateHeader(data.updatedAt || '', flights.length);
-      setStatus('ready');
-    }
-
 
     /* =========================================================
        정렬
