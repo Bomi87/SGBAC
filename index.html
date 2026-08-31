@@ -1425,7 +1425,7 @@
 
     <!-- =====================================================
          원격 SMS 인증
-         - 미니PC가 세션 만료를 감지했을 때만 표시
+         - 최초 로그인 또는 세션 만료 재로그인 시 SMS_REQUIRED 상태에서 표시
          - 첫 SMS는 자동 1회, 미입력 시 재인증 시작 버튼으로만 재발송
          ====================================================== -->
     <div class="remote-login-panel" id="remoteLoginPanel">
@@ -1434,7 +1434,7 @@
       </div>
 
       <div class="remote-login-message" id="remoteLoginMessage">
-        미니PC에서 재로그인을 진행 중입니다. 휴대폰으로 받은 인증번호를 입력하세요.
+        미니PC에서 SGBAC 로그인을 진행 중입니다. 휴대폰으로 받은 인증번호를 입력하세요.
       </div>
 
       <div class="remote-login-row">
