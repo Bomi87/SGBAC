@@ -2984,7 +2984,7 @@
       /*
        * 이미 백엔드에서 전체 문장을 내려주는 경우도 대응.
        */
-      const purpose = cleanPurpose(f.purpose);
+      const purpose = getDisplayPurpose(f);
 
       /*
        * 상대공항 기존 데이터의 route가 상대공항 정보를
@@ -3225,7 +3225,7 @@
 
     function buildRouteForModal(f) {
       const route = safe(f.route);
-      const purpose = cleanPurpose(f.purpose);
+      const purpose = getDisplayPurpose(f);
 
       let mainRoute = route;
 
@@ -3851,6 +3851,45 @@
       }
 
       return String(value);
+    }
+
+
+    /* =========================================================
+       운항목적 표시 보정
+       - 기본값은 기존 시스템 purpose 그대로 사용
+       - Ferry + 승객 > 0 인 경우에만 인원수송으로 보정
+       - 인원수송 + 승객 = 0 인 경우에만 Ferry로 보정
+       - 그 외 purpose는 변경하지 않음
+       ========================================================= */
+
+    function getDisplayPurpose(f) {
+      const originalPurpose = cleanPurpose(f.purpose);
+
+      const text = String(originalPurpose || '')
+        .trim()
+        .toLowerCase();
+
+      const pax = Number(f.pax) || 0;
+
+      const isFerry =
+        text.includes('ferry');
+
+      const isPassenger =
+        text.includes('인원수송') ||
+        text.includes('인원 수송');
+
+      // 1) 시스템 purpose가 Ferry인데 실제 승객이 있으면 인원수송
+      if (isFerry && pax > 0) {
+        return '인원수송';
+      }
+
+      // 2) 시스템 purpose가 인원수송인데 실제 승객이 0이면 Ferry
+      if (isPassenger && pax === 0) {
+        return 'Ferry';
+      }
+
+      // 그 외에는 시스템 원본 purpose 유지
+      return originalPurpose;
     }
 
 
