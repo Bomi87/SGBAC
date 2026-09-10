@@ -1494,7 +1494,7 @@
             <th>운항사</th>
             <th>인원</th>
             <th>비고</th>
-            <th>취소여부</th>
+            <th>VIP룸</th>
             <th>주기장</th>
             <th>실제시간</th>
           </tr>
@@ -2863,11 +2863,12 @@
 
       /* 비고 */
       const remark = cleanRemark(f.remark);
-
-      /* 취소 */
-      const cancel = safe(f.cancel).toUpperCase();
-      const cancelClass =
-        cancel === 'Y' ? 'cancel-y' : 'cancel-n';
+      /*
+       * VIP룸
+       * 기존 cancel 값은 백엔드에 그대로 유지하고,
+       * 화면의 기존 취소여부 칼럼 위치에는 VIP룸만 표시.
+       */
+      const vipRoom = safe(f.vipRoom) || '-';
 
       /* 주기장 */
       const stand = safe(f.stand);
@@ -2952,10 +2953,9 @@
 
           <!-- 비고 -->
           <td class="remark-cell"><div class="remark-text">${remark}</div></td>
-
-          <!-- 취소 -->
-          <td class="cancel-cell ${cancelClass}">
-            ${cancel}
+          <!-- VIP룸 -->
+          <td class="cancel-cell">
+            ${escapeHtml(vipRoom)}
           </td>
 
           <!-- 주기장 -->
