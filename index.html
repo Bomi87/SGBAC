@@ -542,6 +542,12 @@
       border: 1px solid #bbf7d0;
     }
 
+    .apply-guide.guide-completed {
+      background: #dcfce7;
+      color: #15803d !important;
+      border: 1px solid #bbf7d0;
+    }
+
     .apply-guide.guide-possible {
       background: #fff7ed;
       color: #c2410c !important;
@@ -3555,9 +3561,13 @@
        - 예정시간이 없으면 계획시간(STT)
 
        판정
-       1) 신청된 국제선(O)이 2시간 미만 → 신청불가
+       0) 해당 SK텔레콤 국내선 자체가 이미 신청(O)
+          - ±2시간 내 미신청 국제선(X) 있음
+            → 신청완료 + "(HH:MM KST 국제선 가능성)" / 주황색
+          - 그 외 → 신청완료
+       1) 미신청 국내선(X) + 신청된 국제선(O)이 2시간 미만 → 신청불가 / 빨간색
        2) 위 조건은 없고 미신청 국제선(X)이 2시간 미만
-          → 신청가능 + "(HH:MM KST 국제선 가능성)"
+          → 신청가능 + "(HH:MM KST 국제선 가능성)" / 주황색
        3) 그 외 → 신청가능
        ========================================================= */
 
@@ -3586,6 +3596,11 @@
           return null;
         }
 
+        const targetApplied =
+          String(flight.applied || '')
+            .trim()
+            .toUpperCase();
+
         const targetMinutes =
           getPriorityTimeMinutes(flight);
 
@@ -3609,8 +3624,45 @@
           .filter(item => item.diff < 120);
 
         /*
-         * 이미 신청된 국제선(O)이 2시간 미만이면
-         * 다른 조건보다 우선해서 신청불가.
+         * 미신청 국제선(X)을 먼저 찾는다.
+         * SK텔레콤 국내선 자체가 이미 신청완료(O)인 경우에도
+         * ±2시간 내 X 국제선이 있으면 주황색으로
+         * "신청완료 (HH:MM KST 국제선 가능성)" 표시.
+         */
+        const unappliedInternational = nearby
+          .filter(item => {
+            return (
+              String(
+                item.flight.applied || ''
+              )
+                .trim()
+                .toUpperCase() === 'X'
+            );
+          })
+          .sort((a, b) => a.diff - b.diff);
+
+        if (targetApplied === 'O') {
+          if (unappliedInternational.length > 0) {
+            const nearest =
+              unappliedInternational[0].flight;
+
+            return {
+              status: 'completed-possible',
+              text: '신청완료',
+              timeText:
+                getPriorityTimeText(nearest)
+            };
+          }
+
+          return {
+            status: 'completed',
+            text: '신청완료'
+          };
+        }
+
+        /*
+         * 아직 신청하지 않은 국내선(X)의 경우,
+         * 이미 신청된 국제선(O)이 2시간 미만이면 신청불가.
          */
         const appliedInternational = nearby
           .filter(item => {
@@ -3635,18 +3687,6 @@
          * 미신청 국제선(X)이 2시간 미만이면
          * 가장 가까운 국제선 시간을 가능성 시간으로 표시.
          */
-        const unappliedInternational = nearby
-          .filter(item => {
-            return (
-              String(
-                item.flight.applied || ''
-              )
-                .trim()
-                .toUpperCase() === 'X'
-            );
-          })
-          .sort((a, b) => a.diff - b.diff);
-
         if (unappliedInternational.length > 0) {
           const nearest =
             unappliedInternational[0].flight;
@@ -3801,6 +3841,30 @@
     function buildApplicationGuideHtml(guide) {
       if (!guide) {
         return '';
+      }
+
+      if (guide.status === 'completed') {
+        return `
+          <span class="apply-guide guide-completed">
+            신청완료
+          </span>
+        `;
+      }
+
+      if (guide.status === 'completed-possible') {
+        const timeText =
+          escapeHtml(
+            guide.timeText || ''
+          );
+
+        return `
+          <span class="apply-guide guide-possible">
+            신청완료
+            <span class="apply-guide-time">
+              (${timeText} KST 국제선 가능성)
+            </span>
+          </span>
+        `;
       }
 
       if (guide.status === 'unavailable') {
